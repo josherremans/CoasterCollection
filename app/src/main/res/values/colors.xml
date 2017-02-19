@@ -4,15 +4,16 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
-    <!--color name="colorSpinnerGradientStart">@android:color/holo_blue_bright</color-->
     <color name="colorSpinnerGradientStart">#CCCCCC</color>
     <color name="colorSpinnerGradientEnd">#EEEEEE</color>
     <color name="colorSpinnerPopupBg">#DDDDDD</color>
+
+    <color name="side_index_background_color_normal">#CCCCCC</color>
+    <color name="side_index_background_color_light">#EEEEEE</color>
 
     <color name="separator_line">#EEEEEE</color>
 
     <color name="black_overlay">#66000000</color>
 
     <color name="colorBlack">#000000</color>
-
 </resources>

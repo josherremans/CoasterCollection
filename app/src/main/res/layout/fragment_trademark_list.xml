@@ -44,7 +44,7 @@
                 android:id="@+id/side_index"
                 android:layout_width="match_parent"
                 android:layout_height="fill_parent"
-                android:background="@color/colorSpinnerGradientStart"
+                android:background="@color/side_index_background_color_normal"
                 android:gravity="center_horizontal"
                 android:orientation="vertical" >
             </LinearLayout>

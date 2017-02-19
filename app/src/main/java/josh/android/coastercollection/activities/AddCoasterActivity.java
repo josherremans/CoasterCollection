@@ -525,22 +525,12 @@ public class AddCoasterActivity extends AppCompatActivity
                 }
             }
 
-//            if (lstSeriesTrademark.size() > 1) {
-//                spinSeries.setVisibility(View.VISIBLE);
-                adapterSeries.notifyDataSetChanged();
-//            }
-
-//            layoutSeriesNbr.setVisibility(View.GONE);
+            adapterSeries.notifyDataSetChanged();
 
             if (lstSeriesTrademark != null) {
                 for (int i=0; i<lstSeriesTrademark.size(); i++) {
                     if (lstSeriesTrademark.get(i).getSeriesID() == startCoaster.getCoasterSeriesID()) {
                         spinSeries.setSelection(i);
-
-//                        if ((lstSeriesTrademark.get(i).getMaxNumber() > 0)
-//                            || (startCoaster.getCoasterSeriesIndex() > -1)) {
-//                            layoutSeriesNbr.setVisibility(View.VISIBLE);
-//                        }
                     }
                 }
             }
@@ -672,7 +662,6 @@ public class AddCoasterActivity extends AppCompatActivity
         // Save UI state changes to the savedInstanceState.
         // This bundle will be passed to onCreate if the process is
         // killed and restarted.
-//        long nextCoasterID;
 
         savedInstanceState.putString("ViewId_" + R.id.txtTitleCoaster, txtTitleCoaster.getText().toString());
         savedInstanceState.putString("ViewId_" + R.id.editTrademark, editTrademark.getEditableText().toString());
@@ -982,10 +971,6 @@ public class AddCoasterActivity extends AppCompatActivity
         if (collectorID == -1) {
             res = false;
         }
-
-//        if (inputCollectorWhere.length() == 0) {
-//            res = false;
-//        }
 
         long shapeID = checkShapeInput(inputShapeName);
 

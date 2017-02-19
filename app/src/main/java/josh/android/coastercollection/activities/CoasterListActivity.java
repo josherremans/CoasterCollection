@@ -53,8 +53,6 @@ public class CoasterListActivity extends AppCompatActivity
 
     public static boolean refreshCoasterList = true;
 
-//    private CoasterCollectionData data;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,8 +126,6 @@ public class CoasterListActivity extends AppCompatActivity
                     Log.i(LOG_TAG, "onQueryTextChange! EMPTY");
 
                     CoasterListActivity.this.trademarkFilter = null;
-
-//                    searchView.setVisibility(View.GONE);
 
                     coasterCollectionAdapter.updateCoasterForList(getCoasterIds(null));
 

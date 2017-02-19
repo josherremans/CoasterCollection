@@ -3,6 +3,7 @@ package josh.android.coastercollection.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.CoordinatorLayout;
@@ -39,8 +40,7 @@ public class TrademarkListActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private final static String LOG_TAG = "TRADMARK_LIST_ACTIVITY";
-
-//    private CoasterCollectionDBHelper dbHelper = new CoasterCollectionDBHelper(this);
+    private final static int TAG_INDEX = 1;
 
     private TrademarkAdapter trademarkAdapter;
     private ArrayList<Trademark> filteredList = new ArrayList<>();
@@ -49,8 +49,6 @@ public class TrademarkListActivity extends AppCompatActivity
     private ListView lstvwTrademarks;
     private SearchView searchView;
     private Toolbar toolbar;
-
-//    private ProgressBar progressBar;
 
     private String trademarkFilter = null;
     private String listViewType = "";
@@ -61,8 +59,6 @@ public class TrademarkListActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trademark_list);
-
-//        progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         refreshTrademarkList = true;
 
@@ -93,7 +89,7 @@ public class TrademarkListActivity extends AppCompatActivity
                 if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
                     int i = lstvwTrademarks.getFirstVisiblePosition();
 
-                    alterIndex((Trademark) lstvwTrademarks.getAdapter().getItem(i));
+                    setIndexPosition(((Trademark) lstvwTrademarks.getAdapter().getItem(i)).getTrademark().charAt(0));
                 }
             }
 
@@ -116,9 +112,11 @@ public class TrademarkListActivity extends AppCompatActivity
 
                 trademarkAdapter.notifyDataSetChanged();
 
-                getIndexList(filteredList);
+                toolbar.setSubtitle("(" + trademarkAdapter.getCount() + ")");
 
-                alterIndex(filteredList.get(0));
+                createIndexMap(filteredList);
+
+                displayIndex();
 
                 return false;
             }
@@ -137,9 +135,11 @@ public class TrademarkListActivity extends AppCompatActivity
 
                     trademarkAdapter.notifyDataSetChanged();
 
-                    getIndexList(filteredList);
+                    toolbar.setSubtitle("(" + trademarkAdapter.getCount() + ")");
 
-                    alterIndex(filteredList.get(0));
+                    createIndexMap(filteredList);
+
+                    displayIndex();
                 }
 
                 return false;
@@ -185,9 +185,11 @@ public class TrademarkListActivity extends AppCompatActivity
 
             lstvwTrademarks.setAdapter(trademarkAdapter);
 
-            getIndexList(filteredList);
+            toolbar.setSubtitle("(" + trademarkAdapter.getCount() + ")");
 
-            alterIndex(filteredList.get(0));
+            createIndexMap(filteredList);
+
+            displayIndex();
 
             Log.i(LOG_TAG, "END onResume!");
         }
@@ -209,27 +211,27 @@ public class TrademarkListActivity extends AppCompatActivity
         return lstFiltered;
     }
 
-    private void getIndexList(ArrayList<Trademark> lstTrademark) {
+    private void createIndexMap(ArrayList<Trademark> lstTrademark) {
         mapIndex = new LinkedHashMap<>();
 
         for (int i=0; i<lstTrademark.size(); i++) {
             Trademark tr = lstTrademark.get(i);
-            Character index = tr.getTrademark().charAt(0);
+            Character indexChar = tr.getTrademark().charAt(0);
 
-            if (index < 'A') {
-                index = '#';
+            if (indexChar < 'A') {
+                indexChar = '#';
             }
 
-            if (index > 'Z') {
-                index = '$';
+            if (indexChar > 'Z') {
+                indexChar = '$';
             }
 
-            if (mapIndex.get(index) == null)
-                mapIndex.put(index, i);
+            if (mapIndex.get(indexChar) == null)
+                mapIndex.put(indexChar, i);
         }
     }
 
-    private void displayIndex(Character currentIndexPos) {
+    private void displayIndex() {
         LinearLayout indexLayout = (LinearLayout) findViewById(R.id.side_index);
 
         indexLayout.removeAllViews();
@@ -238,13 +240,16 @@ public class TrademarkListActivity extends AppCompatActivity
 
         List<Character> indexList = new ArrayList<>(mapIndex.keySet());
 
-        for (Character index : indexList) {
+        for (int i=0; i<indexList.size(); i++) {
+            Character indexChar = indexList.get(i);
+
             textView = (TextView) getLayoutInflater().inflate(R.layout.side_index_trademark_list_item, null);
 
-            textView.setText(index.toString());
+            textView.setText(indexChar.toString());
+            textView.setTag(R.id.TAG_INDEX, indexChar);
 
-            if (index.equals(currentIndexPos)) {
-                textView.setTextColor(getResources().getColor(R.color.colorAccent));
+            if (i == 0) {
+                setIndexViewCurrent(textView);
             }
 
             textView.setOnClickListener(new IndexOnClickListener());
@@ -252,18 +257,48 @@ public class TrademarkListActivity extends AppCompatActivity
         }
     }
 
-    private void alterIndex(Trademark tr) {
-        Character currentIndexPos = tr.getTrademark().charAt(0);
+    private void setIndexPosition(Character c) {
+        Character indexChar = c;
 
-        if (currentIndexPos < 'A') {
-            currentIndexPos = '#';
+        if (!(c.equals('#') || c.equals('$'))) {
+            if (c < 'A') {
+                indexChar = '#';
+            }
+
+            if (c > 'Z') {
+                indexChar = '$';
+            }
         }
 
-        if (currentIndexPos > 'Z') {
-            currentIndexPos = '$';
-        }
+        Log.i(LOG_TAG, "setIndexPosition on char: " + c + ", indexChar: " + indexChar);
 
-        displayIndex(currentIndexPos);
+        LinearLayout indexLayout = (LinearLayout) findViewById(R.id.side_index);
+
+        final int childCount = indexLayout.getChildCount();
+
+        for (int i = 0; i < childCount; i++) {
+            TextView v = (TextView) indexLayout.getChildAt(i);
+
+            if (v.getTag(R.id.TAG_INDEX).equals(indexChar)) {
+                Log.i(LOG_TAG, "TAG gevonden!");
+                setIndexViewCurrent(v);
+            } else {
+                Log.i(LOG_TAG, "TAG " + v.getTag(R.id.TAG_INDEX));
+                setIndexViewNormal(v);
+            }
+        }
+    }
+
+    private void setIndexViewNormal(TextView v) {
+        v.setTextColor(getResources().getColor(R.color.black_overlay));
+        v.setTypeface(null, Typeface.NORMAL);
+        v.setBackgroundColor(getResources().getColor(R.color.side_index_background_color_normal));
+    }
+
+    private void setIndexViewCurrent(TextView v) {
+        v.setTextColor(getResources().getColor(R.color.colorAccent));
+        v.setTypeface(null, Typeface.BOLD);
+        v.setBackgroundColor(getResources().getColor(R.color.side_index_background_color_light));
     }
 
     @Override
@@ -359,7 +394,6 @@ public class TrademarkListActivity extends AppCompatActivity
 
             snackbar.show();
         } else if (id == R.id.nav_trademarks) {
-//            startActivity(new Intent(CoasterListActivity.this, TrademarkListActivity.class));
             snackbar = Snackbar.make(coordinatorLayout, "You clicked Trademarks", Snackbar.LENGTH_LONG);
 
             snackbar.show();
@@ -388,7 +422,7 @@ public class TrademarkListActivity extends AppCompatActivity
             TextView selectedIndex = (TextView) view;
             lstvwTrademarks.setSelection(mapIndex.get(selectedIndex.getText().charAt(0)));
 
-            displayIndex(selectedIndex.getText().charAt(0));
+            setIndexPosition(selectedIndex.getText().charAt(0));
         }
     }
 

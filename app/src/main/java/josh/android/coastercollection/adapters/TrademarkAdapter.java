@@ -71,8 +71,6 @@ public class TrademarkAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-//        Log.i("TR ADAPTER", "getView: pos: " + position);
-
         View rowView = convertView;
 
         Trademark trademark = (Trademark) getItem(position);
