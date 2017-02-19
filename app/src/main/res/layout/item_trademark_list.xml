@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:baselineAligned="false"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/padding5"
+    android:minHeight="@dimen/min_height_item_trademark_list"
+    android:background="@color/colorSpinnerGradientStart" >
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:background="@color/colorSpinnerGradientStart">
+
+        <TextView
+            android:id="@+id/txtTrademark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="@dimen/textsizeTrademarkList1"
+            android:text="@string/dummy_trademark" />
+
+        <TextView
+            android:id="@+id/txtBrewery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="normal"
+            android:textSize="@dimen/textsizeTrademarkList2"
+            android:text="@string/dummy_brewery" />
+    </LinearLayout>
+</LinearLayout>

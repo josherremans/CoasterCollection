@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusableInTouchMode="true"
+    android:background="@color/colorSpinnerGradientEnd"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/scrollView" >
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/layoutCoaster"
+                android:padding="@dimen/margin0">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/txtTitleCoaster"
+                    android:text="@string/lblCoaster"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/textsizeSubTitle"/>
+
+                <AutoCompleteTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editTrademark"
+                    android:hint="@string/hint_trademark_search"
+                    android:inputType="text"
+                    android:singleLine="true"
+                    android:imeOptions="actionNext"
+                    android:ellipsize="end" />
+
+                <Spinner
+                    android:id="@+id/spinTrademark"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:popupBackground="@color/colorSpinnerPopupBg"
+                    style="@style/spinner_style"
+                    android:spinnerMode="dropdown"
+                    android:layout_marginTop="@dimen/margin_top" />
+
+                <!--EditText
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editCoasterType"
+                    android:hint="coaster type"
+                    android:maxLines="1"
+                    android:ellipsize="end" /-->
+                <Spinner
+                    android:id="@+id/spinCoasterType"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:popupBackground="@color/colorSpinnerPopupBg"
+                    style="@style/spinner_style"
+                    android:spinnerMode="dropdown"
+                    android:layout_marginTop="@dimen/margin_top" />
+
+                <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/spinSeries"
+                    android:popupBackground="@color/colorSpinnerPopupBg"
+                    style="@style/spinner_style"
+                    android:spinnerMode="dropdown"
+                    android:layout_marginTop="@dimen/margin_top" />
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:id="@+id/layoutSeriesNbr"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:weightSum="100"
+                    android:layout_marginTop="@dimen/margin_top">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/txtSeriesNbr"
+                        android:text="@string/lblSeriesNbr"
+                        android:textStyle="bold"/>
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="10"
+                        android:id="@+id/editSeriesNbr"
+                        android:hint="n"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:inputType="number" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:text="/"
+                        android:textStyle="normal"
+                        android:textColor="@color/colorBlack"/>
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="10"
+                        android:id="@+id/txtSeriesMaxNbr"
+                        android:text="m"
+                        android:textStyle="normal"
+                        android:textColor="@color/colorBlack" />
+                </LinearLayout>
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_top"
+                    android:id="@+id/editCoasterDesc"
+                    android:hint="coaster description"
+                    android:lines="3"
+                    android:gravity="top"
+                    android:textStyle="italic"
+                    android:ellipsize="end" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_top"
+                    android:id="@+id/editCoasterText"
+                    android:hint="coaster text"
+                    android:lines="3"
+                    android:gravity="top"
+                    android:ellipsize="end" />
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_top"
+                    android:id="@+id/layoutQuality"
+                    android:weightSum="100">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/txtQuality"
+                        android:text="@string/lblQuality"
+                        android:textStyle="bold"/>
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="10"
+                        android:id="@+id/editQuality"
+                        android:hint="n"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:inputType="number" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:text="/"
+                        android:textStyle="normal"
+                        android:textColor="@color/colorBlack"/>
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="10"
+                        android:id="@+id/txtMaxQuality"
+                        android:text="10"
+                        android:textStyle="normal"
+                        android:textColor="@color/colorBlack"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/separator_line"/>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/layoutFound"
+                android:layout_marginTop="5dp"
+                android:padding="@dimen/margin0">
+                <!--android:background="@drawable/shape_questionmark"-->
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/txtFound"
+                    android:text="@string/lblFound"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/textsizeSubTitle"/>
+
+                <AutoCompleteTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editCollectorName"
+                    android:hint="name"
+                    android:inputType="text"
+                    android:singleLine="true"
+                    android:imeOptions="actionNext"
+                    android:ellipsize="end"/>
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editFoundWhere"
+                    android:hint="where"
+                    android:inputType="text"
+                    android:singleLine="true"
+                    android:imeOptions="actionNext"
+                    android:ellipsize="end" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:id="@+id/editFoundWhen"
+                    android:hint="when"
+                    android:inputType="date" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/separator_line"/>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/layoutShape"
+                android:layout_marginTop="5dp"
+                android:padding="@dimen/margin0">
+                <!--android:background="@drawable/shape_questionmark"-->
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/lblShape"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/textsizeSubTitle"/>
+                <AutoCompleteTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editShape"
+                    android:hint="shape"
+                    android:inputType="text"
+                    android:singleLine="true"
+                    android:imeOptions="actionNext"
+                    android:ellipsize="end"/>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/layoutMeas1"
+                    android:visibility="gone">
+                    <TextView
+                        android:id="@+id/txtMeas1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/lblMeas1"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/textsizeLabels"/>
+                    <EditText
+                        android:layout_width="@dimen/width_meas"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/editMeas1"
+                        android:layout_marginStart="5dp"
+                        android:inputType="number" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/lblMeasUnit"
+                        android:textSize="@dimen/textsizeLabels"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/layoutMeas2"
+                    android:visibility="gone">
+                    <TextView
+                        android:id="@+id/txtMeas2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/lblMeas2"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/textsizeLabels"/>
+                    <EditText
+                        android:layout_width="@dimen/width_meas"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/editMeas2"
+                        android:layout_marginStart="5dp"
+                        android:inputType="number" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/lblMeasUnit"
+                        android:textSize="@dimen/textsizeLabels"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/separator_line"/>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/layoutImages"
+                android:layout_marginTop="0dp">
+                <!--android:background="@drawable/shape_questionmark"-->
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/lblImages"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/textsizeSubTitle"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="- Front:"
+                    android:textSize="@dimen/textsizeLabels"/>
+
+                <Spinner
+                    android:id="@+id/spinImageFront"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:popupBackground="@color/colorSpinnerPopupBg"
+                    style="@style/spinner_style"
+                    android:spinnerMode="dropdown" />
+
+                <EditText
+                    android:layout_width="@dimen/width_coasterid"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editCoasterIDFrontImg"
+                    android:hint="id"
+                    android:inputType="number" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="- Back:"
+                    android:textSize="@dimen/textsizeLabels"/>
+
+                <Spinner
+                    android:id="@+id/spinImageBack"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:popupBackground="@color/colorSpinnerPopupBg"
+                    style="@style/spinner_style"
+                    android:spinnerMode="dropdown" />
+
+                <EditText
+                    android:layout_width="@dimen/width_coasterid"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/editCoasterIDBackImg"
+                    android:hint="id"
+                    android:inputType="number" />
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:weightSum="100">
+                    <android.support.v7.widget.AppCompatImageView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="50"
+                        android:minHeight="100dp"
+                        android:id="@+id/imgCoasterFront"
+                        android:background="@drawable/shape_questionmark"
+                        android:src="@drawable/help"/>
+
+                    <android.support.v7.widget.AppCompatImageView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="50"
+                        android:layout_marginLeft="5dp"
+                        android:minHeight="100dp"
+                        android:id="@+id/imgCoasterBack"
+                        android:background="@drawable/shape_questionmark"
+                        android:src="@drawable/help"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

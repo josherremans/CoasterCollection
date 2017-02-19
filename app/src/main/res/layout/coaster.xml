@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/holo_blue_light" >
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/height_big_image"
+            android:minHeight="@dimen/min_height_item_coaster_list" >
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:contentDescription="@string/contentDescImg"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/help" />
+
+                <ImageView
+                    android:contentDescription="@string/contentDescImg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"
+                    android:src="@drawable/ic_rotate_3d" />
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/padding10" >
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/padding10"
+                android:paddingBottom="@dimen/padding5"
+                android:paddingStart="@dimen/padding5"
+                android:background="@android:color/holo_blue_dark">
+                <TextView
+                    android:id="@+id/txtCoasterID"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/textsizeTrademark"
+                    android:text="@string/dummy_coaster_id" />
+
+                <TextView
+                    android:id="@+id/lblCoasterIDEnd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/textsizeTrademark"
+                    android:text="@string/lblCoasterIDEnd" />
+
+                <TextView
+                    android:id="@+id/txtTrademark"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/padding10"
+                    android:textAllCaps="true"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/textsizeTrademark"
+                    android:text="@string/dummy_trademark" />
+            </LinearLayout>
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/padding10"
+                android:paddingBottom="@dimen/padding5"
+                android:paddingStart="@dimen/padding5"
+                android:background="@android:color/holo_blue_light">
+                <TextView
+                    android:id="@+id/txtSeriesNr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold|italic"
+                    android:textSize="@dimen/textsizeSeries"
+                    android:text="@string/dummy_series_nbr" />
+
+                <TextView
+                    android:id="@+id/lblSeriesNrEnd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold|italic"
+                    android:textSize="@dimen/textsizeSeries"
+                    android:text="@string/lblSeriesNbrEnd" />
+
+                <TextView
+                    android:id="@+id/txtSeries"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/padding10"
+                    android:textStyle="bold|italic"
+                    android:textSize="@dimen/textsizeSeries"
+                    android:text="@string/dummy_series_name" />
+            </LinearLayout>
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/padding10"
+                android:paddingBottom="@dimen/padding5"
+                android:background="@android:color/holo_blue_bright">
+
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/padding5">
+
+                    <TextView
+                        android:id="@+id/txtDonationDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="normal"
+                        android:text="@string/dummy_donation_date" />
+
+                    <TextView
+                        android:id="@+id/lblSeparator"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="@dimen/padding10"
+                        android:paddingEnd="@dimen/padding10"
+                        android:textStyle="normal"
+                        android:text="@string/lblSeparator" />
+
+                    <TextView
+                        android:id="@+id/txtDonor"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="normal"
+                        android:text="@string/dummy_donor" />
+                </LinearLayout>
+
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/padding5" >
+
+                    <TextView
+                        android:id="@+id/txtPlace"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="normal"
+                        android:text="@string/dummy_donation_place" />
+
+                    <TextView
+                        android:id="@+id/txtShape"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/padding15"
+                        android:textStyle="normal"
+                        android:text="@string/dummy_shape" />
+
+                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/lblQuality"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textStyle="normal"
+                            android:text="@string/lblQuality" />
+
+                        <TextView
+                            android:id="@+id/txtQuality"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingStart="@dimen/padding5"
+                            android:textStyle="normal"
+                            android:text="@string/dummy_quality" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/txtDescription"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/padding15"
+                        android:textStyle="italic"
+                        android:text="@string/dummy_coaster_desc" />
+
+                    <TextView
+                        android:id="@+id/txtCoasterText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/padding15"
+                        android:text="@string/dummy_coaster_text" />
+
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

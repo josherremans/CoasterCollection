@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_gallery"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="Gallery" />
+        <item
+            android:id="@+id/nav_slideshow"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Slideshow" />
+        <item
+            android:id="@+id/nav_camera"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Camera" />
+        <item
+            android:id="@+id/nav_statistics"
+            android:icon="@drawable/ic_menu_chart_areaspline"
+            android:title="Statistics" />
+    </group>
+
+    <item android:title="Coaster refs">
+        <menu>
+            <item
+                android:id="@+id/nav_trademarks"
+                android:icon="@drawable/ic_menu_format_title"
+                android:title="Trademarks" />
+            <item
+                android:id="@+id/nav_series"
+                android:icon="@drawable/ic_menu_animation"
+                android:title="Series" />
+            <item
+                android:id="@+id/nav_donors"
+                android:icon="@drawable/ic_menu_account"
+                android:title="Donors" />
+        </menu>
+    </item>
+
+</menu>

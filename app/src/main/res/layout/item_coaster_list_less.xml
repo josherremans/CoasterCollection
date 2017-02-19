@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:baselineAligned="false"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/padding5"
+    android:minHeight="@dimen/min_height_item_coaster_list"
+    android:background="@color/colorSpinnerGradientStart" >
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:background="@color/colorSpinnerGradientStart">
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/txtCoasterID"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="@string/dummy_coaster_id" />
+
+            <TextView
+                android:id="@+id/lblCoasterIDEnd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="@string/lblCoasterIDEnd" />
+
+            <TextView
+                android:id="@+id/txtTrademark"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/padding10"
+                android:textAllCaps="true"
+                android:textStyle="bold"
+                android:text="@string/dummy_trademark" />
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="horizontal"
+            android:baselineAligned="false"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/padding5"
+            android:minHeight="@dimen/min_height_item_coaster_list" >
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/layoutImages"
+                android:orientation="vertical"
+                android:layout_width="@dimen/dimen_zero"
+                android:layout_weight="@integer/weight_small_image"
+                android:layout_height="wrap_content">
+                <!--android:minHeight="@dimen/min_height_item_coaster_list" -->
+                <!--RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"-->
+                <ImageView
+                    android:id="@+id/imgCoasterFront"
+                    android:contentDescription="@string/contentDescImg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/help" />
+
+                <ImageView
+                    android:id="@+id/imgCoasterBack"
+                    android:contentDescription="@string/contentDescImg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/padding5"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/help" />
+
+                <!--ImageView
+                    android:contentDescription="@string/contentDescImg"
+                    android:id="@+id/imgCoasterBack"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"
+                    android:src="@drawable/ic_rotate_3d" /-->
+                <!--/RelativeLayout-->
+            </LinearLayout>
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="vertical"
+                android:layout_width="@dimen/dimen_zero"
+                android:layout_weight="@integer/weight_small_image_rest"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/min_height_item_coaster_list"
+                android:paddingStart="@dimen/padding5" >
+
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:orientation="horizontal"
+                    android:id="@+id/layoutSeries"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/padding5">
+                    <TextView
+                        android:id="@+id/txtSeriesNbr"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingEnd="@dimen/padding10"
+                        android:textStyle="bold|italic"
+                        android:text="@string/dummy_series_nbr" />
+
+                    <TextView
+                        android:id="@+id/txtSeriesName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold|italic"
+                        android:text="@string/dummy_series_name" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/txtCoasterDescription"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/padding5"
+                    android:maxLines="@integer/max_lines_coaster_desc"
+                    android:ellipsize="end"
+                    android:textStyle="italic"
+                    android:text="@string/dummy_coaster_desc" />
+
+                <TextView
+                    android:id="@+id/txtCoasterText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/padding5"
+                    android:maxLines="@integer/max_lines_coaster_text"
+                    android:ellipsize="end"
+                    android:text="@string/dummy_coaster_text" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>

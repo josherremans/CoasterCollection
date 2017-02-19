@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="@string/pref_sorting_settings"
+        android:key="pref_key_sorting_settings">
+        <CheckBoxPreference
+            android:key="pref_key_sort_reverse"
+            android:title="@string/pref_sort_reverse"
+            android:summary="@string/pref_summary_sort_reverse"
+            android:defaultValue="false" />
+        <CheckBoxPreference
+            android:key="pref_key_show_backimage"
+            android:title="@string/pref_show_backimage"
+            android:summary="@string/pref_summary_show_backimage"
+            android:defaultValue="false" />
+        <!--Preference
+            android:key="pref_key_sms_delete_limit"
+            android:dependency="pref_key_sort_reverse"
+            android:title="@string/pref_title_sms_delete"
+            android:summary="@string/pref_summary_delete_limit" />
+        <Preference
+            android:key="pref_key_mms_delete_limit"
+            android:dependency="pref_key_sort_reverse"
+            android:title="@string/pref_title_mms_delete"
+            android:summary="@string/pref_summary_delete_limit" /-->
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/pref_listview_type_settings"
+        android:key="pref_key_listview_type_settings">
+        <ListPreference
+            android:key="pref_key_listview_type"
+            android:title="@string/pref_title_listview_type"
+            android:summary="@string/listview_type_1_value"
+            android:dialogTitle="@string/pref_dialogtitle_listview_type"
+            android:entries="@array/pref_listview_type_entries"
+            android:entryValues="@array/pref_listview_type_values"
+            android:defaultValue="@string/listview_type_1_value" />
+    </PreferenceCategory>
+</PreferenceScreen>

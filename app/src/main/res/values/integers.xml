@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="weight_small_image">25</integer>
+    <integer name="weight_small_image_rest">75</integer>
+    <integer name="max_lines_coaster_desc">2</integer>
+    <integer name="max_lines_coaster_text">2</integer>
+</resources>

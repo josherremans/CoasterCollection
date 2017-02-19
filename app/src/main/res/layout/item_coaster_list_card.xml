@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:baselineAligned="false"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/padding5"
+    android:minHeight="@dimen/min_height_item_coaster_list"
+    android:background="@color/colorSpinnerGradientEnd"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto">
+
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_view"
+        android:layout_gravity="center"
+        android:layout_width="@dimen/width_card"
+        android:layout_height="wrap_content"
+        card_view:cardCornerRadius="10dp">
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:background="@color/colorSpinnerGradientStart">
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/txtCoasterID"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="@string/dummy_coaster_id" />
+
+                <TextView
+                    android:id="@+id/lblCoasterIDEnd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="@string/lblCoasterIDEnd" />
+
+                <TextView
+                    android:id="@+id/txtTrademark"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/padding10"
+                    android:textAllCaps="true"
+                    android:textStyle="bold"
+                    android:text="@string/dummy_trademark" />
+            </LinearLayout>
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="horizontal"
+                android:baselineAligned="false"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/padding5"
+                android:minHeight="@dimen/min_height_item_coaster_list" >
+
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:orientation="vertical"
+                    android:layout_width="@dimen/dimen_zero"
+                    android:layout_weight="@integer/weight_small_image"
+                    android:layout_height="wrap_content" >
+                    <ImageView
+                        android:id="@+id/imgCoasterFront"
+                        android:contentDescription="@string/contentDescImg"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/help" />
+
+                    <ImageView
+                        android:id="@+id/imgCoasterBack"
+                        android:contentDescription="@string/contentDescImg"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/padding5"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/help" />
+
+                </LinearLayout>
+
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:orientation="vertical"
+                    android:layout_width="@dimen/dimen_zero"
+                    android:layout_weight="@integer/weight_small_image_rest"
+                    android:layout_height="wrap_content"
+                    android:minHeight="@dimen/min_height_item_coaster_list"
+                    android:paddingStart="@dimen/padding5" >
+
+                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:orientation="horizontal"
+                        android:id="@+id/layoutSeries"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/padding5">
+                        <TextView
+                            android:id="@+id/txtSeriesNbr"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingEnd="@dimen/padding10"
+                            android:textStyle="bold|italic"
+                            android:text="@string/dummy_series_nbr" />
+
+                        <TextView
+                            android:id="@+id/txtSeriesName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textStyle="bold|italic"
+                            android:text="@string/dummy_series_name" />
+                    </LinearLayout>
+
+                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/padding5">
+                        <TextView
+                            android:id="@+id/txtDonationDate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textStyle="normal"
+                            android:text="@string/dummy_donation_date" />
+
+                        <TextView
+                            android:id="@+id/txtDonor"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingStart="@dimen/padding10"
+                            android:textStyle="normal"
+                            android:text="@string/dummy_donor" />
+                    </LinearLayout>
+
+                    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/padding5">
+                        <TextView
+                            android:id="@+id/txtShape"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textStyle="normal"
+                            android:text="@string/dummy_shape" />
+
+                        <TextView
+                            android:id="@+id/txtMeasurements"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingStart="@dimen/padding10"
+                            android:textStyle="normal"
+                            android:text="@string/dummy_measurements" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/txtCoasterDescription"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/padding5"
+                        android:textStyle="italic"
+                        android:text="@string/dummy_coaster_desc" />
+
+                    <TextView
+                        android:id="@+id/txtCoasterText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/padding5"
+                        android:text="@string/dummy_coaster_text" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

@@ -1,0 +1,88 @@
+<resources>
+    <string name="app_name">Coaster Collection</string>
+    <string name="app_name_short">Coasters</string>
+
+    <string name="pref_sorting_settings">Sorting</string>
+    <string name="pref_listview_type_settings">Type of items in list screen</string>
+    <string name="pref_sort_reverse">Reverse order</string>
+    <string name="pref_summary_sort_reverse">Highest coaster id first</string>
+    <string name="pref_show_backimage">Show backimage</string>
+    <string name="pref_summary_show_backimage">Show backimage in list if available</string>
+    <string name="pref_title_listview_type">List type</string>
+    <string name="pref_dialogtitle_listview_type">List type</string>
+
+    <string-array name="pref_listview_type_entries">
+        <item>@string/listview_type_1_entry</item>
+        <item>@string/listview_type_2_entry</item>
+        <item>@string/listview_type_3_entry</item>
+    </string-array>
+
+    <string-array name="pref_listview_type_values">
+        <item>@string/listview_type_1_value</item>
+        <item>@string/listview_type_2_value</item>
+        <item>@string/listview_type_3_value</item>
+    </string-array>
+
+    <string name="listview_type_1_entry">Card type items</string>
+    <string name="listview_type_2_entry">Full width items</string>
+    <string name="listview_type_3_entry">Full width items (summary)</string>
+
+    <string name="listview_type_1_value">CardType</string>
+    <string name="listview_type_2_value">FullWidthType</string>
+    <string name="listview_type_3_value">FullWidthTypeSum</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="action_export">Export</string>
+    <string name="action_save">Save</string>
+    <string name="action_copy">Copy</string>
+    <string name="action_adv_filter">Advanced Filter</string>
+    <string name="action_search">Filter</string>
+
+    <string name="contentDescImg">(image)</string>
+
+    <string name="lblTitleCoasterList">Coastercollection:</string>
+    <string name="lblCoasterIDEnd">.</string>
+    <string name="lblSeriesNbrEnd">:</string>
+    <string name="lblSeparator">-</string>
+    <string name="lblQuality">Quality:</string>
+    <string name="lblSeriesNbr">Series Nbr:</string>
+    <string name="lblTitleAddCoaster">Coaster</string>
+    <string name="lblTitleAddTrademark">Trademark</string>
+
+    <string name="dummy_trademark">Dummy Trademark</string>
+    <string name="dummy_brewery">Dummy Brewery</string>
+    <string name="dummy_coaster_id">1234</string>
+    <string name="dummy_series_name">Dummy series.</string>
+    <string name="dummy_series_nbr">12/32:</string>
+    <string name="dummy_donation_date">31/12/2016</string>
+    <string name="dummy_donor">Janssens, Jan</string>
+    <string name="dummy_donation_place">Halle - Café Dummy</string>
+    <string name="dummy_shape">Square</string>
+    <string name="dummy_measurements">(Side: 78mm)</string>
+    <string name="dummy_quality">8/10</string>
+    <string name="dummy_coaster_desc">This is the description of the coaster. This also can be a very long text. Even more than 2 lines!</string>
+    <string name="dummy_coaster_text">This is the text of the coaster. Again, this can be a very long text! Even more than 2 lines!</string>
+    <string name="dummy_image_name">trademark_1234_fb.jpg</string>
+    <string name="txtQuality">Quality:</string>
+    <string name="txtFound">Found:</string>
+    <string name="lblCoaster">Coaster</string>
+    <string name="lblShape">Shape</string>
+    <string name="lblImages">Images</string>
+    <string name="lblFound">Found</string>
+    <string name="lblMeas1">Meas1:</string>
+    <string name="lblMeas2">Meas2:</string>
+    <string name="lblMeasUnit">mm</string>
+
+    <string name="hint_trademark_search">Filter Trademark</string>
+    <string name="hint_trademark">Trademark</string>
+    <string name="hint_brewery">Brewery</string>
+
+    <string name="title_activity_image_fullscreen">ImageFullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_trademark_list">TrademarkListActivity</string>
+    <string name="title_activity_add_trademark">AddTrademarkActivity</string>
+</resources>
