@@ -164,41 +164,54 @@ public class CoasterCollectionAdapter extends BaseAdapter {
         holder.coasterID.setText("" + coaster.getCoasterID());
 
         String strImgFront = coaster.getCoasterImageFrontName();
+        holder.txtImgCoasterFront.setVisibility(View.GONE);
 
         if ((strImgFront != null) && (strImgFront.length() > 0)) {
             if (strImgFront.equals("-")) {
-                holder.imgCoasterFront.setImageResource(R.drawable.dash);
+                holder.imgCoasterFront.setImageResource(R.drawable.beer_bg_115);
+                holder.txtImgCoasterFront.setVisibility(View.VISIBLE);
+                holder.txtImgCoasterFront.setText(R.string.lblNameUndefined);
             } else {
                 File imgFile = ImageManager.getImgFile(strImgFront);
 
                 if (imgFile.exists()) {
                     new ImageManager().load(strImgFront, DIR_DEF_IMAGES, holder.imgCoasterFront);
                 } else {
-                    holder.imgCoasterFront.setImageResource(R.drawable.notfound);
+                    holder.imgCoasterFront.setImageResource(R.drawable.beer_bg_115);
+                    holder.txtImgCoasterFront.setVisibility(View.VISIBLE);
+                    holder.txtImgCoasterFront.setText(R.string.lblOops);
                 }
             }
         } else {
-            holder.imgCoasterFront.setImageResource(R.drawable.questionmark);
+            holder.imgCoasterFront.setImageResource(R.drawable.beer_bg_115);
+            holder.txtImgCoasterFront.setVisibility(View.VISIBLE);
+            holder.txtImgCoasterFront.setText(R.string.lblUnknown);
         }
 
         String strImgBack = coaster.getCoasterImageBackName();
+        holder.txtImgCoasterBack.setVisibility(View.GONE);
 
         if ((strImgBack != null) && (strImgBack.length() > 0)) {
             holder.imgCoasterBack.setVisibility(View.VISIBLE);
 
             if (strImgBack.equals("-")) {
-                holder.imgCoasterBack.setImageResource(R.drawable.dash);
+                holder.imgCoasterBack.setImageResource(R.drawable.beer_bg_115);
+                holder.txtImgCoasterBack.setVisibility(View.VISIBLE);
+                holder.txtImgCoasterBack.setText(R.string.lblNameUndefined);
             } else {
                 File imgFile = ImageManager.getImgFile(strImgBack);
 
                 if (imgFile.exists()) {
                     new ImageManager().load(strImgBack, DIR_DEF_IMAGES, holder.imgCoasterBack);
                 } else {
-                    holder.imgCoasterBack.setImageResource(R.drawable.notfound);
+                    holder.imgCoasterBack.setImageResource(R.drawable.beer_bg_115);
+                    holder.txtImgCoasterBack.setVisibility(View.VISIBLE);
+                    holder.txtImgCoasterBack.setText(R.string.lblOops);
                 }
             }
         } else {
             holder.imgCoasterBack.setVisibility(View.GONE);
+            holder.txtImgCoasterBack.setVisibility(View.GONE);
         }
 
         holder.imgCoasterFront.setOnClickListener(new ImageOnClickListener(coaster, true));
@@ -275,6 +288,8 @@ public class CoasterCollectionAdapter extends BaseAdapter {
         public TextView donor;
         public ImageView imgCoasterFront;
         public ImageView imgCoasterBack;
+        public TextView txtImgCoasterFront;
+        public TextView txtImgCoasterBack;
         public TextView coasterDesc;
         public TextView coasterText;
 
@@ -284,6 +299,8 @@ public class CoasterCollectionAdapter extends BaseAdapter {
             layoutImages = (LinearLayout) parent.findViewById(R.id.layoutImages);
             imgCoasterFront = (ImageView) parent.findViewById(R.id.imgCoasterFront);
             imgCoasterBack = (ImageView) parent.findViewById(R.id.imgCoasterBack);
+            txtImgCoasterFront = (TextView) parent.findViewById(R.id.txtImgCoasterFront);
+            txtImgCoasterBack = (TextView) parent.findViewById(R.id.txtImgCoasterBack);
             coasterDesc = (TextView) parent.findViewById(R.id.txtCoasterDescription);
             coasterText = (TextView) parent.findViewById(R.id.txtCoasterText);
             trademark = (TextView) parent.findViewById(R.id.txtTrademark);

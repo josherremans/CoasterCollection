@@ -59,34 +59,61 @@
                 android:layout_weight="@integer/weight_small_image"
                 android:layout_height="wrap_content">
                 <!--android:minHeight="@dimen/min_height_item_coaster_list" -->
-                <!--RelativeLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"-->
-                <ImageView
-                    android:id="@+id/imgCoasterFront"
-                    android:contentDescription="@string/contentDescImg"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/questionmark" />
-
-                <ImageView
-                    android:id="@+id/imgCoasterBack"
-                    android:contentDescription="@string/contentDescImg"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="@dimen/padding5"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/questionmark" />
-
-                    <!--ImageView
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:id="@+id/imgCoasterFront"
                         android:contentDescription="@string/contentDescImg"
-                        android:id="@+id/imgCoasterBack"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:scaleType="fitCenter" />
+                    <TextView
+                        android:id="@+id/txtImgCoasterFront"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        android:layout_alignParentEnd="true"
-                        android:src="@drawable/ic_rotate_3d" /-->
+                        android:layout_centerInParent="true"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="@dimen/textsizeTitle"
+                        android:textStyle="bold"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <!--ImageView
+                        android:id="@+id/imgCoasterBack"
+                        android:contentDescription="@string/contentDescImg"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/padding5"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/beer_bg_115" /-->
+                    <ImageView
+                        android:id="@+id/imgCoasterBack"
+                        android:contentDescription="@string/contentDescImg"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/padding5"
+                        android:scaleType="fitCenter" />
+                    <TextView
+                        android:id="@+id/txtImgCoasterBack"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="@dimen/textsizeTitle"
+                        android:textStyle="bold"/>
+                </RelativeLayout>
+
+                <!--ImageView
+                    android:contentDescription="@string/contentDescImg"
+                    android:id="@+id/imgCoasterBack"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"
+                    android:src="@drawable/ic_rotate_3d" /-->
                 <!--/RelativeLayout-->
             </LinearLayout>
 

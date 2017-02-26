@@ -72,7 +72,8 @@ public class AddCoasterActivity extends AppCompatActivity
 
     private final static int BACKPRESSED_TWICE_TIMEOUT = 2000; // msec
 
-    private TextView txtTitleCoaster;
+    private TextView txtTitleCoasterID;
+    private EditText editTitleCoasterID;
 
     private long nextCoasterID;
 
@@ -128,6 +129,8 @@ public class AddCoasterActivity extends AppCompatActivity
     private static String imageNameFrontPart1;
     private static String imageNameBackPart1;
 
+    private ArrayList<String> valProbs = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -160,7 +163,8 @@ public class AddCoasterActivity extends AppCompatActivity
 
         // *** COASTERID:
 
-        txtTitleCoaster = (TextView) findViewById(R.id.txtTitleCoaster);
+        txtTitleCoasterID = (TextView) findViewById(R.id.txtTitleCoasterID);
+        editTitleCoasterID = (EditText) findViewById(R.id.editTitleCoasterID);
 
         if (coasterID != -1) {
             startCoaster = dbHelper.getCoasterByID(coasterID);
@@ -170,7 +174,16 @@ public class AddCoasterActivity extends AppCompatActivity
             nextCoasterID = dbHelper.getNextCoasterIDFromDB();
         }
 
-        txtTitleCoaster.setText(txtTitleCoaster.getText() + " " + nextCoasterID);
+        txtTitleCoasterID.setText("" + nextCoasterID);
+        editTitleCoasterID.setText("" + nextCoasterID);
+
+        if ((startCoaster != null) && (startCoaster.isFetchedFromDB())) {
+            txtTitleCoasterID.setVisibility(View.VISIBLE);
+            editTitleCoasterID.setVisibility(View.GONE);
+        } else {
+            txtTitleCoasterID.setVisibility(View.GONE);
+            editTitleCoasterID.setVisibility(View.VISIBLE);
+        }
 
         // *** TRADEMARK:
 
@@ -199,10 +212,10 @@ public class AddCoasterActivity extends AppCompatActivity
                     }
                 }
 
-                spinSeries.setVisibility(View.VISIBLE);
-                spinSeries.setSelection(0);
-                adapterSeries.notifyDataSetChanged();
-                Log.i(LOG_TAG, "spinTrademark.onItemSelected: SPIN VIS");
+//                spinSeries.setVisibility(View.VISIBLE);
+//                spinSeries.setSelection(0);
+//                adapterSeries.notifyDataSetChanged();
+//                Log.i(LOG_TAG, "spinTrademark.onItemSelected: SPIN VIS");
             }
 
             @Override
@@ -229,10 +242,10 @@ public class AddCoasterActivity extends AppCompatActivity
                     }
                 }
 
-                spinSeries.setVisibility(View.VISIBLE);
-                adapterSeries.notifyDataSetChanged();
-                spinSeries.setSelection(0);
-                Log.i(LOG_TAG, "editTrademark.onItemClick: SPIN VIS");
+//                spinSeries.setVisibility(View.VISIBLE);
+//                adapterSeries.notifyDataSetChanged();
+//                spinSeries.setSelection(0);
+//                Log.i(LOG_TAG, "editTrademark.onItemClick: SPIN VIS");
             }
         });
 
@@ -260,13 +273,13 @@ public class AddCoasterActivity extends AppCompatActivity
 
                 Log.i(LOG_TAG, "nSeries: " + nSeries + ", maxNbr: " + maxNbr);
 
-                if (nSeries > 1) {
+//                if (nSeries > 1) {
                     spinSeries.setVisibility(View.VISIBLE);
-                    Log.i(LOG_TAG, "spinSeries.onItemSelected: SPIN VIS");
-                } else {
-                    spinSeries.setVisibility(View.GONE);
-                    Log.i(LOG_TAG, "spinSeries.onItemSelected: SPIN GONE");
-                }
+//                    Log.i(LOG_TAG, "spinSeries.onItemSelected: SPIN VIS");
+//                } else {
+//                    spinSeries.setVisibility(View.GONE);
+//                    Log.i(LOG_TAG, "spinSeries.onItemSelected: SPIN GONE");
+//                }
 
                 if (maxNbr > 0) {
                     layoutSeriesNbr.setVisibility(View.VISIBLE);
@@ -530,6 +543,7 @@ public class AddCoasterActivity extends AppCompatActivity
             if (lstSeriesTrademark != null) {
                 for (int i=0; i<lstSeriesTrademark.size(); i++) {
                     if (lstSeriesTrademark.get(i).getSeriesID() == startCoaster.getCoasterSeriesID()) {
+                        Log.i(LOG_TAG, "spinSeries.setSelection(i): i=" + i);
                         spinSeries.setSelection(i);
                     }
                 }
@@ -556,14 +570,24 @@ public class AddCoasterActivity extends AppCompatActivity
             if ((startCoaster.getCoasterImageFrontName() == null) || (startCoaster.getCoasterImageFrontName().length() == 0)) {
                 spinImageFront.setSelection(0);
             } else {
-                if (startCoaster.getCoasterImageFrontName().contains("_" + startCoaster.getCoasterID() + "_")) {
+                if ((startCoaster.getCoasterImageFrontName().equals("-"))
+                    || (startCoaster.getCoasterImageFrontName().contains("_" + startCoaster.getCoasterID() + "_"))) {
                     spinImageFront.setSelection(1);
                 } else {
                     spinImageFront.setSelection(2);
                     editCoasterIDFrontImg.setVisibility(View.VISIBLE);
 
                     String tmpName = startCoaster.getCoasterImageFrontName();
-                    String id = tmpName.split("_")[1];
+
+                    String[] splittedName = tmpName.split("_");
+
+                    String id = "";
+
+                    if ((splittedName.length < 3) || (!splittedName[1].matches("\\d+"))) {
+                        id = "" + dbHelper.getCoasterIDByImgName(true, tmpName);
+                    } else {
+                        id = tmpName.split("_")[1];
+                    }
 
                     editCoasterIDFrontImg.setText(id);
                 }
@@ -581,14 +605,24 @@ public class AddCoasterActivity extends AppCompatActivity
                 if (startCoaster.getCoasterImageBackName().equals(startCoaster.getCoasterImageFrontName())) {
                     spinImageBack.setSelection(4);
                 } else {
-                    if (startCoaster.getCoasterImageBackName().contains("_" + startCoaster.getCoasterID() + "_")) {
+                    if ((startCoaster.getCoasterImageBackName().equals("-"))
+                        || (startCoaster.getCoasterImageBackName().contains("_" + startCoaster.getCoasterID() + "_"))) {
                         spinImageBack.setSelection(2);
                     } else {
                         spinImageBack.setSelection(3);
                         editCoasterIDBackImg.setVisibility(View.VISIBLE);
 
                         String tmpName = startCoaster.getCoasterImageBackName();
-                        String id = tmpName.split("_")[1];
+
+                        String[] splittedName = tmpName.split("_");
+
+                        String id = "";
+
+                        if ((splittedName.length < 3) || (!splittedName[1].matches("\\d+"))) {
+                            id = "" + dbHelper.getCoasterIDByImgName(false, tmpName);
+                        } else {
+                            id = splittedName[1];
+                        }
 
                         editCoasterIDBackImg.setText(id);
                     }
@@ -663,7 +697,8 @@ public class AddCoasterActivity extends AppCompatActivity
         // This bundle will be passed to onCreate if the process is
         // killed and restarted.
 
-        savedInstanceState.putString("ViewId_" + R.id.txtTitleCoaster, txtTitleCoaster.getText().toString());
+        savedInstanceState.putString("ViewId_" + R.id.txtTitleCoasterID, txtTitleCoasterID.getText().toString());
+        savedInstanceState.putString("ViewId_" + R.id.editTitleCoasterID, editTitleCoasterID.getEditableText().toString());
         savedInstanceState.putString("ViewId_" + R.id.editTrademark, editTrademark.getEditableText().toString());
         savedInstanceState.putString("ViewId_" + R.id.editCollectorName, editCollectorName.getEditableText().toString());
         savedInstanceState.putString("ViewId_" + R.id.editFoundWhere, editFoundWhere.getEditableText().toString());
@@ -930,6 +965,7 @@ public class AddCoasterActivity extends AppCompatActivity
     private boolean validateCoaster() {
         boolean res = true;
 
+        long inputCoasterID = (editTitleCoasterID.getEditableText() == null || editTitleCoasterID.getEditableText().toString().length() == 0 ? -1 : Long.parseLong(editTitleCoasterID.getEditableText().toString()));
         long selectedTrademarkID = (spinTrademark.getSelectedItem() == null ? -1 : ((Trademark) spinTrademark.getSelectedItem()).getTrademarkID());
         long selectedCoasterTypeID = (spinCoasterType.getSelectedItem() == null ? -1 : ((CoasterType) spinCoasterType.getSelectedItem()).getCoasterTypeID());
         long selectedSeriesID = (spinSeries.getSelectedItem() == null ? -1 : ((Series) spinSeries.getSelectedItem()).getSeriesID());
@@ -950,47 +986,64 @@ public class AddCoasterActivity extends AppCompatActivity
 
         ArrayList<String> imageNames = new ArrayList<>(2);
 
+        valProbs.clear();
+
+        if (inputCoasterID == -1) {
+            valProbs.add("CoasterID");
+            res = false;
+        }
+
         if (selectedTrademarkID == -1) {
+            valProbs.add("TrademarkID");
             res = false;
         }
 
         if (selectedCoasterTypeID == -1) {
+            valProbs.add("CoasterTypeID");
             res = false;
         }
 
         if (inputCoasterText.length() == 0) {
+            valProbs.add("CoasterText");
             res = false;
         }
 
         if ((inputQuality < 0) || (inputQuality > 10)) {
+            valProbs.add("Quality");
             res = false;
         }
 
         long collectorID = checkCollectorInput(inputCollectorName);
 
         if (collectorID == -1) {
+            valProbs.add("CollectorID");
             res = false;
         }
 
         long shapeID = checkShapeInput(inputShapeName);
 
         if (shapeID == -1) {
+            valProbs.add("ShapeID");
             res = false;
         }
 
         if (inputShapeMeas1 == -1) {
+            valProbs.add("ShapeMeas1");
             res = false;
         }
 
         if ((selectedImagePossibilityFront == null) || (selectedImagePossibilityFront.getId() == -1)
             || (selectedImagePossibilityBack == null) || (selectedImagePossibilityBack.getId() == -1)) {
+            valProbs.add("Images");
             res = false;
         } else {
             if ((selectedImagePossibilityFront.getId() == 1) && (coasterIDFrontImage.length() == 0)) {
+                valProbs.add("Images");
                 res = false;
             }
 
             if ((selectedImagePossibilityBack.getId() == 2) && (coasterIDBackImage.length() == 0)) {
+                valProbs.add("Images");
                 res = false;
             }
 
@@ -1010,7 +1063,7 @@ public class AddCoasterActivity extends AppCompatActivity
         }
 
         if (res) {
-            endCoaster = new Coaster(nextCoasterID);
+            endCoaster = new Coaster(inputCoasterID);
 
             if (startCoaster != null) {
                 endCoaster.setFetchedFromDB(startCoaster.isFetchedFromDB());
@@ -1144,7 +1197,11 @@ public class AddCoasterActivity extends AppCompatActivity
                 e.printStackTrace();
             }
 
-            CoasterListActivity.refreshCoasterList = true;
+//            CoasterListActivity.refreshCoasterList = true;
+
+            CoasterApplication.collectionData.mapCoasters.put(endCoaster.getCoasterID(), endCoaster);
+
+            CoasterApplication.collectionData.setNotifyAdapter(true);
 
             CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorlayout);
 
@@ -1152,9 +1209,11 @@ public class AddCoasterActivity extends AppCompatActivity
 
             snackbar.show();
         } else {
+            String strValProbs = valProbs.toString();
+
             CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorlayout);
 
-            Snackbar snackbar = Snackbar.make(coordinatorLayout, "Validation problems!", Snackbar.LENGTH_LONG);
+            Snackbar snackbar = Snackbar.make(coordinatorLayout, "Validation problems!\n" + strValProbs, Snackbar.LENGTH_LONG);
 
             snackbar.show();
         }

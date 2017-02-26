@@ -52,6 +52,11 @@
     <string name="lblTitleAddCoaster">Coaster</string>
     <string name="lblTitleAddTrademark">Trademark</string>
 
+    <string name="lblOops">Oops!</string>
+    <string name="lblNameUndefined">...</string>
+    <string name="lblLoading">Loading</string>
+    <string name="lblUnknown">\?</string>
+
     <string name="dummy_trademark">Dummy Trademark</string>
     <string name="dummy_brewery">Dummy Brewery</string>
     <string name="dummy_coaster_id">1234</string>
@@ -59,6 +64,8 @@
     <string name="dummy_series_nbr">12/32:</string>
     <string name="dummy_donation_date">31/12/2016</string>
     <string name="dummy_donor">Janssens, Jan</string>
+    <string name="dummy_donor_alias">De Jan</string>
+    <string name="dummy_donor_initials">(JJ)</string>
     <string name="dummy_donation_place">Halle - Café Dummy</string>
     <string name="dummy_shape">Square</string>
     <string name="dummy_measurements">(Side: 78mm)</string>
@@ -77,6 +84,7 @@
     <string name="lblMeasUnit">mm</string>
 
     <string name="hint_trademark_search">Filter Trademark</string>
+    <string name="hint_collector_search">Filter Collector</string>
     <string name="hint_trademark">Trademark</string>
     <string name="hint_brewery">Brewery</string>
 

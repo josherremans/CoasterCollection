@@ -39,7 +39,7 @@ import josh.android.coastercollection.bo.Trademark;
 public class TrademarkListActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private final static String LOG_TAG = "TRADMARK_LIST_ACTIVITY";
+    private final static String LOG_TAG = "TRADEMARK_LIST_ACTIVITY";
     private final static int TAG_INDEX = 1;
 
     private TrademarkAdapter trademarkAdapter;
@@ -243,7 +243,7 @@ public class TrademarkListActivity extends AppCompatActivity
         for (int i=0; i<indexList.size(); i++) {
             Character indexChar = indexList.get(i);
 
-            textView = (TextView) getLayoutInflater().inflate(R.layout.side_index_trademark_list_item, null);
+            textView = (TextView) getLayoutInflater().inflate(R.layout.side_index_list_item, null);
 
             textView.setText(indexChar.toString());
             textView.setTag(R.id.TAG_INDEX, indexChar);

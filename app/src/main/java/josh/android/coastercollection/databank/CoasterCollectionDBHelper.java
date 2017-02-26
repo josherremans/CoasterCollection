@@ -146,6 +146,41 @@ public class CoasterCollectionDBHelper extends SQLiteOpenHelper {
         return c;
     }
 
+    public long getCoasterIDByImgName(boolean isFront, String imgName) {
+        SQLiteDatabase database = this.getReadableDatabase();
+
+        String[] selectColumns = {CoasterCollectionDBContract.CollectionEntry._ID};
+
+        String whereClause = "";
+
+        if (isFront) {
+            whereClause = CoasterCollectionDBContract.CollectionEntry.COLUMN_IMAGE_FRONT + " = ?";
+        } else {
+            whereClause = CoasterCollectionDBContract.CollectionEntry.COLUMN_IMAGE_BACK + " = ?";
+        }
+
+        String[] whereClauseArgs = {imgName};
+        String orderByClause = null;
+
+        Cursor cursor = database.query(CoasterCollectionDBContract.CollectionEntry.TABLE_NAME,
+                selectColumns, whereClause, whereClauseArgs, null, null, orderByClause);
+
+        cursor.moveToFirst();
+
+        long id = -1;
+
+        if (!cursor.isAfterLast()) {
+            id = cursor.getLong(0);
+        }
+
+        // make sure to close the cursor
+        cursor.close();
+
+        database.close();
+
+        return id;
+    }
+
     public Trademark getTrademarkByID(long id) {
         SQLiteDatabase database = this.getReadableDatabase();
 

@@ -29,13 +29,36 @@
                 android:id="@+id/layoutCoaster"
                 android:padding="@dimen/margin0">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/txtTitleCoaster"
-                    android:text="@string/lblCoaster"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/textsizeSubTitle"/>
+                    android:id="@+id/layoutCoasterTitlz"
+                    android:padding="@dimen/margin0">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/txtTitleCoaster"
+                        android:text="@string/lblCoaster"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/textsizeSubTitle"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/txtTitleCoasterID"
+                        android:layout_marginLeft="@dimen/margin5"
+                        android:text="@string/dummy_coaster_id"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/textsizeSubTitle"/>
+                    <EditText
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/editTitleCoasterID"
+                        android:layout_marginLeft="@dimen/margin5"
+                        android:text="@string/dummy_coaster_id"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/textsizeSubTitle"/>
+                </LinearLayout>
 
                 <AutoCompleteTextView
                     android:layout_width="match_parent"

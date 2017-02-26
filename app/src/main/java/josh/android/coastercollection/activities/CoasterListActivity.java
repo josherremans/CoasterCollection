@@ -158,10 +158,10 @@ public class CoasterListActivity extends AppCompatActivity
 
             // *** Read shared preferences:
 
-//            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-//            isReverseOrder = sharedPref.getBoolean(SettingsFragment.PREF_KEY_SORT_REVERSE, false);
-//
-//            listViewType = sharedPref.getString(SettingsFragment.PREF_KEY_LISTVIEW_TYPE, getResources().getStringArray(R.array.pref_listview_type_values)[0]); //"CardType");
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+            isReverseOrder = sharedPref.getBoolean(SettingsFragment.PREF_KEY_SORT_REVERSE, false);
+
+            listViewType = sharedPref.getString(SettingsFragment.PREF_KEY_LISTVIEW_TYPE, getResources().getStringArray(R.array.pref_listview_type_values)[0]); //"CardType");
 
             // *** Fetch data from DB:
 
