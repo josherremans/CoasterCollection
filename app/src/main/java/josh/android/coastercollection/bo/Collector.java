@@ -3,6 +3,8 @@ package josh.android.coastercollection.bo;
 public class Collector {
 
 	private long collectorID = -1;
+
+	private boolean fetchedFromDB = false;
 	
 	private String firstName = "";
 	private String lastName = "";
@@ -11,6 +13,18 @@ public class Collector {
 	
 	public Collector(long ID) {
 		this.collectorID = ID;
+	}
+
+	public void setFetchedFromDB() {
+		this.fetchedFromDB = true;
+	}
+
+	public void setFetchedFromDB(boolean fetchedFromDB) {
+		this.fetchedFromDB = fetchedFromDB;
+	}
+
+	public boolean isFetchedFromDB() {
+		return this.fetchedFromDB;
 	}
 	
 	public Collector(long ID, String firstName, String lastName) {
@@ -47,7 +61,7 @@ public class Collector {
 		return alias;
 	}
 	
-	private String getFirstName() {
+	public String getFirstName() {
 		String firstNm = "";
 		
 		if (firstName != null) {
@@ -57,7 +71,7 @@ public class Collector {
 		return firstNm;
 	}
 	
-	private String getLastName() {
+	public String getLastName() {
 		String lastNm = "";
 		
 		if (lastName != null) {
@@ -65,6 +79,10 @@ public class Collector {
 		}
 		
 		return lastNm;
+	}
+
+	public String getFullName() {
+		return lastName + ", " + firstName;
 	}
 	
 	public String getDisplayName() {

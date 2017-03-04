@@ -51,6 +51,7 @@
     <string name="lblSeriesNbr">Series Nbr:</string>
     <string name="lblTitleAddCoaster">Coaster</string>
     <string name="lblTitleAddTrademark">Trademark</string>
+    <string name="lblTitleAddCollector">Collector</string>
 
     <string name="lblOops">Oops!</string>
     <string name="lblNameUndefined">...</string>
@@ -87,6 +88,10 @@
     <string name="hint_collector_search">Filter Collector</string>
     <string name="hint_trademark">Trademark</string>
     <string name="hint_brewery">Brewery</string>
+    <string name="hint_collector_last_name">Last name</string>
+    <string name="hint_collector_first_name">First name</string>
+    <string name="hint_collector_initials">Initials</string>
+    <string name="hint_collector_alias">Alias</string>
 
     <string name="title_activity_image_fullscreen">ImageFullscreenActivity</string>
     <string name="dummy_button">Dummy Button</string>

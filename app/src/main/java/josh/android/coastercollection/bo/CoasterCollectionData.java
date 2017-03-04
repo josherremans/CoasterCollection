@@ -10,8 +10,10 @@ public class CoasterCollectionData {
 //    public ArrayList<Coaster> lstCoasters;
     public LinkedHashMap<Long, Coaster> mapCoasters;
     public ArrayList<CoasterType> lstCoasterTypes;
-    public ArrayList<Trademark> lstTrademarks;
-    public ArrayList<Collector> lstCollectors;
+//    public ArrayList<Trademark> lstTrademarks;
+    public LinkedHashMap<Long, Trademark> mapTrademarks;
+//    public ArrayList<Collector> lstCollectors;
+    public LinkedHashMap<Long, Collector> mapCollectors;
     public ArrayList<Series> lstSeries;
     public ArrayList<Shape> lstShapes;
 
@@ -23,8 +25,10 @@ public class CoasterCollectionData {
 //        this.lstCoasters = new ArrayList<>();
         this.mapCoasters = new LinkedHashMap<>();
         this.lstCoasterTypes = new ArrayList<>();
-        this.lstTrademarks = new ArrayList<>();
-        this.lstCollectors = new ArrayList<>();
+//        this.lstTrademarks = new ArrayList<>();
+        this.mapTrademarks = new LinkedHashMap<>();
+//        this.lstCollectors = new ArrayList<>();
+        this.mapCollectors = new LinkedHashMap<>();
         this.lstSeries = new ArrayList<>();
         this.lstShapes = new ArrayList<>();
     }
@@ -45,21 +49,11 @@ public class CoasterCollectionData {
 //        this.lstCoasters.clear();
         this.mapCoasters.clear();
         this.lstCoasterTypes.clear();
-        this.lstTrademarks.clear();
-        this.lstCollectors.clear();
+//        this.lstTrademarks.clear();
+        this.mapTrademarks.clear();
+//        this.lstCollectors.clear();
+        this.mapCollectors.clear();
         this.lstSeries.clear();
         this.lstShapes.clear();
     }
-
-//    public void clearCoasters() {
-//        this.lstCoasters.clear();
-//    }
-
-//    public void setFilter(ArrayList<Long> trademarkFilter) {
-//        this.trademarkFilter = trademarkFilter;
-//    }
-
-//    public ArrayList<Long> getFilter() {
-//        return this.trademarkFilter;
-//    }
 }

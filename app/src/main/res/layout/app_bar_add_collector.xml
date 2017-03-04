@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".activities.AddTrademarkActivity">
+    tools:context=".activities.AddCollectorActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -22,13 +22,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <!--FrameLayout
-        android:id="@+id/content_frame"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" -->
-
-        <include layout="@layout/fragment_add_trademark" />
-    <!--/FrameLayout-->
+    <include layout="@layout/fragment_add_collector" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

@@ -50,7 +50,17 @@
             android:name=".activities.AddTrademarkActivity"
             android:label="@string/app_name_short"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".activities.CollectorListActivity"
+            android:label="@string/app_name_short"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.AddCollectorActivity"
+            android:label="@string/app_name_short"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

@@ -32,8 +32,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/txtTitleTrademark"
-                    android:text="@string/lblTitleAddTrademark"
+                    android:id="@+id/txtTitleCollector"
+                    android:text="@string/lblTitleAddCollector"
                     android:textStyle="bold"
                     android:textSize="@dimen/textsizeSubTitle"/>
             </LinearLayout>
@@ -42,16 +42,15 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/layoutAddTrademark"
+                android:id="@+id/layoutAddCollector"
                 android:layout_marginTop="5dp"
                 android:padding="@dimen/margin0">
-                <!--android:background="@drawable/shape_questionmark"-->
 
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/editTrademark"
-                    android:hint="@string/hint_trademark"
+                    android:id="@+id/editCollectorLastName"
+                    android:hint="@string/hint_collector_last_name"
                     android:inputType="text"
                     android:singleLine="true"
                     android:imeOptions="actionNext"
@@ -61,8 +60,28 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
-                    android:id="@+id/editBrewery"
-                    android:hint="@string/hint_brewery"
+                    android:id="@+id/editCollectorFirstName"
+                    android:hint="@string/hint_collector_first_name"
+                    android:inputType="text"
+                    android:singleLine="true"
+                    android:ellipsize="end" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:id="@+id/editCollectorInitials"
+                    android:hint="@string/hint_collector_initials"
+                    android:inputType="text"
+                    android:singleLine="true"
+                    android:ellipsize="end" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:id="@+id/editCollectorAlias"
+                    android:hint="@string/hint_collector_alias"
                     android:inputType="text"
                     android:singleLine="true"
                     android:ellipsize="end" />

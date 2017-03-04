@@ -28,39 +28,43 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 import josh.android.coastercollection.R;
-import josh.android.coastercollection.adapters.TrademarkAdapter;
+import josh.android.coastercollection.adapters.CollectorAdapter;
 import josh.android.coastercollection.application.CoasterApplication;
-import josh.android.coastercollection.bo.Trademark;
+import josh.android.coastercollection.bo.Collector;
+import josh.android.coastercollection.bo.CollectorComparator;
 
-public class TrademarkListActivity extends AppCompatActivity
+public class CollectorListActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private final static String LOG_TAG = "TRADEMARK_LIST_ACTIVITY";
+    private final static String LOG_TAG = "COLLECTOR_LIST_ACTIVITY";
     private final static int TAG_INDEX = 1;
 
-    private TrademarkAdapter trademarkAdapter;
-    private ArrayList<Trademark> filteredList = new ArrayList<>();
+    private CollectorAdapter collectorAdapter;
+    private ArrayList<Collector> filteredList = new ArrayList<>();
     private LinkedHashMap<Character, Integer> mapIndex;
 
-    private ListView lstvwTrademarks;
+    private ListView lstvwCollectors;
     private SearchView searchView;
     private Toolbar toolbar;
 
-    private String trademarkFilter = null;
+    private String collectorFilter = null;
     private String listViewType = "";
 
-    public static boolean refreshTrademarkList = true;
+    public static boolean refreshCollectorList = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_trademark_list);
+        setContentView(R.layout.activity_collector_list);
 
-        refreshTrademarkList = true;
+        Log.i(LOG_TAG, "onCreate");
+
+        refreshCollectorList = true;
 
         // *** Read shared preferences:
 
@@ -85,21 +89,21 @@ public class TrademarkListActivity extends AppCompatActivity
 
         // *** VIEWS:
 
-        lstvwTrademarks = (ListView) findViewById(R.id.lstTrademarks);
+        lstvwCollectors = (ListView) findViewById(R.id.lstCollectors);
 
-        trademarkAdapter = new TrademarkAdapter(this, listViewType, filteredList);
+        collectorAdapter = new CollectorAdapter(this, listViewType, filteredList);
 
-        lstvwTrademarks.setAdapter(trademarkAdapter);
+        lstvwCollectors.setAdapter(collectorAdapter);
 
-        lstvwTrademarks.setOnItemLongClickListener(new TrademarkOnItemLongClickListener());
+        lstvwCollectors.setOnItemLongClickListener(new CollectorOnItemLongClickListener());
 
-        lstvwTrademarks.setOnScrollListener(new AbsListView.OnScrollListener() {
+        lstvwCollectors.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
                 if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
-                    int i = lstvwTrademarks.getFirstVisiblePosition();
+                    int i = lstvwCollectors.getFirstVisiblePosition();
 
-                    setIndexPosition(((Trademark) lstvwTrademarks.getAdapter().getItem(i)).getTrademark().charAt(0));
+                    setIndexPosition(((Collector) lstvwCollectors.getAdapter().getItem(i)).getDisplayName().toUpperCase().charAt(0));
                 }
             }
 
@@ -108,21 +112,23 @@ public class TrademarkListActivity extends AppCompatActivity
             }
         });
 
-        searchView = (SearchView) findViewById(R.id.editTrademarkSearch);
+        searchView = (SearchView) findViewById(R.id.editCollectorSearch);
 
         searchView.setVisibility(View.GONE);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                TrademarkListActivity.this.trademarkFilter = query;
+                CollectorListActivity.this.collectorFilter = query;
 
                 filteredList.clear();
-                filteredList.addAll(getTrademarkList(query));
+                filteredList.addAll(getCollectorList(query));
 
-                trademarkAdapter.notifyDataSetChanged();
+                Collections.sort(filteredList, new CollectorComparator());
 
-                toolbar.setSubtitle("(" + trademarkAdapter.getCount() + ")");
+                collectorAdapter.notifyDataSetChanged();
+
+                toolbar.setSubtitle("(" + collectorAdapter.getCount() + ")");
 
                 createIndexMap(filteredList);
 
@@ -134,18 +140,18 @@ public class TrademarkListActivity extends AppCompatActivity
             @Override
             public boolean onQueryTextChange(String newText) {
                 if ((newText == null) || (newText.length() == 0)) {
-                    TrademarkListActivity.this.trademarkFilter = null;
+                    CollectorListActivity.this.collectorFilter = null;
 
                     searchView.setVisibility(View.GONE);
 
-//                    int n = CoasterApplication.collectionData.lstTrademarks.size();
-
                     filteredList.clear();
-                    filteredList.addAll(CoasterApplication.collectionData.mapTrademarks.values()); //subList(1,n));
+                    filteredList.addAll(CoasterApplication.collectionData.mapCollectors.values());
 
-                    trademarkAdapter.notifyDataSetChanged();
+                    Collections.sort(filteredList, new CollectorComparator());
 
-                    toolbar.setSubtitle("(" + trademarkAdapter.getCount() + ")");
+                    collectorAdapter.notifyDataSetChanged();
+
+                    toolbar.setSubtitle("(" + collectorAdapter.getCount() + ")");
 
                     createIndexMap(filteredList);
 
@@ -161,13 +167,15 @@ public class TrademarkListActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
 
+        Log.i(LOG_TAG, "onResume");
+
         // *** Hide SoftInputPanel:
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
         imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
 
-        if (refreshTrademarkList) {
-            refreshTrademarkList = false;
+        if (refreshCollectorList) {
+            refreshCollectorList = false;
 
             // *** Read shared preferences:
 
@@ -179,45 +187,41 @@ public class TrademarkListActivity extends AppCompatActivity
 
             filteredList.clear();
 
-            if (trademarkFilter != null) {
-                filteredList.addAll(getTrademarkList(trademarkFilter));
+            if (collectorFilter != null) {
+                filteredList.addAll(getCollectorList(collectorFilter));
             } else {
-//                int n = CoasterApplication.collectionData.lstTrademarks.size();
-
-                filteredList.addAll(CoasterApplication.collectionData.mapTrademarks.values()); //.subList(1,n));
+                filteredList.addAll(CoasterApplication.collectionData.mapCollectors.values());
             }
 
-//            trademarkAdapter = new TrademarkAdapter(this, listViewType, filteredList);
+//            collectorAdapter = new CollectorAdapter(this, listViewType, filteredList);
 
-            if (listViewType.equals(getResources().getStringArray(R.array.pref_listview_type_values)[0])) { // "CardType"
-                lstvwTrademarks.setDivider(null);
-            } else {
-                lstvwTrademarks.setDividerHeight(5);
-            }
+//            if (listViewType.equals(getResources().getStringArray(R.array.pref_listview_type_values)[0])) { // "CardType"
+//                lstvwCollectors.setDivider(null);
+//            } else {
+                lstvwCollectors.setDividerHeight(5);
+//            }
 
-//            lstvwTrademarks.setAdapter(trademarkAdapter);
+            Collections.sort(filteredList, new CollectorComparator());
 
-            trademarkAdapter.notifyDataSetChanged();
+            collectorAdapter.notifyDataSetChanged();
 
-            toolbar.setSubtitle("(" + trademarkAdapter.getCount() + ")");
+            toolbar.setSubtitle("(" + collectorAdapter.getCount() + ")");
 
             createIndexMap(filteredList);
 
             displayIndex();
 
-            Log.i(LOG_TAG, "END onResume!");
+            Log.i(LOG_TAG, "Refreshed!");
         }
     }
 
-    private ArrayList<Trademark> getTrademarkList(String strFilter) {
-        ArrayList<Trademark> lstFiltered = new ArrayList<>();
+    private ArrayList<Collector> getCollectorList(String strFilter) {
+        ArrayList<Collector> lstFiltered = new ArrayList<>();
 
         if ((strFilter != null) && (strFilter.length() > 0)) {
-//            int n = CoasterApplication.collectionData.lstTrademarks.size();
-
-            for (Trademark t : CoasterApplication.collectionData.mapTrademarks.values()) {
-                if (t.getTrademark().regionMatches(true, 0, strFilter, 0, strFilter.length())) {
-                    lstFiltered.add(t);
+            for (Collector c : CoasterApplication.collectionData.mapCollectors.values()) {
+                if (c.getDisplayName().regionMatches(true, 0, strFilter, 0, strFilter.length())) {
+                    lstFiltered.add(c);
                 }
             }
         }
@@ -225,12 +229,12 @@ public class TrademarkListActivity extends AppCompatActivity
         return lstFiltered;
     }
 
-    private void createIndexMap(ArrayList<Trademark> lstTrademark) {
+    private void createIndexMap(ArrayList<Collector> lstCollector) {
         mapIndex = new LinkedHashMap<>();
 
-        for (int i=0; i<lstTrademark.size(); i++) {
-            Trademark tr = lstTrademark.get(i);
-            Character indexChar = tr.getTrademark().charAt(0);
+        for (int i=0; i<lstCollector.size(); i++) {
+            Collector c = lstCollector.get(i);
+            Character indexChar = c.getDisplayName().toUpperCase().charAt(0);
 
             if (indexChar < 'A') {
                 indexChar = '#';
@@ -408,15 +412,15 @@ public class TrademarkListActivity extends AppCompatActivity
 
             snackbar.show();
         } else if (id == R.id.nav_trademarks) {
-            snackbar = Snackbar.make(coordinatorLayout, "You clicked Trademarks", Snackbar.LENGTH_LONG);
-
-            snackbar.show();
+            startActivity(new Intent(CollectorListActivity.this, TrademarkListActivity.class));
         } else if (id == R.id.nav_series) {
             snackbar = Snackbar.make(coordinatorLayout, "You clicked Series", Snackbar.LENGTH_LONG);
 
             snackbar.show();
         } else if (id == R.id.nav_donors) {
-            startActivity(new Intent(TrademarkListActivity.this, CollectorListActivity.class));
+            snackbar = Snackbar.make(coordinatorLayout, "You clicked Donors", Snackbar.LENGTH_LONG);
+
+            snackbar.show();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -432,9 +436,10 @@ public class TrademarkListActivity extends AppCompatActivity
         @Override
         public void onClick(View view) {
             TextView selectedIndex = (TextView) view;
-            lstvwTrademarks.setSelection(mapIndex.get(selectedIndex.getText().charAt(0)));
+            String strDisplayName = selectedIndex.getText().toString();
+            lstvwCollectors.setSelection(mapIndex.get(strDisplayName.toUpperCase().charAt(0)));
 
-            setIndexPosition(selectedIndex.getText().charAt(0));
+            setIndexPosition(strDisplayName.toUpperCase().charAt(0));
         }
     }
 
@@ -444,23 +449,23 @@ public class TrademarkListActivity extends AppCompatActivity
     private class FabOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
-            startActivity(new Intent(TrademarkListActivity.this, AddTrademarkActivity.class));
+            startActivity(new Intent(CollectorListActivity.this, AddCollectorActivity.class));
         }
     }
 
     /*
-    ** INNERCLASS: TrademarkOnItemLongClickListener
+    ** INNERCLASS: CollectorOnItemLongClickListener
      */
-    private class TrademarkOnItemLongClickListener implements AdapterView.OnItemLongClickListener {
+    private class CollectorOnItemLongClickListener implements AdapterView.OnItemLongClickListener {
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int pos, long id) {
-            Trademark clickedTrademark = (Trademark) trademarkAdapter.getItem(pos);
+            Collector clickedCollector = (Collector) collectorAdapter.getItem(pos);
 
-            Intent alterTrademarkIntent = new Intent(TrademarkListActivity.this, AddTrademarkActivity.class);
+            Intent alterCollectorIntent = new Intent(CollectorListActivity.this, AddCollectorActivity.class);
 
-            alterTrademarkIntent.putExtra("extraTrademarkID", clickedTrademark.getTrademarkID());
+            alterCollectorIntent.putExtra("extraCollectorID", clickedCollector.getCollectorID());
 
-            startActivity(alterTrademarkIntent);
+            startActivity(alterCollectorIntent);
 
             return true;
         }

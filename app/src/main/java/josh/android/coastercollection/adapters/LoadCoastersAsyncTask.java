@@ -48,18 +48,18 @@ public class LoadCoastersAsyncTask extends AsyncTask<Void, Integer, CoasterColle
 
         publishProgress(1);
 
-        if (CoasterApplication.collectionData.lstTrademarks.size() == 0) {
-            CoasterApplication.collectionData.lstTrademarks.clear();
-            CoasterApplication.collectionData.lstTrademarks.addAll(dbHelper.getTrademarksFromDB());
-            Log.i(LOG_TAG, "data.lstTrademarks: size=" + CoasterApplication.collectionData.lstTrademarks.size());
+        if (CoasterApplication.collectionData.mapTrademarks.size() == 0) {
+            CoasterApplication.collectionData.mapTrademarks.clear();
+            CoasterApplication.collectionData.mapTrademarks.putAll(dbHelper.getTrademarksFromDB());
+            Log.i(LOG_TAG, "data.mapTrademarks: size=" + CoasterApplication.collectionData.mapTrademarks.size());
         }
 
         publishProgress(2);
 
-        if (CoasterApplication.collectionData.lstCollectors.size() == 0) {
-            CoasterApplication.collectionData.lstCollectors.clear();
-            CoasterApplication.collectionData.lstCollectors.addAll(dbHelper.getCollectorsFromDB());
-            Log.i(LOG_TAG, "data.lstCollectors: size=" + CoasterApplication.collectionData.lstCollectors.size());
+        if (CoasterApplication.collectionData.mapCollectors.size() == 0) {
+            CoasterApplication.collectionData.mapCollectors.clear();
+            CoasterApplication.collectionData.mapCollectors.putAll(dbHelper.getCollectorsFromDB());
+            Log.i(LOG_TAG, "data.mapCollectors: size=" + CoasterApplication.collectionData.mapCollectors.size());
         }
 
         publishProgress(3);

@@ -21,12 +21,10 @@ import josh.android.coastercollection.R;
 import josh.android.coastercollection.activities.ImageFullscreenActivity;
 import josh.android.coastercollection.application.CoasterApplication;
 import josh.android.coastercollection.bl.ImageManager;
-import josh.android.coastercollection.utils.Util;
 import josh.android.coastercollection.bo.Coaster;
-import josh.android.coastercollection.bo.Collector;
 import josh.android.coastercollection.bo.Series;
 import josh.android.coastercollection.bo.Shape;
-import josh.android.coastercollection.bo.Trademark;
+import josh.android.coastercollection.utils.Util;
 
 import static josh.android.coastercollection.bl.ImageManager.DIR_DEF_IMAGES;
 
@@ -117,25 +115,29 @@ public class CoasterCollectionAdapter extends BaseAdapter {
 
         // Translate trademark id in trademark name:
 
-        String trademark = "???";
+//        String trademark = "???";
+//
+//        for (Trademark tr : CoasterApplication.collectionData.lstTrademarks) {
+//            if (tr.getTrademarkID() == coaster.getCoasterTrademarkID()) {
+//                trademark = tr.getTrademark();
+//                break;
+//            }
+//        }
 
-        for (Trademark tr : CoasterApplication.collectionData.lstTrademarks) {
-            if (tr.getTrademarkID() == coaster.getCoasterTrademarkID()) {
-                trademark = tr.getTrademark();
-                break;
-            }
-        }
+        String trademark = CoasterApplication.collectionData.mapTrademarks.get(coaster.getCoasterTrademarkID()).getTrademark();
 
         // Translate collector id in collector name:
 
-        String collectorName = "???";
+//        String collectorName = "???";
+//
+//        for (Collector col : CoasterApplication.collectionData.mapCollectors.values()) {
+//            if (col.getCollectorID() == coaster.getCollectorID()) {
+//                collectorName = col.getDisplayName();
+//                break;
+//            }
+//        }
 
-        for (Collector col : CoasterApplication.collectionData.lstCollectors) {
-            if (col.getCollectorID() == coaster.getCollectorID()) {
-                collectorName = col.getDisplayName();
-                break;
-            }
-        }
+        String collectorName = CoasterApplication.collectionData.mapCollectors.get(coaster.getCollectorID()).getDisplayName();
 
         // Translate shape id in shape name:
 

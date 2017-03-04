@@ -19,33 +19,36 @@ import android.widget.TextView;
 
 import josh.android.coastercollection.R;
 import josh.android.coastercollection.application.CoasterApplication;
-import josh.android.coastercollection.bo.Trademark;
+import josh.android.coastercollection.bo.Collector;
 import josh.android.coastercollection.databank.CoasterCollectionDBHelper;
 
-public class AddTrademarkActivity extends AppCompatActivity
+public class AddCollectorActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    private final static String LOG_TAG = "ADD_TRADEMARK_ACTIVITY";
+    private final static String LOG_TAG = "ADD_COLLECTOR_ACTIVITY";
 
-    private EditText editTrademark;
-    private EditText editBrewery;
+    private EditText editCollectorLastName;
+    private EditText editCollectorFirstName;
+    private EditText editCollectorInitials;
+    private EditText editCollectorAlias;
 
-    private Trademark startTrademark;
-    private Trademark endTrademark;
+    private Collector startCollector;
+    private Collector endCollector;
 
     private CoasterCollectionDBHelper dbHelper;
 
-    private TextView txtTitleTrademark;
+    private TextView txtTitleCollector;
 
-    private long nextTrademarkID;
+    private long nextCollectorID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_trademark);
+        setContentView(R.layout.activity_add_collector);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -56,10 +59,12 @@ public class AddTrademarkActivity extends AppCompatActivity
 
         Intent intentOrigine = this.getIntent();
 
-        long trademarkID = intentOrigine.getLongExtra("extraTrademarkID", -1);
+        long collectorID = intentOrigine.getLongExtra("extraCollectorID", -1);
 
-        editTrademark = (EditText) findViewById(R.id.editTrademark);
-        editBrewery = (EditText) findViewById(R.id.editBrewery);
+        editCollectorLastName = (EditText) findViewById(R.id.editCollectorLastName);
+        editCollectorFirstName = (EditText) findViewById(R.id.editCollectorFirstName);
+        editCollectorInitials = (EditText) findViewById(R.id.editCollectorInitials);
+        editCollectorAlias = (EditText) findViewById(R.id.editCollectorAlias);
 
         // *** DBHELPER:
 
@@ -67,18 +72,17 @@ public class AddTrademarkActivity extends AppCompatActivity
 
         // *** TrademarkID:
 
-        txtTitleTrademark = (TextView) findViewById(R.id.txtTitleTrademark);
+        txtTitleCollector = (TextView) findViewById(R.id.txtTitleCollector);
 
-        if (trademarkID != -1) {
-            startTrademark = dbHelper.getTrademarkByID(trademarkID);
+        if (collectorID != -1) {
+            startCollector = dbHelper.getCollectorByID(collectorID);
 
-            nextTrademarkID = trademarkID;
+            nextCollectorID = collectorID;
         } else {
-            nextTrademarkID = dbHelper.getNextTrademarkIDFromDB();
+            nextCollectorID = dbHelper.getNextCollectorIDFromDB();
         }
 
-        txtTitleTrademark.setText(txtTitleTrademark.getText() + " " + nextTrademarkID);
-
+        txtTitleCollector.setText(txtTitleCollector.getText() + " " + nextCollectorID);
     }
 
     @Override
@@ -87,9 +91,11 @@ public class AddTrademarkActivity extends AppCompatActivity
 
         Log.i(LOG_TAG, "IN onResume");
 
-        if (startTrademark != null) {
-            editTrademark.setText(startTrademark.getTrademark());
-            editBrewery.setText(startTrademark.getBrewery());
+        if (startCollector != null) {
+            editCollectorLastName.setText(startCollector.getLastName());
+            editCollectorFirstName.setText(startCollector.getFirstName());
+            editCollectorInitials.setText(startCollector.getInitials());
+            editCollectorAlias.setText(startCollector.getAlias());
         }
     }
 
@@ -119,7 +125,7 @@ public class AddTrademarkActivity extends AppCompatActivity
         }
 
         if (id == R.id.action_save) {
-            saveTrademark();
+            saveCollector();
 
             return true;
         }
@@ -182,17 +188,17 @@ public class AddTrademarkActivity extends AppCompatActivity
         return true;
     }
 
-    private boolean saveTrademark() {
-        boolean res = validateTrademark();
+    private boolean saveCollector() {
+        boolean res = validateCollector();
 
         if (res) {
-            // Save trademark to DB:
+            // Save collector to DB:
 
-            dbHelper.putTrademarkInDB(endTrademark);
+            dbHelper.putCollectorInDB(endCollector);
 
-            CoasterApplication.collectionData.mapTrademarks.put(endTrademark.getTrademarkID(), endTrademark);
+            CoasterApplication.collectionData.mapCollectors.put(endCollector.getCollectorID(), endCollector);
 
-            TrademarkListActivity.refreshTrademarkList = true;
+            CollectorListActivity.refreshCollectorList = true;
 
             CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorlayout);
 
@@ -210,32 +216,38 @@ public class AddTrademarkActivity extends AppCompatActivity
         return true;
     }
 
-    private boolean validateTrademark() {
+    private boolean validateCollector() {
         boolean res = true;
 
-        String inputTrademark = (editTrademark.getEditableText() == null ? "" : editTrademark.getEditableText().toString());
-        String inputBrewery = (editBrewery.getEditableText() == null ? "" : editBrewery.getEditableText().toString());
+        String inputCollectorLastName = (editCollectorLastName.getEditableText() == null ? "" : editCollectorLastName.getEditableText().toString());
+        String inputCollectorFirstName = (editCollectorFirstName.getEditableText() == null ? "" : editCollectorFirstName.getEditableText().toString());
+        String inputCollectorInitials = (editCollectorInitials.getEditableText() == null ? "" : editCollectorInitials.getEditableText().toString());
+        String inputCollectorAlias = (editCollectorAlias.getEditableText() == null ? "" : editCollectorAlias.getEditableText().toString());
 
-        if (startTrademark == null) {
-            for (Trademark tr : CoasterApplication.collectionData.mapTrademarks.values()) {
-                if (tr.getTrademark().equals(inputTrademark)) {
+        if (startCollector == null) {
+            for (Collector c : CoasterApplication.collectionData.mapCollectors.values()) {
+                if ((c.getLastName().equals(inputCollectorLastName))
+                        && (c.getFirstName().equals(inputCollectorFirstName))) {
                     res = false;
                 }
             }
         }
 
-        if (inputTrademark.length() == 0) {
+        if ((inputCollectorFirstName.length() == 0)
+            && (inputCollectorLastName.length() == 0)
+            && (inputCollectorAlias.length() == 0)) {
             res = false;
         }
 
         if (res) {
-            endTrademark = new Trademark(nextTrademarkID);
+            endCollector = new Collector(nextCollectorID, inputCollectorFirstName, inputCollectorLastName);
 
-            if (startTrademark != null) {
-                endTrademark.setFetchedFromDB(startTrademark.isFetchedFromDB());
+            if (startCollector != null) {
+                endCollector.setFetchedFromDB(startCollector.isFetchedFromDB());
             }
 
-            endTrademark.fillTrademark(inputTrademark, inputBrewery);
+            endCollector.setInitials(inputCollectorInitials);
+            endCollector.setAlias(inputCollectorAlias);
         }
 
         return res;

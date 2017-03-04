@@ -114,6 +114,8 @@ public class AddCoasterActivity extends AppCompatActivity
     private EditText editShapeMeas2;
 
     private ArrayList<Series> lstSeriesTrademark = new ArrayList<>();
+    private ArrayList<Trademark> lstTrademarks = new ArrayList<>();
+    private  ArrayList<Collector> lstCollectors = new ArrayList<>();
 
     private ArrayAdapter<Trademark> adapterTrademarks;
     private ArrayAdapter<Series> adapterSeries;
@@ -130,6 +132,9 @@ public class AddCoasterActivity extends AppCompatActivity
     private static String imageNameBackPart1;
 
     private ArrayList<String> valProbs = new ArrayList<>();
+
+    private Trademark dummyTrademark = new Trademark(-1, "(Select Trademark)");
+    private Series dummySeries = new Series(-1, -1, "(Select Series)", 0);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -203,7 +208,7 @@ public class AddCoasterActivity extends AppCompatActivity
                     editTrademark.setSelection(editTrademark.length());
                 }
 
-                lstSeriesTrademark.clear();
+                clearSeriesTrademark();
 
                 for (Series s: CoasterApplication.collectionData.lstSeries) {
                     if ((s.getSeriesID() == -1)
@@ -212,15 +217,12 @@ public class AddCoasterActivity extends AppCompatActivity
                     }
                 }
 
-//                spinSeries.setVisibility(View.VISIBLE);
-//                spinSeries.setSelection(0);
-//                adapterSeries.notifyDataSetChanged();
-//                Log.i(LOG_TAG, "spinTrademark.onItemSelected: SPIN VIS");
+                adapterSeries.notifyDataSetChanged();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                lstSeriesTrademark.clear();
+                clearSeriesTrademark();
             }
         });
 
@@ -233,7 +235,7 @@ public class AddCoasterActivity extends AppCompatActivity
 
                 spinTrademark.setSelection(position);
 
-                lstSeriesTrademark.clear();
+                clearSeriesTrademark();
 
                 for (Series s: CoasterApplication.collectionData.lstSeries) {
                     if ((s.getSeriesID() == -1)
@@ -242,10 +244,7 @@ public class AddCoasterActivity extends AppCompatActivity
                     }
                 }
 
-//                spinSeries.setVisibility(View.VISIBLE);
-//                adapterSeries.notifyDataSetChanged();
-//                spinSeries.setSelection(0);
-//                Log.i(LOG_TAG, "editTrademark.onItemClick: SPIN VIS");
+                adapterSeries.notifyDataSetChanged();
             }
         });
 
@@ -266,20 +265,14 @@ public class AddCoasterActivity extends AppCompatActivity
         spinSeries.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Log.i(LOG_TAG, "spinSeries.onItemSelected(..)");
+                Log.i(LOG_TAG, "spinSeries.onItemSelected(" + position + ")");
 
                 long nSeries = parent.getCount();
                 long maxNbr = ((Series) parent.getItemAtPosition(position)).getMaxNumber();
 
                 Log.i(LOG_TAG, "nSeries: " + nSeries + ", maxNbr: " + maxNbr);
 
-//                if (nSeries > 1) {
-                    spinSeries.setVisibility(View.VISIBLE);
-//                    Log.i(LOG_TAG, "spinSeries.onItemSelected: SPIN VIS");
-//                } else {
-//                    spinSeries.setVisibility(View.GONE);
-//                    Log.i(LOG_TAG, "spinSeries.onItemSelected: SPIN GONE");
-//                }
+                spinSeries.setVisibility(View.VISIBLE);
 
                 if (maxNbr > 0) {
                     layoutSeriesNbr.setVisibility(View.VISIBLE);
@@ -476,17 +469,14 @@ public class AddCoasterActivity extends AppCompatActivity
                 // Nothing
             }
         });
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        Log.i(LOG_TAG, "IN onResume");
 
         // *** Adapters:
 
-        adapterTrademarks = new ArrayAdapter<> (this, android.R.layout.simple_spinner_dropdown_item, CoasterApplication.collectionData.lstTrademarks);
+        clearTrademarks();
+
+        lstTrademarks.addAll(CoasterApplication.collectionData.mapTrademarks.values());
+
+        adapterTrademarks = new ArrayAdapter<> (this, android.R.layout.simple_spinner_dropdown_item, lstTrademarks);
 
         spinTrademark.setAdapter(adapterTrademarks);
         editTrademark.setAdapter(adapterTrademarks);
@@ -497,7 +487,9 @@ public class AddCoasterActivity extends AppCompatActivity
         adapterSeries = new ArrayAdapter<> (this, android.R.layout.simple_spinner_dropdown_item, lstSeriesTrademark);
         spinSeries.setAdapter(adapterSeries);
 
-        ArrayAdapter<Collector> adapterCollectors = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, CoasterApplication.collectionData.lstCollectors);
+        lstCollectors = new ArrayList<>(CoasterApplication.collectionData.mapCollectors.values());
+
+        ArrayAdapter<Collector> adapterCollectors = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, lstCollectors);
         editCollectorName.setAdapter(adapterCollectors);
 
         adapterShapes = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, CoasterApplication.collectionData.lstShapes);
@@ -508,16 +500,24 @@ public class AddCoasterActivity extends AppCompatActivity
 
         ArrayAdapter<ImagePossibility> adapterImageBack = new ArrayAdapter<> (this, android.R.layout.simple_spinner_dropdown_item, CoasterDB.getImagePossibilities(false));
         spinImageBack.setAdapter(adapterImageBack);
+    }
 
-        // *** ...
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        Log.i(LOG_TAG, "IN onResume");
 
         String imageName;
         Bitmap bmp;
 
         if (startCoaster != null) {
-            for (int i=0; i<CoasterApplication.collectionData.lstTrademarks.size(); i++) {
-                if (CoasterApplication.collectionData.lstTrademarks.get(i).getTrademarkID() == startCoaster.getCoasterTrademarkID()) {
+            Log.i(LOG_TAG, "startCoaster.getCoasterSeriesID(): " + startCoaster.getCoasterSeriesID());
+
+            for (int i=0; i<lstTrademarks.size(); i++) {
+                if (lstTrademarks.get(i).getTrademarkID() == startCoaster.getCoasterTrademarkID()) {
                     spinTrademark.setSelection(i);
+                    break;
                 }
             }
 
@@ -525,11 +525,12 @@ public class AddCoasterActivity extends AppCompatActivity
                 for (int i = 0; i < CoasterApplication.collectionData.lstCoasterTypes.size(); i++) {
                     if (CoasterApplication.collectionData.lstCoasterTypes.get(i).getCoasterTypeID() == startCoaster.getCoasterCategoryIDs().get(0)) {
                         spinCoasterType.setSelection(i);
+                        break;
                     }
                 }
             }
 
-            lstSeriesTrademark.clear();
+            clearSeriesTrademark();
 
             for (Series s: CoasterApplication.collectionData.lstSeries) {
                 if ((s.getSeriesID() == -1)
@@ -538,6 +539,8 @@ public class AddCoasterActivity extends AppCompatActivity
                 }
             }
 
+            Log.i(LOG_TAG, "lstSeriesTrademark.size(): " + lstSeriesTrademark.size());
+
             adapterSeries.notifyDataSetChanged();
 
             if (lstSeriesTrademark != null) {
@@ -545,13 +548,15 @@ public class AddCoasterActivity extends AppCompatActivity
                     if (lstSeriesTrademark.get(i).getSeriesID() == startCoaster.getCoasterSeriesID()) {
                         Log.i(LOG_TAG, "spinSeries.setSelection(i): i=" + i);
                         spinSeries.setSelection(i);
+                        break;
                     }
                 }
             }
 
-            for (int i=0; i<CoasterApplication.collectionData.lstCollectors.size(); i++) {
-                if (CoasterApplication.collectionData.lstCollectors.get(i).getCollectorID() == startCoaster.getCollectorID()) {
-                    editCollectorName.setText(CoasterApplication.collectionData.lstCollectors.get(i).getDisplayName());
+            for (int i=0; i<lstCollectors.size(); i++) {
+                if (lstCollectors.get(i).getCollectorID() == startCoaster.getCollectorID()) {
+                    editCollectorName.setText(lstCollectors.get(i).getDisplayName());
+                    break;
                 }
             }
 
@@ -562,6 +567,8 @@ public class AddCoasterActivity extends AppCompatActivity
                     editShape.setText(shapeName);
 
                     showShapeMeasurementInputs(shapeName);
+
+                    break;
                 }
             }
 
@@ -724,9 +731,17 @@ public class AddCoasterActivity extends AppCompatActivity
         savedInstanceState.putInt("ViewId_" + R.id.spinImageFront, spinImageFront.getSelectedItemPosition());
         savedInstanceState.putInt("ViewId_" + R.id.spinImageBack, spinImageBack.getSelectedItemPosition());
 
-        // TODO Fully implement onSaveInstanceState!
-
         Log.i(LOG_TAG, "END onSaveInstanceState");
+    }
+
+    private void clearTrademarks() {
+        lstTrademarks.clear();
+        lstTrademarks.add(0, dummyTrademark);
+    }
+
+    private void clearSeriesTrademark() {
+        lstSeriesTrademark.clear();
+        lstSeriesTrademark.add(0, dummySeries);
     }
 
     private void showShapeMeasurementInputs(String shapeName) {
@@ -754,7 +769,7 @@ public class AddCoasterActivity extends AppCompatActivity
 
         // Restore UI state from the savedInstanceState.
         // This bundle has also been passed to onCreate.
-        /*
+
         editCoasterDesc.setText(savedInstanceState.getString("ViewId_" + R.id.editCoasterDesc));
         spinTrademark.setSelection(savedInstanceState.getInt("ViewId_" + R.id.spinTrademark));
         spinCoasterType.setSelection(savedInstanceState.getInt("ViewId_" + R.id.spinCoasterType));
@@ -776,7 +791,7 @@ public class AddCoasterActivity extends AppCompatActivity
         } else {
             layoutMeas2.setVisibility(View.GONE);
         }
-        */
+
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -1136,7 +1151,7 @@ public class AddCoasterActivity extends AppCompatActivity
     }
 
     private long checkCollectorInput(String collectorName) {
-        for (Collector c : CoasterApplication.collectionData.lstCollectors) {
+        for (Collector c : CoasterApplication.collectionData.mapCollectors.values()) {
             if (c.getDisplayName().equals(collectorName)) {
                 return c.getCollectorID();
             }

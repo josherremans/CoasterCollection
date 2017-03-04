@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.Locale;
 
 import josh.android.coastercollection.application.CoasterApplication;
@@ -90,6 +91,27 @@ public class CoasterCollectionDBHelper extends SQLiteOpenHelper {
         long nextID = 0;
 
         Cursor cursor = database.query(CoasterCollectionDBContract.TrademarkEntry.TABLE_NAME,
+                selectColumns, null, null, null, null, null);
+
+        cursor.moveToFirst();
+
+        if (!cursor.isAfterLast()) {
+            nextID = cursor.getLong(0);
+        }
+
+        database.close();
+
+        return ++nextID;
+    }
+
+    public long getNextCollectorIDFromDB() {
+        SQLiteDatabase database = this.getReadableDatabase();
+
+        String[] selectColumns = {"MAX(" + CoasterCollectionDBContract.CollectorEntry.COLUMN_ID + ")"};
+
+        long nextID = 0;
+
+        Cursor cursor = database.query(CoasterCollectionDBContract.CollectorEntry.TABLE_NAME,
                 selectColumns, null, null, null, null, null);
 
         cursor.moveToFirst();
@@ -211,6 +233,38 @@ public class CoasterCollectionDBHelper extends SQLiteOpenHelper {
         return tr;
     }
 
+    public Collector getCollectorByID(long id) {
+        SQLiteDatabase database = this.getReadableDatabase();
+
+        String[] selectColumns = {CoasterCollectionDBContract.CollectorEntry._ID,
+                CoasterCollectionDBContract.CollectorEntry.COLUMN_FIRSTNAME,
+                CoasterCollectionDBContract.CollectorEntry.COLUMN_LASTNAME,
+                CoasterCollectionDBContract.CollectorEntry.COLUMN_INITIALS,
+                CoasterCollectionDBContract.CollectorEntry.COLUMN_ALIAS};
+
+        String whereClause = CoasterCollectionDBContract.CollectorEntry.COLUMN_ID + " = ?";
+        String[] whereClauseArgs = {"" + id};
+        String orderByClause = null;
+
+        Cursor cursor = database.query(CoasterCollectionDBContract.CollectorEntry.TABLE_NAME,
+                selectColumns, whereClause, whereClauseArgs, null, null, orderByClause);
+
+        cursor.moveToFirst();
+
+        Collector c = null;
+
+        if (!cursor.isAfterLast()) {
+            c = cursorToCollecor(cursor);
+        }
+
+        // make sure to close the cursor
+        cursor.close();
+
+        database.close();
+
+        return c;
+    }
+
 //    // TODO: REMOVE !!!!!
 //    public boolean isExternalStorageWritable() {
 //        String state = Environment.getExternalStorageState();
@@ -274,6 +328,29 @@ public class CoasterCollectionDBHelper extends SQLiteOpenHelper {
             database.update(CoasterCollectionDBContract.TrademarkEntry.TABLE_NAME, values, whereClause, whereArgs);
         } else {
             database.insert(CoasterCollectionDBContract.TrademarkEntry.TABLE_NAME, null, values);
+        }
+
+        database.close();
+    }
+
+    public void putCollectorInDB(Collector collector) {
+        SQLiteDatabase database = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+
+        values.put(CoasterCollectionDBContract.CollectorEntry.COLUMN_ID, collector.getCollectorID());
+        values.put(CoasterCollectionDBContract.CollectorEntry.COLUMN_LASTNAME, collector.getLastName());
+        values.put(CoasterCollectionDBContract.CollectorEntry.COLUMN_FIRSTNAME, collector.getFirstName());
+        values.put(CoasterCollectionDBContract.CollectorEntry.COLUMN_INITIALS, collector.getInitials());
+        values.put(CoasterCollectionDBContract.CollectorEntry.COLUMN_ALIAS, collector.getAlias());
+
+        if (collector.isFetchedFromDB()) {
+            String whereClause = CoasterCollectionDBContract.CollectorEntry.COLUMN_ID + " = ?";
+            String[] whereArgs = {"" + collector.getCollectorID()};
+
+            database.update(CoasterCollectionDBContract.CollectorEntry.TABLE_NAME, values, whereClause, whereArgs);
+        } else {
+            database.insert(CoasterCollectionDBContract.CollectorEntry.TABLE_NAME, null, values);
         }
 
         database.close();
@@ -398,10 +475,10 @@ public class CoasterCollectionDBHelper extends SQLiteOpenHelper {
         return lstCoasterTypes;
     }
 
-    public ArrayList<Collector> getCollectorsFromDB() {
+    public LinkedHashMap<Long, Collector> getCollectorsFromDB() {
         SQLiteDatabase database = this.getReadableDatabase();
 
-        ArrayList<Collector> lstCollectors = new ArrayList<Collector>();
+        LinkedHashMap<Long, Collector> mapCollectors = new LinkedHashMap<>();
 
 //        Collector dummyCollector = new Collector(-1, "", "", "", "(Select Collector)");
 //        lstCollectors.add(dummyCollector);
@@ -412,15 +489,18 @@ public class CoasterCollectionDBHelper extends SQLiteOpenHelper {
                 CoasterCollectionDBContract.CollectorEntry.COLUMN_INITIALS,
                 CoasterCollectionDBContract.CollectorEntry.COLUMN_ALIAS};
 
+        String orderBy = CoasterCollectionDBContract.CollectorEntry.COLUMN_LASTNAME + " ASC"
+                + ", " + CoasterCollectionDBContract.CollectorEntry.COLUMN_FIRSTNAME + " ASC";
+
         Cursor cursor = database.query(CoasterCollectionDBContract.CollectorEntry.TABLE_NAME,
-                selectColumns, null, null, null, null, null);
+                selectColumns, null, null, null, null, orderBy);
 
         cursor.moveToFirst();
 
         while (!cursor.isAfterLast()) {
             Collector col = cursorToCollecor(cursor);
 
-            lstCollectors.add(col);
+            mapCollectors.put(col.getCollectorID(), col);
 
             cursor.moveToNext();
         }
@@ -430,16 +510,17 @@ public class CoasterCollectionDBHelper extends SQLiteOpenHelper {
 
         database.close();
 
-        return lstCollectors;
+        return mapCollectors;
     }
 
-    public ArrayList<Trademark> getTrademarksFromDB() {
+    public LinkedHashMap<Long, Trademark> getTrademarksFromDB() {
         SQLiteDatabase database = this.getReadableDatabase();
 
-        ArrayList<Trademark> lstTrademarks = new ArrayList<Trademark>();
+//        ArrayList<Trademark> lstTrademarks = new ArrayList<Trademark>();
+        LinkedHashMap<Long, Trademark> mapTrademarks = new LinkedHashMap<>();
 
-        Trademark dummyTrademark = new Trademark(-1, "(Select Trademark)");
-        lstTrademarks.add(dummyTrademark);
+//        Trademark dummyTrademark = new Trademark(-1, "(Select Trademark)");
+//        lstTrademarks.add(dummyTrademark);
 
         String[] selectColumns = {CoasterCollectionDBContract.TrademarkEntry._ID,
                 CoasterCollectionDBContract.TrademarkEntry.COLUMN_TRADEMARK,
@@ -454,7 +535,8 @@ public class CoasterCollectionDBHelper extends SQLiteOpenHelper {
         while (!cursor.isAfterLast()) {
             Trademark trademark = cursorToTrademark(cursor);
 
-            lstTrademarks.add(trademark);
+//            lstTrademarks.add(trademark);
+            mapTrademarks.put(trademark.getTrademarkID(), trademark);
 
             cursor.moveToNext();
         }
@@ -464,7 +546,8 @@ public class CoasterCollectionDBHelper extends SQLiteOpenHelper {
 
         database.close();
 
-        return lstTrademarks;
+//        return lstTrademarks;
+        return mapTrademarks;
     }
 
     public ArrayList<Series> getSeriesFromDB(long trademarkID) {
@@ -489,11 +572,6 @@ public class CoasterCollectionDBHelper extends SQLiteOpenHelper {
         Cursor cursor = database.query(CoasterCollectionDBContract.SeriesEntry.TABLE_NAME, selectColumns, whereClause, whereArgs, null, null, null);
 
         cursor.moveToFirst();
-
-        if (cursor.getCount()>0) {
-            Series dummySeries = new Series(-1, -2, "(Select Series)", 0);
-            lstSeries.add(dummySeries);
-        }
 
         while (!cursor.isAfterLast()) {
             Series series = cursorToSeries(cursor);
@@ -553,6 +631,8 @@ public class CoasterCollectionDBHelper extends SQLiteOpenHelper {
         String alias = cursor.getString(4);
 
         Collector collector = new Collector(id, firstName, lastName, initials, alias);
+
+        collector.setFetchedFromDB();
 
         return collector;
     }

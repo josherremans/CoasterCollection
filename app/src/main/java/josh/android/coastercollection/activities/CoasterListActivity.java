@@ -32,6 +32,8 @@ import josh.android.coastercollection.bo.Coaster;
 import josh.android.coastercollection.bo.Trademark;
 import josh.android.coastercollection.databank.CoasterCollectionDBHelper;
 
+import static josh.android.coastercollection.application.CoasterApplication.collectionData;
+
 public class CoasterListActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -147,7 +149,7 @@ public class CoasterListActivity extends AppCompatActivity
 //
 //        imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
 
-        if (CoasterApplication.collectionData.notifyAdapter()) {
+        if (collectionData.notifyAdapter()) {
             coasterCollectionAdapter.notifyDataSetChanged();
         }
 
@@ -185,9 +187,9 @@ public class CoasterListActivity extends AppCompatActivity
         }
 
         if (filterByTrademark == null) {
-            lstCoasterIds.addAll(CoasterApplication.collectionData.mapCoasters.keySet());
+            lstCoasterIds.addAll(collectionData.mapCoasters.keySet());
         } else {
-            for (Coaster c : CoasterApplication.collectionData.mapCoasters.values()) {
+            for (Coaster c : collectionData.mapCoasters.values()) {
                 for (Long trId : lstTrademarkIds) {
                     if (c.getCoasterTrademarkID() == trId.longValue()) {
                         lstCoasterIds.add(c.getCoasterID());
@@ -201,7 +203,9 @@ public class CoasterListActivity extends AppCompatActivity
     }
 
     private ArrayList<Long> getTrademarkIdList(String filterByTrademark) {
-        ArrayList<Trademark> lstTrademarks = dbHelper.getTrademarksFromDB();
+//        LinkedHashMap<Long, Trademark> mapTrademarks = dbHelper.getTrademarksFromDB();
+
+        ArrayList<Trademark> lstTrademarks = new ArrayList<>(CoasterApplication.collectionData.mapTrademarks.values());
 
         ArrayList<Long> lstTrademarkIds = new ArrayList<>();
 
@@ -326,9 +330,7 @@ public class CoasterListActivity extends AppCompatActivity
 
             snackbar.show();
         } else if (id == R.id.nav_donors) {
-            snackbar = Snackbar.make(coordinatorLayout, "You clicked Donors", Snackbar.LENGTH_LONG);
-
-            snackbar.show();
+            startActivity(new Intent(CoasterListActivity.this, CollectorListActivity.class));
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

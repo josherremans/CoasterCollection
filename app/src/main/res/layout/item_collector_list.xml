@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:baselineAligned="false"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/padding5"
+    android:minHeight="@dimen/min_height_item_trademark_list"
+    android:background="@color/colorSpinnerGradientStart" >
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:background="@color/colorSpinnerGradientStart">
+
+        <TextView
+            android:id="@+id/txtCollectorFullName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="@dimen/textsizeTrademarkList1"
+            android:text="@string/dummy_donor" />
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/txtCollectorInitials"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/margin10"
+                android:text="@string/dummy_donor_initials"/>
+
+            <TextView
+                android:id="@+id/txtCollectorAlias"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="normal"
+                android:textSize="@dimen/textsizeTrademarkList2"
+                android:text="@string/dummy_donor_alias" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
