@@ -182,13 +182,13 @@ public class AddCoasterActivity extends AppCompatActivity
         txtTitleCoasterID.setText("" + nextCoasterID);
         editTitleCoasterID.setText("" + nextCoasterID);
 
-        if ((startCoaster != null) && (startCoaster.isFetchedFromDB())) {
-            txtTitleCoasterID.setVisibility(View.VISIBLE);
-            editTitleCoasterID.setVisibility(View.GONE);
-        } else {
+//        if ((startCoaster != null) && (startCoaster.isFetchedFromDB())) {
+//            txtTitleCoasterID.setVisibility(View.VISIBLE);
+//            editTitleCoasterID.setVisibility(View.GONE);
+//        } else {
             txtTitleCoasterID.setVisibility(View.GONE);
             editTitleCoasterID.setVisibility(View.VISIBLE);
-        }
+//        }
 
         // *** TRADEMARK:
 
@@ -1064,11 +1064,11 @@ public class AddCoasterActivity extends AppCompatActivity
 
             if (res) {
                 if (coasterIDFrontImage.length() == 0) {
-                    coasterIDFrontImage = "" + nextCoasterID;
+                    coasterIDFrontImage = "" + inputCoasterID;
                 }
 
                 if (coasterIDBackImage.length() == 0) {
-                    coasterIDBackImage = "" + nextCoasterID;
+                    coasterIDBackImage = "" + inputCoasterID;
                 }
 
                 String trademark = ((Trademark) spinTrademark.getSelectedItem()).getTrademark();
@@ -1176,6 +1176,16 @@ public class AddCoasterActivity extends AppCompatActivity
         String imageName;
 
         if (res) {
+            long startCoasterID = -1;
+
+            if (startCoaster != null) {
+                startCoasterID = startCoaster.getCoasterID();
+            }
+
+            if (startCoasterID != endCoaster.getCoasterID()) {
+                ImageManager.moveImages(startCoasterID, endCoaster);
+            }
+
             // Save images (if any) to filesystem:
 
 //            imageTagName = (String) imgCoasterFront.getTag(R.id.imageView);
@@ -1204,7 +1214,7 @@ public class AddCoasterActivity extends AppCompatActivity
 
             // Save coaster to DB:
 
-            dbHelper.putCoasterInDB(endCoaster);
+            dbHelper.putCoasterInDB(startCoasterID, endCoaster);
 
             try {
                 startCoaster = (Coaster) endCoaster.clone();
@@ -1212,7 +1222,9 @@ public class AddCoasterActivity extends AppCompatActivity
                 e.printStackTrace();
             }
 
-//            CoasterListActivity.refreshCoasterList = true;
+            if (startCoasterID != endCoaster.getCoasterID()) {
+                CoasterListActivity.refreshCoasterList = true;
+            }
 
             CoasterApplication.collectionData.mapCoasters.put(endCoaster.getCoasterID(), endCoaster);
 

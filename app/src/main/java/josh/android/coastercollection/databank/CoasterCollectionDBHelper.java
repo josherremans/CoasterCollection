@@ -265,16 +265,7 @@ public class CoasterCollectionDBHelper extends SQLiteOpenHelper {
         return c;
     }
 
-//    // TODO: REMOVE !!!!!
-//    public boolean isExternalStorageWritable() {
-//        String state = Environment.getExternalStorageState();
-//        if (Environment.MEDIA_MOUNTED.equals(state)) {
-//            return true;
-//        }
-//        return false;
-//    }
-
-    public void putCoasterInDB(Coaster coaster) {
+    public void putCoasterInDB(long coasterID, Coaster coaster) {
         SimpleDateFormat dateFormatter = new SimpleDateFormat(Coaster.COASTER_DATE_FORMAT_DB, Locale.US);
 
         String collectionDate = dateFormatter.format(coaster.getCollectionDate());
@@ -302,7 +293,7 @@ public class CoasterCollectionDBHelper extends SQLiteOpenHelper {
 
         if (coaster.isFetchedFromDB()) {
             String whereClause = CoasterCollectionDBContract.CollectionEntry.COLUMN_ID + " = ?";
-            String[] whereArgs = {"" + coaster.getCoasterID()};
+            String[] whereArgs = {"" + coasterID};
 
             database.update(CoasterCollectionDBContract.CollectionEntry.TABLE_NAME, values, whereClause, whereArgs);
         } else {
@@ -361,9 +352,6 @@ public class CoasterCollectionDBHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase database = this.getReadableDatabase();
 
-//        LinkedHashMap<Long, Coaster> mapCoasters = CoasterApplication.collectionData.mapCoasters; //new HashMap<>();
-//        ArrayList<Coaster> lstCoasters = new ArrayList<>();
-
         String[] selectColumns = {CoasterCollectionDBContract.CollectionEntry.COLUMN_ID,
                 CoasterCollectionDBContract.CollectionEntry.COLUMN_TRADEMARK_ID,
                 CoasterCollectionDBContract.CollectionEntry.COLUMN_CATEGORY_ID,
@@ -394,8 +382,7 @@ public class CoasterCollectionDBHelper extends SQLiteOpenHelper {
 
                 whereClauseArgs = constructInClauseArgs(lstTrademarkIDs);
             } else {
-//                return lstCoasters;
-                return; // mapCoasters;
+                return;
             }
         }
 
@@ -414,7 +401,6 @@ public class CoasterCollectionDBHelper extends SQLiteOpenHelper {
             Coaster c = cursorToCoaster(cursor);
 
             CoasterApplication.collectionData.mapCoasters.put(c.getCoasterID(), c);
-//            lstCoasters.add(c);
 
             cursor.moveToNext();
         }
@@ -424,8 +410,7 @@ public class CoasterCollectionDBHelper extends SQLiteOpenHelper {
 
         database.close();
 
-//        return lstCoasters;
-        return; // mapCoasters;
+        return;
     }
 
     private String constructInClause(ArrayList<Long> ids) {
@@ -480,9 +465,6 @@ public class CoasterCollectionDBHelper extends SQLiteOpenHelper {
 
         LinkedHashMap<Long, Collector> mapCollectors = new LinkedHashMap<>();
 
-//        Collector dummyCollector = new Collector(-1, "", "", "", "(Select Collector)");
-//        lstCollectors.add(dummyCollector);
-
         String[] selectColumns = {CoasterCollectionDBContract.CollectorEntry._ID,
                 CoasterCollectionDBContract.CollectorEntry.COLUMN_FIRSTNAME,
                 CoasterCollectionDBContract.CollectorEntry.COLUMN_LASTNAME,
@@ -516,11 +498,7 @@ public class CoasterCollectionDBHelper extends SQLiteOpenHelper {
     public LinkedHashMap<Long, Trademark> getTrademarksFromDB() {
         SQLiteDatabase database = this.getReadableDatabase();
 
-//        ArrayList<Trademark> lstTrademarks = new ArrayList<Trademark>();
         LinkedHashMap<Long, Trademark> mapTrademarks = new LinkedHashMap<>();
-
-//        Trademark dummyTrademark = new Trademark(-1, "(Select Trademark)");
-//        lstTrademarks.add(dummyTrademark);
 
         String[] selectColumns = {CoasterCollectionDBContract.TrademarkEntry._ID,
                 CoasterCollectionDBContract.TrademarkEntry.COLUMN_TRADEMARK,

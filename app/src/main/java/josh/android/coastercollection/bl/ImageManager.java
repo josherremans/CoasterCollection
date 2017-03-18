@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
+import josh.android.coastercollection.bo.Coaster;
+
 /**
  * Created by Jos on 20/12/2016.
  */
@@ -267,6 +269,32 @@ public class ImageManager {
         String imageName = DIR_DEF_IMAGES + File.separator + img;
 
         return imageName;
+    }
+
+    public static void moveImages(long prevCoasterID, Coaster coaster) {
+        String newFrontName = coaster.getCoasterImageFrontName();
+        String newBackName = coaster.getCoasterImageBackName();
+        long newCoasterID = coaster.getCoasterID();
+
+        File dir = new File(DIR_DEF_IMAGES);
+
+        if ((newFrontName != null) && (newFrontName.contains("_" + newCoasterID + "_"))) {
+            String prevFrontName = newFrontName.replace("_" + newCoasterID + "_", "_" + prevCoasterID + "_");
+
+            File prevFile = new File(dir, prevFrontName);
+            File newFile = new File(dir, newFrontName);
+
+            if (prevFile.exists ()) prevFile.renameTo(newFile);
+        }
+
+        if ((newBackName != null) && (newBackName.contains("_" + newCoasterID + "_"))) {
+            String prevBackName = newBackName.replace("_" + newCoasterID + "_", "_" + prevCoasterID + "_");
+
+            File prevFile = new File(dir, prevBackName);
+            File newFile = new File(dir, newBackName);
+
+            if (prevFile.exists ()) prevFile.renameTo(newFile);
+        }
     }
 
     public static void saveTempImage(ImageView imgVw, Bitmap bm) {
