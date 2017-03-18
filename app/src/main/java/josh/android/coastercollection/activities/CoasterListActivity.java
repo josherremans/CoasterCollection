@@ -320,9 +320,7 @@ public class CoasterListActivity extends AppCompatActivity
 
             snackbar.show();
         } else if (id == R.id.nav_statistics) {
-            snackbar = Snackbar.make(coordinatorLayout, "You clicked Statistics", Snackbar.LENGTH_LONG);
-
-            snackbar.show();
+            startActivity(new Intent(CoasterListActivity.this, StatisticsActivity.class));
         } else if (id == R.id.nav_trademarks) {
             startActivity(new Intent(CoasterListActivity.this, TrademarkListActivity.class));
         } else if (id == R.id.nav_series) {

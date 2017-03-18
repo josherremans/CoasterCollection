@@ -19,6 +19,45 @@ public class CollectionHistoryMatrix {
         matrix.put(key, ++val);
     }
 
+    public int getMinYear() {
+        long minYear = 9999;
+
+        for (Long key: matrix.keySet()) {
+            long year = key / 100;
+
+            if (year < minYear) {
+                minYear = year;
+            }
+        }
+
+        return (int) minYear;
+    }
+
+    public int getMaxYear() {
+        long maxYear = 0;
+
+        for (Long key: matrix.keySet()) {
+            long year = key / 100;
+
+            if (year > maxYear) {
+                maxYear = year;
+            }
+        }
+
+        return (int) maxYear;
+    }
+
+    public long getCount(int year, int month) {
+        long key = (year * 100) + month;
+
+        Long count = matrix.get(key);
+
+        if (count == null)
+            return 0;
+        else
+            return count;
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();

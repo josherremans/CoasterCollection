@@ -9,7 +9,6 @@ import android.widget.ProgressBar;
 import java.util.ArrayList;
 
 import josh.android.coastercollection.application.CoasterApplication;
-import josh.android.coastercollection.utils.Util;
 import josh.android.coastercollection.bo.CoasterCollectionData;
 import josh.android.coastercollection.databank.CoasterCollectionDBHelper;
 
@@ -117,7 +116,5 @@ public class LoadCoastersAsyncTask extends AsyncTask<Void, Integer, CoasterColle
         toolbar.setSubtitle("(" + adapter.getCount() + ")");
 
         adapter.notifyDataSetChanged();
-
-        Util.createHistoryMatrix(); // TODO Replace this !!!
     }
 }
