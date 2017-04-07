@@ -324,9 +324,7 @@ public class CoasterListActivity extends AppCompatActivity
         } else if (id == R.id.nav_trademarks) {
             startActivity(new Intent(CoasterListActivity.this, TrademarkListActivity.class));
         } else if (id == R.id.nav_series) {
-            snackbar = Snackbar.make(coordinatorLayout, "You clicked Series", Snackbar.LENGTH_LONG);
-
-            snackbar.show();
+            startActivity(new Intent(CoasterListActivity.this, SeriesListActivity.class));
         } else if (id == R.id.nav_donors) {
             startActivity(new Intent(CoasterListActivity.this, CollectorListActivity.class));
         }

@@ -47,6 +47,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".activities.SeriesListActivity"
+            android:label="@string/app_name_short"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".activities.AddTrademarkActivity"
             android:label="@string/app_name_short"
             android:screenOrientation="portrait"

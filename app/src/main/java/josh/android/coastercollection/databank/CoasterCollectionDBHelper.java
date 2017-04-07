@@ -265,6 +265,17 @@ public class CoasterCollectionDBHelper extends SQLiteOpenHelper {
         return c;
     }
 
+    public void removeCoasterFromDB(long coasterID) {
+        SQLiteDatabase database = this.getWritableDatabase();
+
+        String whereClause = CoasterCollectionDBContract.CollectionEntry.COLUMN_ID + " = ?";
+        String[] whereArgs = {"" + coasterID};
+
+        database.delete(CoasterCollectionDBContract.CollectionEntry.TABLE_NAME, whereClause, whereArgs);
+
+        database.close();
+    }
+
     public void putCoasterInDB(long coasterID, Coaster coaster) {
         SimpleDateFormat dateFormatter = new SimpleDateFormat(Coaster.COASTER_DATE_FORMAT_DB, Locale.US);
 
