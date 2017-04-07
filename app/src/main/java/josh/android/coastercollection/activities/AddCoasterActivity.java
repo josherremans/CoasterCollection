@@ -115,7 +115,7 @@ public class AddCoasterActivity extends AppCompatActivity
 
     private ArrayList<Series> lstSeriesTrademark = new ArrayList<>();
     private ArrayList<Trademark> lstTrademarks = new ArrayList<>();
-    private  ArrayList<Collector> lstCollectors = new ArrayList<>();
+    private ArrayList<Collector> lstCollectors = new ArrayList<>();
 
     private ArrayAdapter<Trademark> adapterTrademarks;
     private ArrayAdapter<Series> adapterSeries;
@@ -138,6 +138,8 @@ public class AddCoasterActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.i(LOG_TAG, "IN OnCreate 1");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_coaster);
 
@@ -197,6 +199,8 @@ public class AddCoasterActivity extends AppCompatActivity
         spinTrademark.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Log.i(LOG_TAG, "IN spinTrademark.onItemSelected: position: " + position);
+
                 Trademark tr = (Trademark) parent.getItemAtPosition(position);
 
                 long trId = tr.getTrademarkID();
@@ -231,6 +235,8 @@ public class AddCoasterActivity extends AppCompatActivity
         editTrademark.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.i(LOG_TAG, "IN editTrademark.setOnItemClickListener");
+
                 long trId = ((Trademark) parent.getItemAtPosition(position)).getTrademarkID();
 
                 spinTrademark.setSelection(position);
@@ -430,6 +436,8 @@ public class AddCoasterActivity extends AppCompatActivity
 
                 if (imgPos.getId() == 1) {
                     editCoasterIDFrontImg.setVisibility(View.VISIBLE);
+                } else {
+                    editCoasterIDFrontImg.setText("");
                 }
             }
 
@@ -450,11 +458,13 @@ public class AddCoasterActivity extends AppCompatActivity
                     case -1:
                     case 0:
                         imgCoasterBack.setVisibility(View.INVISIBLE);
+                        editCoasterIDBackImg.setText("");
                         break;
 
                     case 1:
                     case 3:
                         imgCoasterBack.setVisibility(View.VISIBLE);
+                        editCoasterIDBackImg.setText("");
                         break;
 
                     case 2:
@@ -470,11 +480,211 @@ public class AddCoasterActivity extends AppCompatActivity
             }
         });
 
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        Log.i(LOG_TAG, "IN onResume");
+
+        String imageName;
+        Bitmap bmp;
+
+        try {
+            if (startCoaster != null) {
+                Log.i(LOG_TAG, "startCoaster.getCoasterSeriesID(): " + startCoaster.getCoasterSeriesID());
+
+                for (int i = 0; i < lstTrademarks.size(); i++) {
+                    if (lstTrademarks.get(i).getTrademarkID() == startCoaster.getCoasterTrademarkID()) {
+                        spinTrademark.setSelection(i);
+                        break;
+                    }
+                }
+
+                if (startCoaster.getCoasterCategoryIDs().size() > 0) {
+                    for (int i = 0; i < CoasterApplication.collectionData.lstCoasterTypes.size(); i++) {
+                        if (CoasterApplication.collectionData.lstCoasterTypes.get(i).getCoasterTypeID() == startCoaster.getCoasterCategoryIDs().get(0)) {
+                            spinCoasterType.setSelection(i);
+                            break;
+                        }
+                    }
+                }
+
+                clearSeriesTrademark();
+
+                for (Series s : CoasterApplication.collectionData.lstSeries) {
+                    if ((s.getSeriesID() == -1)
+                            || (s.getTrademarkID() == startCoaster.getCoasterTrademarkID())) {
+                        lstSeriesTrademark.add(s);
+                    }
+                }
+
+                Log.i(LOG_TAG, "lstSeriesTrademark.size(): " + lstSeriesTrademark.size());
+
+                adapterSeries.notifyDataSetChanged();
+
+                if (lstSeriesTrademark != null) {
+                    for (int i = 0; i < lstSeriesTrademark.size(); i++) {
+                        if (lstSeriesTrademark.get(i).getSeriesID() == startCoaster.getCoasterSeriesID()) {
+                            Log.i(LOG_TAG, "spinSeries.setSelection(i): i=" + i);
+                            spinSeries.setSelection(i);
+                            break;
+                        }
+                    }
+                }
+
+                for (int i = 0; i < lstCollectors.size(); i++) {
+                    if (lstCollectors.get(i).getCollectorID() == startCoaster.getCollectorID()) {
+                        editCollectorName.setText(lstCollectors.get(i).getDisplayName());
+                        break;
+                    }
+                }
+
+                for (int i = 0; i < CoasterApplication.collectionData.lstShapes.size(); i++) {
+                    if (CoasterApplication.collectionData.lstShapes.get(i).getShapeID() == startCoaster.getCoasterMainShape()) {
+                        String shapeName = CoasterApplication.collectionData.lstShapes.get(i).getName();
+
+                        editShape.setText(shapeName);
+
+                        showShapeMeasurementInputs(shapeName);
+
+                        break;
+                    }
+                }
+
+                editCoasterIDFrontImg.setVisibility(View.GONE);
+
+                if ((startCoaster.getCoasterImageFrontName() == null) || (startCoaster.getCoasterImageFrontName().length() == 0)) {
+                    spinImageFront.setSelection(0);
+                } else {
+                    if ((startCoaster.getCoasterImageFrontName().equals("-"))
+                            || (startCoaster.getCoasterImageFrontName().contains("_" + startCoaster.getCoasterID() + "_"))) {
+                        spinImageFront.setSelection(1);
+                    } else {
+                        spinImageFront.setSelection(2);
+                        editCoasterIDFrontImg.setVisibility(View.VISIBLE);
+
+                        String tmpName = startCoaster.getCoasterImageFrontName();
+
+                        String[] splittedName = tmpName.split("_");
+
+                        String id = "";
+
+                        if ((splittedName.length < 3) || (!splittedName[1].matches("\\d+"))) {
+                            id = "" + dbHelper.getCoasterIDByImgName(true, tmpName);
+                        } else {
+                            id = tmpName.split("_")[1];
+                        }
+
+                        editCoasterIDFrontImg.setText(id);
+                    }
+                }
+
+                editCoasterIDBackImg.setVisibility(View.GONE);
+
+                if ((startCoaster.getCoasterImageBackName() == null) || (startCoaster.getCoasterImageBackName().length() == 0)) {
+                    if ((startCoaster.getCoasterImageFrontName() == null) || (startCoaster.getCoasterImageFrontName().length() == 0)) {
+                        spinImageBack.setSelection(0);
+                    } else {
+                        spinImageBack.setSelection(1);
+                    }
+                } else {
+                    if (startCoaster.getCoasterImageBackName().equals(startCoaster.getCoasterImageFrontName())) {
+                        spinImageBack.setSelection(4);
+                    } else {
+                        if ((startCoaster.getCoasterImageBackName().equals("-"))
+                                || (startCoaster.getCoasterImageBackName().contains("_" + startCoaster.getCoasterID() + "_"))) {
+                            spinImageBack.setSelection(2);
+                        } else {
+                            spinImageBack.setSelection(3);
+                            editCoasterIDBackImg.setVisibility(View.VISIBLE);
+
+                            String tmpName = startCoaster.getCoasterImageBackName();
+
+                            String[] splittedName = tmpName.split("_");
+
+                            String id = "";
+
+                            if ((splittedName.length < 3) || (!splittedName[1].matches("\\d+"))) {
+                                id = "" + dbHelper.getCoasterIDByImgName(false, tmpName);
+                            } else {
+                                id = splittedName[1];
+                            }
+
+                            editCoasterIDBackImg.setText(id);
+                        }
+                    }
+                }
+
+                editCoasterDesc.setText(startCoaster.getCoasterDescription());
+                editCoasterText.setText(startCoaster.getCoasterText());
+
+                editFoundWhere.setText(startCoaster.getCollectionPlace());
+                editFoundWhen.setText(Util.getDisplayDate(startCoaster.getCollectionDate()));
+
+                editShapeMeas1.setText("" + startCoaster.getMeasurement1());
+                editShapeMeas2.setText("" + startCoaster.getMeasurement2());
+
+                editQuality.setText("" + startCoaster.getCoasterQuality());
+
+                editSeriesNbr.setText("" + startCoaster.getCoasterSeriesIndex());
+
+                imageName = startCoaster.getCoasterImageFrontName();
+
+                if (imageNameFrontPart1 == null) {
+                    if ((imageName != null) && (imageName.length() > 0)) {
+                        bmp = ImageManager.getBitmap(imageName, 500);
+
+                        imgCoasterFront.setImageBitmap(bmp);
+                    }
+                }
+
+                imageName = startCoaster.getCoasterImageBackName();
+
+                if (imageNameBackPart1 == null) {
+                    if ((imageName != null) && (imageName.length() > 0)) {
+                        bmp = ImageManager.getBitmap(imageName, 500);
+
+                        imgCoasterBack.setImageBitmap(bmp);
+                    }
+                }
+            }
+        } catch (IndexOutOfBoundsException e) {
+            Log.e(LOG_TAG, "IndexOutOfBoundsException: " + e);
+        }
+
+        Log.i(LOG_TAG, "END onResume");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        Log.i(LOG_TAG, "IN onPause");
+    }
+
+    @Override
+    public void onRestart() {
+        super.onRestart();
+
+        Log.i(LOG_TAG, "IN onRestart");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        Log.i(LOG_TAG, "IN onStart");
+
         // *** Adapters:
 
         clearTrademarks();
 
         lstTrademarks.addAll(CoasterApplication.collectionData.mapTrademarks.values());
+
+        Log.i(LOG_TAG, "lstTrademarks: size: " + lstTrademarks.size());
 
         adapterTrademarks = new ArrayAdapter<> (this, android.R.layout.simple_spinner_dropdown_item, lstTrademarks);
 
@@ -500,184 +710,6 @@ public class AddCoasterActivity extends AppCompatActivity
 
         ArrayAdapter<ImagePossibility> adapterImageBack = new ArrayAdapter<> (this, android.R.layout.simple_spinner_dropdown_item, CoasterDB.getImagePossibilities(false));
         spinImageBack.setAdapter(adapterImageBack);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        Log.i(LOG_TAG, "IN onResume");
-
-        String imageName;
-        Bitmap bmp;
-
-        if (startCoaster != null) {
-            Log.i(LOG_TAG, "startCoaster.getCoasterSeriesID(): " + startCoaster.getCoasterSeriesID());
-
-            for (int i=0; i<lstTrademarks.size(); i++) {
-                if (lstTrademarks.get(i).getTrademarkID() == startCoaster.getCoasterTrademarkID()) {
-                    spinTrademark.setSelection(i);
-                    break;
-                }
-            }
-
-            if (startCoaster.getCoasterCategoryIDs().size() > 0) {
-                for (int i = 0; i < CoasterApplication.collectionData.lstCoasterTypes.size(); i++) {
-                    if (CoasterApplication.collectionData.lstCoasterTypes.get(i).getCoasterTypeID() == startCoaster.getCoasterCategoryIDs().get(0)) {
-                        spinCoasterType.setSelection(i);
-                        break;
-                    }
-                }
-            }
-
-            clearSeriesTrademark();
-
-            for (Series s: CoasterApplication.collectionData.lstSeries) {
-                if ((s.getSeriesID() == -1)
-                    || (s.getTrademarkID() == startCoaster.getCoasterTrademarkID())) {
-                    lstSeriesTrademark.add(s);
-                }
-            }
-
-            Log.i(LOG_TAG, "lstSeriesTrademark.size(): " + lstSeriesTrademark.size());
-
-            adapterSeries.notifyDataSetChanged();
-
-            if (lstSeriesTrademark != null) {
-                for (int i=0; i<lstSeriesTrademark.size(); i++) {
-                    if (lstSeriesTrademark.get(i).getSeriesID() == startCoaster.getCoasterSeriesID()) {
-                        Log.i(LOG_TAG, "spinSeries.setSelection(i): i=" + i);
-                        spinSeries.setSelection(i);
-                        break;
-                    }
-                }
-            }
-
-            for (int i=0; i<lstCollectors.size(); i++) {
-                if (lstCollectors.get(i).getCollectorID() == startCoaster.getCollectorID()) {
-                    editCollectorName.setText(lstCollectors.get(i).getDisplayName());
-                    break;
-                }
-            }
-
-            for (int i=0; i<CoasterApplication.collectionData.lstShapes.size(); i++) {
-                if (CoasterApplication.collectionData.lstShapes.get(i).getShapeID() == startCoaster.getCoasterMainShape()) {
-                    String shapeName = CoasterApplication.collectionData.lstShapes.get(i).getName();
-
-                    editShape.setText(shapeName);
-
-                    showShapeMeasurementInputs(shapeName);
-
-                    break;
-                }
-            }
-
-            editCoasterIDFrontImg.setVisibility(View.GONE);
-
-            if ((startCoaster.getCoasterImageFrontName() == null) || (startCoaster.getCoasterImageFrontName().length() == 0)) {
-                spinImageFront.setSelection(0);
-            } else {
-                if ((startCoaster.getCoasterImageFrontName().equals("-"))
-                    || (startCoaster.getCoasterImageFrontName().contains("_" + startCoaster.getCoasterID() + "_"))) {
-                    spinImageFront.setSelection(1);
-                } else {
-                    spinImageFront.setSelection(2);
-                    editCoasterIDFrontImg.setVisibility(View.VISIBLE);
-
-                    String tmpName = startCoaster.getCoasterImageFrontName();
-
-                    String[] splittedName = tmpName.split("_");
-
-                    String id = "";
-
-                    if ((splittedName.length < 3) || (!splittedName[1].matches("\\d+"))) {
-                        id = "" + dbHelper.getCoasterIDByImgName(true, tmpName);
-                    } else {
-                        id = tmpName.split("_")[1];
-                    }
-
-                    editCoasterIDFrontImg.setText(id);
-                }
-            }
-
-            editCoasterIDBackImg.setVisibility(View.GONE);
-
-            if ((startCoaster.getCoasterImageBackName() == null) || (startCoaster.getCoasterImageBackName().length() == 0)) {
-                if ((startCoaster.getCoasterImageFrontName() == null) || (startCoaster.getCoasterImageFrontName().length() == 0)) {
-                    spinImageBack.setSelection(0);
-                } else {
-                    spinImageBack.setSelection(1);
-                }
-            } else {
-                if (startCoaster.getCoasterImageBackName().equals(startCoaster.getCoasterImageFrontName())) {
-                    spinImageBack.setSelection(4);
-                } else {
-                    if ((startCoaster.getCoasterImageBackName().equals("-"))
-                        || (startCoaster.getCoasterImageBackName().contains("_" + startCoaster.getCoasterID() + "_"))) {
-                        spinImageBack.setSelection(2);
-                    } else {
-                        spinImageBack.setSelection(3);
-                        editCoasterIDBackImg.setVisibility(View.VISIBLE);
-
-                        String tmpName = startCoaster.getCoasterImageBackName();
-
-                        String[] splittedName = tmpName.split("_");
-
-                        String id = "";
-
-                        if ((splittedName.length < 3) || (!splittedName[1].matches("\\d+"))) {
-                            id = "" + dbHelper.getCoasterIDByImgName(false, tmpName);
-                        } else {
-                            id = splittedName[1];
-                        }
-
-                        editCoasterIDBackImg.setText(id);
-                    }
-                }
-            }
-
-            editCoasterDesc.setText(startCoaster.getCoasterDescription());
-            editCoasterText.setText(startCoaster.getCoasterText());
-
-            editFoundWhere.setText(startCoaster.getCollectionPlace());
-            editFoundWhen.setText(Util.getDisplayDate(startCoaster.getCollectionDate()));
-
-            editShapeMeas1.setText("" + startCoaster.getMeasurement1());
-            editShapeMeas2.setText("" + startCoaster.getMeasurement2());
-
-            editQuality.setText("" + startCoaster.getCoasterQuality());
-
-            editSeriesNbr.setText("" + startCoaster.getCoasterSeriesIndex());
-
-            imageName = startCoaster.getCoasterImageFrontName();
-
-            if (imageNameFrontPart1 == null) {
-                if ((imageName != null) && (imageName.length() > 0)) {
-                    bmp = ImageManager.getBitmap(imageName, 500);
-
-                    imgCoasterFront.setImageBitmap(bmp);
-                }
-            }
-
-            imageName = startCoaster.getCoasterImageBackName();
-
-            if (imageNameBackPart1 == null) {
-                if ((imageName != null) && (imageName.length() > 0)) {
-                    bmp = ImageManager.getBitmap(imageName, 500);
-
-                    imgCoasterBack.setImageBitmap(bmp);
-                }
-            }
-        }
-
-        Log.i(LOG_TAG, "END onResume");
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-
-        Log.i(LOG_TAG, "IN onPause");
     }
 
     @Override
@@ -737,11 +769,21 @@ public class AddCoasterActivity extends AppCompatActivity
     private void clearTrademarks() {
         lstTrademarks.clear();
         lstTrademarks.add(0, dummyTrademark);
+
+        if (adapterTrademarks != null) {
+            adapterTrademarks.notifyDataSetChanged();
+        }
+
+        Log.i(LOG_TAG, "TRADMARKS CLEARED!!!");
     }
 
     private void clearSeriesTrademark() {
         lstSeriesTrademark.clear();
         lstSeriesTrademark.add(0, dummySeries);
+
+        if (adapterSeries != null) {
+            adapterSeries.notifyDataSetChanged();
+        }
     }
 
     private void showShapeMeasurementInputs(String shapeName) {
@@ -957,6 +999,13 @@ public class AddCoasterActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_add_coaster, menu);
+
+        MenuItem deleteItem = menu.findItem(R.id.action_delete);
+
+        if (startCoaster == null) {
+            deleteItem.setEnabled(false);
+        }
+
         return true;
     }
 
@@ -1170,6 +1219,10 @@ public class AddCoasterActivity extends AppCompatActivity
         return -1;
     }
 
+    private void deleteCoaster() {
+        dbHelper.removeCoasterFromDB(startCoaster.getCoasterID());
+    }
+
     private boolean saveCoaster() {
         boolean res = validateCoaster();
 
@@ -1268,6 +1321,12 @@ public class AddCoasterActivity extends AppCompatActivity
 
         if (id == R.id.action_save) {
             saveCoaster();
+
+            return true;
+        }
+
+        if (id == R.id.action_delete) {
+            deleteCoaster();
 
             return true;
         }

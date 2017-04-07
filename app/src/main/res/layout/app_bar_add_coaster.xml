@@ -22,13 +22,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <!--FrameLayout
-        android:id="@+id/content_frame"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" -->
-
-        <include layout="@layout/fragment_add_coaster" />
-    <!--/FrameLayout-->
+    <include layout="@layout/fragment_add_coaster" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

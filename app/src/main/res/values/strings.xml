@@ -37,6 +37,7 @@
     <string name="action_settings">Settings</string>
     <string name="action_export">Export</string>
     <string name="action_save">Save</string>
+    <string name="action_delete">Delete</string>
     <string name="action_copy">Copy</string>
     <string name="action_adv_filter">Advanced Filter</string>
     <string name="action_search">Filter</string>
@@ -85,6 +86,7 @@
     <string name="lblMeasUnit">mm</string>
 
     <string name="hint_trademark_search">Filter Trademark</string>
+    <string name="hint_series_search">Filter Series</string>
     <string name="hint_collector_search">Filter Collector</string>
     <string name="hint_trademark">Trademark</string>
     <string name="hint_brewery">Brewery</string>

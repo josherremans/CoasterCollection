@@ -89,7 +89,7 @@ public class ImageManager {
 
         Bitmap myBitmap = BitmapFactory.decodeFile(filePath + File.separator + fileName);
 
-        int width = 250;
+        int width = 350;
 
         int height = (width * myBitmap.getHeight()) / myBitmap.getWidth();
 

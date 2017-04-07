@@ -4,7 +4,7 @@
     android:baselineAligned="false"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/padding5"
+    android:padding="@dimen/padding0"
     android:minHeight="@dimen/min_height_item_coaster_list"
     android:background="@color/colorSpinnerGradientStart" >
 
@@ -12,13 +12,14 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="5dp"
+        android:padding="@dimen/padding0"
         android:background="@color/colorSpinnerGradientStart">
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/padding5">
             <TextView
                 android:id="@+id/txtCoasterID"
                 android:layout_width="wrap_content"

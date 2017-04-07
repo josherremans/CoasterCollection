@@ -21,6 +21,7 @@
     <dimen name="padding15">15dp</dimen>
     <dimen name="padding10">10dp</dimen>
     <dimen name="padding5">5dp</dimen>
+    <dimen name="padding0">0dp</dimen>
 
     <dimen name="textsizeTitle">20sp</dimen>
     <dimen name="textsizeSubTitle">26sp</dimen>
