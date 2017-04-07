@@ -100,4 +100,6 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="title_activity_trademark_list">TrademarkListActivity</string>
     <string name="title_activity_add_trademark">AddTrademarkActivity</string>
+
+    <string name="dialog_delete_coaster_text">Delete this coaster?</string>
 </resources>

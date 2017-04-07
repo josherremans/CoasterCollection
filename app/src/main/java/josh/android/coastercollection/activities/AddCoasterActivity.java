@@ -3,6 +3,7 @@ package josh.android.coastercollection.activities;
 import android.app.DatePickerDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -16,6 +17,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.Toolbar;
@@ -479,8 +481,6 @@ public class AddCoasterActivity extends AppCompatActivity
                 // Nothing
             }
         });
-
-
     }
 
     @Override
@@ -1219,8 +1219,22 @@ public class AddCoasterActivity extends AppCompatActivity
         return -1;
     }
 
+    private void confirmDeleteCoaster() {
+        DeleteOnClickListener deleteOnClickListener = new DeleteOnClickListener();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setMessage(R.string.dialog_delete_coaster_text)
+                .setPositiveButton("Yes", deleteOnClickListener)
+                .setNegativeButton("No", deleteOnClickListener).show();
+    }
+
     private void deleteCoaster() {
         dbHelper.removeCoasterFromDB(startCoaster.getCoasterID());
+
+        CoasterListActivity.refreshCoasterList = true;
+
+        onBackPressed();
     }
 
     private boolean saveCoaster() {
@@ -1326,7 +1340,7 @@ public class AddCoasterActivity extends AppCompatActivity
         }
 
         if (id == R.id.action_delete) {
-            deleteCoaster();
+            confirmDeleteCoaster();
 
             return true;
         }
@@ -1407,13 +1421,17 @@ public class AddCoasterActivity extends AppCompatActivity
         }
     }
 
-    /*
-    ** INNERCLASS: CoasterOnItemClickListener
-     */
-    private class CoasterOnItemClickListener implements AdapterView.OnItemClickListener {
+    private class DeleteOnClickListener implements DialogInterface.OnClickListener {
         @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        public void onClick(DialogInterface dialog, int choice) {
+            switch (choice) {
+                case DialogInterface.BUTTON_POSITIVE:
+                    deleteCoaster();
 
+                    break;
+                case DialogInterface.BUTTON_NEGATIVE:
+                    break;
+            }
         }
-    }
+    };
 }
