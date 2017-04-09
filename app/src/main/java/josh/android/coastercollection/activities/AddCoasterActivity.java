@@ -147,9 +147,9 @@ public class AddCoasterActivity extends AppCompatActivity
 
         Log.i(LOG_TAG, "IN OnCreate");
 
-        Intent intentOrigine = this.getIntent();
-
-        long coasterID = intentOrigine.getLongExtra("extraCoasterID", -1);
+//        Intent intentOrigine = this.getIntent();
+//
+//       long coasterID = intentOrigine.getLongExtra("extraCoasterID", -1);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -175,16 +175,16 @@ public class AddCoasterActivity extends AppCompatActivity
         txtTitleCoasterID = (TextView) findViewById(R.id.txtTitleCoasterID);
         editTitleCoasterID = (EditText) findViewById(R.id.editTitleCoasterID);
 
-        if (coasterID != -1) {
-            startCoaster = dbHelper.getCoasterByID(coasterID);
-
-            nextCoasterID = coasterID;
-        } else {
-            nextCoasterID = dbHelper.getNextCoasterIDFromDB();
-        }
-
-        txtTitleCoasterID.setText("" + nextCoasterID);
-        editTitleCoasterID.setText("" + nextCoasterID);
+//        if (coasterID != -1) {
+//            startCoaster = dbHelper.getCoasterByID(coasterID);
+//
+//            nextCoasterID = coasterID;
+//        } else {
+//            nextCoasterID = dbHelper.getNextCoasterIDFromDB();
+//        }
+//
+//        txtTitleCoasterID.setText("" + nextCoasterID);
+//        editTitleCoasterID.setText("" + nextCoasterID);
 
 //        if ((startCoaster != null) && (startCoaster.isFetchedFromDB())) {
 //            txtTitleCoasterID.setVisibility(View.VISIBLE);
@@ -203,7 +203,7 @@ public class AddCoasterActivity extends AppCompatActivity
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Log.i(LOG_TAG, "IN spinTrademark.onItemSelected: position: " + position);
 
-                Trademark tr = (Trademark) parent.getItemAtPosition(position);
+                Trademark tr = (Trademark) spinTrademark.getItemAtPosition(position);
 
                 long trId = tr.getTrademarkID();
 
@@ -337,9 +337,9 @@ public class AddCoasterActivity extends AppCompatActivity
 
         editFoundWhen = (EditText) findViewById(R.id.editFoundWhen);
 
-        editFoundWhen.setInputType(InputType.TYPE_NULL);
-
-        editFoundWhen.setText(Util.getDisplayDateNow());
+//        editFoundWhen.setInputType(InputType.TYPE_NULL);
+//
+//        editFoundWhen.setText(Util.getDisplayDateNow());
 
         editFoundWhen.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -488,6 +488,53 @@ public class AddCoasterActivity extends AppCompatActivity
         super.onResume();
 
         Log.i(LOG_TAG, "IN onResume");
+
+        Intent intentOrigine = this.getIntent();
+
+        long coasterID = intentOrigine.getLongExtra("extraCoasterID", -1);
+        boolean copyCoaster = intentOrigine.getBooleanExtra("extraCopyCoaster", false);
+
+        if (coasterID != -1) {
+            startCoaster = dbHelper.getCoasterByID(coasterID);
+
+            nextCoasterID = coasterID;
+        } else {
+            Log.i(LOG_TAG, "Retrieving next coasterID from DB");
+
+            nextCoasterID = dbHelper.getNextCoasterIDFromDB();
+        }
+
+        if (copyCoaster) {
+            nextCoasterID++;
+
+            Log.i(LOG_TAG, "Copying coaster to coasterID: " + nextCoasterID);
+
+            if (CoasterApplication.collectionData.mapCoasters.get(nextCoasterID) != null) {
+                nextCoasterID = dbHelper.getNextCoasterIDFromDB();
+                Log.i(LOG_TAG, "CoasterID already exists! New coasterID: " + nextCoasterID);
+            }
+
+            startCoaster.alterCoasterID(nextCoasterID);
+            startCoaster.setFetchedFromDB(false);
+        }
+
+        Log.i(LOG_TAG, "final nextCoasterID: " + nextCoasterID);
+
+        txtTitleCoasterID.setText("" + nextCoasterID);
+        editTitleCoasterID.setText("" + nextCoasterID);
+
+        editFoundWhen.setInputType(InputType.TYPE_NULL);
+
+        editFoundWhen.setText(Util.getDisplayDateNow());
+
+        //TEST
+        Log.i(LOG_TAG, "lstTrademarks: size: " + lstTrademarks.size());
+
+        adapterTrademarks = new ArrayAdapter<> (this, android.R.layout.simple_spinner_dropdown_item, lstTrademarks);
+
+        spinTrademark.setAdapter(adapterTrademarks);
+        editTrademark.setAdapter(adapterTrademarks);
+        //EINDE TEST
 
         String imageName;
         Bitmap bmp;
@@ -688,8 +735,8 @@ public class AddCoasterActivity extends AppCompatActivity
 
         adapterTrademarks = new ArrayAdapter<> (this, android.R.layout.simple_spinner_dropdown_item, lstTrademarks);
 
-        spinTrademark.setAdapter(adapterTrademarks);
-        editTrademark.setAdapter(adapterTrademarks);
+//        spinTrademark.setAdapter(adapterTrademarks);
+//        editTrademark.setAdapter(adapterTrademarks);
 
         ArrayAdapter<CoasterType> adapterCoasterTypes = new ArrayAdapter<> (this, android.R.layout.simple_spinner_dropdown_item, CoasterApplication.collectionData.lstCoasterTypes);
         spinCoasterType.setAdapter(adapterCoasterTypes);
@@ -1346,9 +1393,22 @@ public class AddCoasterActivity extends AppCompatActivity
         }
 
         if (id == R.id.action_copy) {
-            Snackbar snackbar = Snackbar.make(coordinatorLayout, "You clicked Copy", Snackbar.LENGTH_LONG);
+            if (!validateCoaster()) {
+                Snackbar snackbar = Snackbar.make(coordinatorLayout, "Save first!", Snackbar.LENGTH_LONG);
 
-            snackbar.show();
+                snackbar.show();
+
+                return true;
+            }
+
+            Intent addCoasterIntent = new Intent(AddCoasterActivity.this, AddCoasterActivity.class);
+
+            addCoasterIntent.putExtra("extraCoasterID", startCoaster.getCoasterID());
+            addCoasterIntent.putExtra("extraCopyCoaster", true);
+
+            addCoasterIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+            startActivity(addCoasterIntent);
 
             return true;
         }
@@ -1409,15 +1469,23 @@ public class AddCoasterActivity extends AppCompatActivity
     private class FabOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
-//            Snackbar.make(view, "You clicked the Fab", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            if (!validateCoaster()) {
+                CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorlayout);
 
-            Intent gogogo = new Intent(AddCoasterActivity.this, AddCoasterActivity.class);
+                Snackbar snackbar = Snackbar.make(coordinatorLayout, "Save first!", Snackbar.LENGTH_LONG);
 
-            gogogo.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
-                    | Intent.FLAG_ACTIVITY_SINGLE_TOP
-                    | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                snackbar.show();
 
-            startActivity(gogogo);
+                return;
+            }
+
+            Intent addCoasterIntent = new Intent(AddCoasterActivity.this, AddCoasterActivity.class);
+
+            addCoasterIntent.putExtra("extraCoasterID", -1);
+
+            addCoasterIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+            startActivity(addCoasterIntent);
         }
     }
 

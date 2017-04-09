@@ -55,6 +55,10 @@ public class Coaster implements Cloneable {
 		this.coasterID = ID;
 	}
 
+	public void alterCoasterID(long coasterID) {
+		this.coasterID = coasterID;
+	}
+
 	public long getCoasterID() {
 		return coasterID;
 	}
