@@ -59,6 +59,8 @@ import josh.android.coastercollection.databank.CoasterCollectionDBHelper;
 import josh.android.coastercollection.databank.CoasterDB;
 import josh.android.coastercollection.utils.Util;
 
+import static josh.android.coastercollection.application.CoasterApplication.collectionData;
+
 public class AddCoasterActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -77,7 +79,7 @@ public class AddCoasterActivity extends AppCompatActivity
     private TextView txtTitleCoasterID;
     private EditText editTitleCoasterID;
 
-    private long nextCoasterID;
+    private long coasterIDToWorkWith;
 
     private Spinner spinTrademark;
     private AutoCompleteTextView editTrademark;
@@ -147,10 +149,6 @@ public class AddCoasterActivity extends AppCompatActivity
 
         Log.i(LOG_TAG, "IN OnCreate");
 
-//        Intent intentOrigine = this.getIntent();
-//
-//       long coasterID = intentOrigine.getLongExtra("extraCoasterID", -1);
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -175,24 +173,8 @@ public class AddCoasterActivity extends AppCompatActivity
         txtTitleCoasterID = (TextView) findViewById(R.id.txtTitleCoasterID);
         editTitleCoasterID = (EditText) findViewById(R.id.editTitleCoasterID);
 
-//        if (coasterID != -1) {
-//            startCoaster = dbHelper.getCoasterByID(coasterID);
-//
-//            nextCoasterID = coasterID;
-//        } else {
-//            nextCoasterID = dbHelper.getNextCoasterIDFromDB();
-//        }
-//
-//        txtTitleCoasterID.setText("" + nextCoasterID);
-//        editTitleCoasterID.setText("" + nextCoasterID);
-
-//        if ((startCoaster != null) && (startCoaster.isFetchedFromDB())) {
-//            txtTitleCoasterID.setVisibility(View.VISIBLE);
-//            editTitleCoasterID.setVisibility(View.GONE);
-//        } else {
-            txtTitleCoasterID.setVisibility(View.GONE);
-            editTitleCoasterID.setVisibility(View.VISIBLE);
-//        }
+        txtTitleCoasterID.setVisibility(View.GONE);
+        editTitleCoasterID.setVisibility(View.VISIBLE);
 
         // *** TRADEMARK:
 
@@ -216,7 +198,7 @@ public class AddCoasterActivity extends AppCompatActivity
 
                 clearSeriesTrademark();
 
-                for (Series s: CoasterApplication.collectionData.lstSeries) {
+                for (Series s: collectionData.lstSeries) {
                     if ((s.getSeriesID() == -1)
                             || (s.getTrademarkID() == trId)) {
                         lstSeriesTrademark.add(s);
@@ -245,7 +227,7 @@ public class AddCoasterActivity extends AppCompatActivity
 
                 clearSeriesTrademark();
 
-                for (Series s: CoasterApplication.collectionData.lstSeries) {
+                for (Series s: collectionData.lstSeries) {
                     if ((s.getSeriesID() == -1)
                             || (s.getTrademarkID() == trId)) {
                         lstSeriesTrademark.add(s);
@@ -336,10 +318,6 @@ public class AddCoasterActivity extends AppCompatActivity
         editFoundWhere = (EditText) findViewById(R.id.editFoundWhere);
 
         editFoundWhen = (EditText) findViewById(R.id.editFoundWhen);
-
-//        editFoundWhen.setInputType(InputType.TYPE_NULL);
-//
-//        editFoundWhen.setText(Util.getDisplayDateNow());
 
         editFoundWhen.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -492,49 +470,45 @@ public class AddCoasterActivity extends AppCompatActivity
         Intent intentOrigine = this.getIntent();
 
         long coasterID = intentOrigine.getLongExtra("extraCoasterID", -1);
+        long newCoasterID = intentOrigine.getLongExtra("extraNewCoasterID", -1);
         boolean copyCoaster = intentOrigine.getBooleanExtra("extraCopyCoaster", false);
 
         if (coasterID != -1) {
             startCoaster = dbHelper.getCoasterByID(coasterID);
 
-            nextCoasterID = coasterID;
+            coasterIDToWorkWith = coasterID;
         } else {
-            Log.i(LOG_TAG, "Retrieving next coasterID from DB");
+            Log.i(LOG_TAG, "New CoasterID: " + newCoasterID);
 
-            nextCoasterID = dbHelper.getNextCoasterIDFromDB();
+            coasterIDToWorkWith = newCoasterID;
         }
 
         if (copyCoaster) {
-            nextCoasterID++;
+            coasterIDToWorkWith = collectionData.getNextFreeCoasterID(coasterIDToWorkWith);
 
-            Log.i(LOG_TAG, "Copying coaster to coasterID: " + nextCoasterID);
+            Log.i(LOG_TAG, "Copying coaster to coasterID: " + coasterIDToWorkWith);
 
-            if (CoasterApplication.collectionData.mapCoasters.get(nextCoasterID) != null) {
-                nextCoasterID = dbHelper.getNextCoasterIDFromDB();
-                Log.i(LOG_TAG, "CoasterID already exists! New coasterID: " + nextCoasterID);
-            }
-
-            startCoaster.alterCoasterID(nextCoasterID);
+            startCoaster.alterCoasterID(coasterIDToWorkWith);
             startCoaster.setFetchedFromDB(false);
         }
 
-        Log.i(LOG_TAG, "final nextCoasterID: " + nextCoasterID);
+        Log.i(LOG_TAG, "final coasterIDToWorkWith: " + coasterIDToWorkWith);
 
-        txtTitleCoasterID.setText("" + nextCoasterID);
-        editTitleCoasterID.setText("" + nextCoasterID);
+        txtTitleCoasterID.setText("" + coasterIDToWorkWith);
+        editTitleCoasterID.setText("" + coasterIDToWorkWith);
 
         editFoundWhen.setInputType(InputType.TYPE_NULL);
 
         editFoundWhen.setText(Util.getDisplayDateNow());
 
-        //TEST
+        // TODO TEST
         Log.i(LOG_TAG, "lstTrademarks: size: " + lstTrademarks.size());
 
         adapterTrademarks = new ArrayAdapter<> (this, android.R.layout.simple_spinner_dropdown_item, lstTrademarks);
 
         spinTrademark.setAdapter(adapterTrademarks);
         editTrademark.setAdapter(adapterTrademarks);
-        //EINDE TEST
+        // TODO EINDE TEST
 
         String imageName;
         Bitmap bmp;
@@ -551,8 +525,8 @@ public class AddCoasterActivity extends AppCompatActivity
                 }
 
                 if (startCoaster.getCoasterCategoryIDs().size() > 0) {
-                    for (int i = 0; i < CoasterApplication.collectionData.lstCoasterTypes.size(); i++) {
-                        if (CoasterApplication.collectionData.lstCoasterTypes.get(i).getCoasterTypeID() == startCoaster.getCoasterCategoryIDs().get(0)) {
+                    for (int i = 0; i < collectionData.lstCoasterTypes.size(); i++) {
+                        if (collectionData.lstCoasterTypes.get(i).getCoasterTypeID() == startCoaster.getCoasterCategoryIDs().get(0)) {
                             spinCoasterType.setSelection(i);
                             break;
                         }
@@ -561,7 +535,7 @@ public class AddCoasterActivity extends AppCompatActivity
 
                 clearSeriesTrademark();
 
-                for (Series s : CoasterApplication.collectionData.lstSeries) {
+                for (Series s : collectionData.lstSeries) {
                     if ((s.getSeriesID() == -1)
                             || (s.getTrademarkID() == startCoaster.getCoasterTrademarkID())) {
                         lstSeriesTrademark.add(s);
@@ -589,9 +563,9 @@ public class AddCoasterActivity extends AppCompatActivity
                     }
                 }
 
-                for (int i = 0; i < CoasterApplication.collectionData.lstShapes.size(); i++) {
-                    if (CoasterApplication.collectionData.lstShapes.get(i).getShapeID() == startCoaster.getCoasterMainShape()) {
-                        String shapeName = CoasterApplication.collectionData.lstShapes.get(i).getName();
+                for (int i = 0; i < collectionData.lstShapes.size(); i++) {
+                    if (collectionData.lstShapes.get(i).getShapeID() == startCoaster.getCoasterMainShape()) {
+                        String shapeName = collectionData.lstShapes.get(i).getName();
 
                         editShape.setText(shapeName);
 
@@ -729,27 +703,24 @@ public class AddCoasterActivity extends AppCompatActivity
 
         clearTrademarks();
 
-        lstTrademarks.addAll(CoasterApplication.collectionData.mapTrademarks.values());
+        lstTrademarks.addAll(collectionData.mapTrademarks.values());
 
         Log.i(LOG_TAG, "lstTrademarks: size: " + lstTrademarks.size());
 
         adapterTrademarks = new ArrayAdapter<> (this, android.R.layout.simple_spinner_dropdown_item, lstTrademarks);
 
-//        spinTrademark.setAdapter(adapterTrademarks);
-//        editTrademark.setAdapter(adapterTrademarks);
-
-        ArrayAdapter<CoasterType> adapterCoasterTypes = new ArrayAdapter<> (this, android.R.layout.simple_spinner_dropdown_item, CoasterApplication.collectionData.lstCoasterTypes);
+        ArrayAdapter<CoasterType> adapterCoasterTypes = new ArrayAdapter<> (this, android.R.layout.simple_spinner_dropdown_item, collectionData.lstCoasterTypes);
         spinCoasterType.setAdapter(adapterCoasterTypes);
 
         adapterSeries = new ArrayAdapter<> (this, android.R.layout.simple_spinner_dropdown_item, lstSeriesTrademark);
         spinSeries.setAdapter(adapterSeries);
 
-        lstCollectors = new ArrayList<>(CoasterApplication.collectionData.mapCollectors.values());
+        lstCollectors = new ArrayList<>(collectionData.mapCollectors.values());
 
         ArrayAdapter<Collector> adapterCollectors = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, lstCollectors);
         editCollectorName.setAdapter(adapterCollectors);
 
-        adapterShapes = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, CoasterApplication.collectionData.lstShapes);
+        adapterShapes = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, collectionData.lstShapes);
         editShape.setAdapter(adapterShapes);
 
         ArrayAdapter<ImagePossibility> adapterImageFront = new ArrayAdapter<> (this, android.R.layout.simple_spinner_dropdown_item, CoasterDB.getImagePossibilities(true));
@@ -837,7 +808,7 @@ public class AddCoasterActivity extends AppCompatActivity
         layoutMeas1.setVisibility(View.GONE);
         layoutMeas2.setVisibility(View.GONE);
 
-        for (Shape s : CoasterApplication.collectionData.lstShapes) {
+        for (Shape s : collectionData.lstShapes) {
             if (shapeName.equals(s.getName())) {
                 txtShapeMeas1.setText(s.getNameMeasurement1() + ":");
                 layoutMeas1.setVisibility(View.VISIBLE);
@@ -1247,7 +1218,7 @@ public class AddCoasterActivity extends AppCompatActivity
     }
 
     private long checkCollectorInput(String collectorName) {
-        for (Collector c : CoasterApplication.collectionData.mapCollectors.values()) {
+        for (Collector c : collectionData.mapCollectors.values()) {
             if (c.getDisplayName().equals(collectorName)) {
                 return c.getCollectorID();
             }
@@ -1257,7 +1228,7 @@ public class AddCoasterActivity extends AppCompatActivity
     }
 
     private long checkShapeInput(String shapeName) {
-        for (Shape sh : CoasterApplication.collectionData.lstShapes) {
+        for (Shape sh : collectionData.lstShapes) {
             if (sh.getName().equals(shapeName)) {
                 return sh.getShapeID();
             }
@@ -1280,6 +1251,8 @@ public class AddCoasterActivity extends AppCompatActivity
         dbHelper.removeCoasterFromDB(startCoaster.getCoasterID());
 
         CoasterListActivity.refreshCoasterList = true;
+
+        CoasterApplication.currentCoasterID = startCoaster.getCoasterID();
 
         onBackPressed();
     }
@@ -1336,13 +1309,18 @@ public class AddCoasterActivity extends AppCompatActivity
                 e.printStackTrace();
             }
 
-            if (startCoasterID != endCoaster.getCoasterID()) {
+            collectionData.mapCoasters.put(endCoaster.getCoasterID(), endCoaster);
+
+            // if (startCoasterID != endCoaster.getCoasterID()) {
+            if (!startCoaster.isFetchedFromDB()) {
                 CoasterListActivity.refreshCoasterList = true;
+            } else {
+                collectionData.setNotifyAdapter(true);
             }
 
-            CoasterApplication.collectionData.mapCoasters.put(endCoaster.getCoasterID(), endCoaster);
+            CoasterApplication.currentCoasterID = endCoaster.getCoasterID();
 
-            CoasterApplication.collectionData.setNotifyAdapter(true);
+            Log.i(LOG_TAG, "CoasterApplication.currentCoasterID SET to: " + CoasterApplication.currentCoasterID);
 
             CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorlayout);
 

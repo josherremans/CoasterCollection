@@ -10,4 +10,6 @@ import josh.android.coastercollection.bo.CoasterCollectionData;
 public class CoasterApplication extends Application {
 
     public static CoasterCollectionData collectionData = new CoasterCollectionData();
+
+    public static long currentCoasterID = -1;
 }

@@ -3,6 +3,8 @@ package josh.android.coastercollection.bo;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
+import josh.android.coastercollection.application.CoasterApplication;
+
 /**
  * Created by Jos on 27/01/2017.
  */
@@ -37,6 +39,15 @@ public class CoasterCollectionData {
         notifyAdapter = false;
 
         return notify;
+    }
+
+    public long getNextFreeCoasterID(long coasterID) {
+        long nextFreeCoasterID = coasterID;
+
+        while (CoasterApplication.collectionData.mapCoasters.containsKey(++nextFreeCoasterID)) {
+        }
+
+        return nextFreeCoasterID;
     }
 
     public void clearAll() {

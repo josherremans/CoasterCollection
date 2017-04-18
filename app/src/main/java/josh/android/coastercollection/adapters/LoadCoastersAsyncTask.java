@@ -20,7 +20,6 @@ public class LoadCoastersAsyncTask extends AsyncTask<Void, Integer, CoasterColle
 
     private CoasterCollectionDBHelper dbHelper;
     private boolean isReverseOrder;
-//    private CoasterCollectionData data;
     private CoasterCollectionAdapter adapter;
 
     private ProgressBar progressBar;
@@ -28,7 +27,6 @@ public class LoadCoastersAsyncTask extends AsyncTask<Void, Integer, CoasterColle
 
     public LoadCoastersAsyncTask(CoasterCollectionDBHelper dbHelper, CoasterCollectionAdapter adapter, boolean isReverseOrder, ProgressBar progressBar, Toolbar toolbar) {
         this.dbHelper = dbHelper;
-//        this.data = data;
         this.isReverseOrder = isReverseOrder;
         this.adapter = adapter;
 
@@ -79,8 +77,10 @@ public class LoadCoastersAsyncTask extends AsyncTask<Void, Integer, CoasterColle
 
         publishProgress(5);
 
-//        CoasterApplication.collectionData.mapCoasters.clear();
-//        CoasterApplication.collectionData.mapCoasters.putAll(dbHelper.getCoasterCollectionFromDB(null, isReverseOrder));
+        if (isCancelled()) {
+            return CoasterApplication.collectionData;
+        }
+
         dbHelper.getCoasterCollectionFromDB(null, isReverseOrder);
         Log.i(LOG_TAG, "data.lstCoasters: size=" + CoasterApplication.collectionData.mapCoasters.size());
 

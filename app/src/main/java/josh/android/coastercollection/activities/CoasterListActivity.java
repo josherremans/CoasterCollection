@@ -1,9 +1,15 @@
 package josh.android.coastercollection.activities;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.DataSetObserver;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -21,23 +27,35 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import josh.android.coastercollection.R;
 import josh.android.coastercollection.adapters.CoasterCollectionAdapter;
 import josh.android.coastercollection.adapters.LoadCoastersAsyncTask;
 import josh.android.coastercollection.application.CoasterApplication;
+import josh.android.coastercollection.bl.ImageManager;
 import josh.android.coastercollection.bo.Coaster;
 import josh.android.coastercollection.bo.Trademark;
 import josh.android.coastercollection.databank.CoasterCollectionDBHelper;
 
 import static josh.android.coastercollection.application.CoasterApplication.collectionData;
 
+
 public class CoasterListActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private final static String LOG_TAG = "COASTER_LIST_ACTIVITY";
+
+    //keep track of camera capture intent
+    private final static int CAMERA_CAPTURE = 11;
+
+    //keep track of cropping intent
+    private final static int PIC_CROP = 21;
 
     private CoasterCollectionDBHelper dbHelper = new CoasterCollectionDBHelper(this);
 
@@ -53,7 +71,11 @@ public class CoasterListActivity extends AppCompatActivity
     private boolean isReverseOrder = false;
     private String listViewType = "";
 
+    private String cameraImageTimestamp = "";
+
     public static boolean refreshCoasterList = true;
+
+    private AsyncTask loadNewDataTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,13 +118,29 @@ public class CoasterListActivity extends AppCompatActivity
             lstvwCoasterCollection.setDividerHeight(5);
         }
 
-        lstvwCoasterCollection.setOnItemLongClickListener(new CoasterOnItemLongClickListener());
-
         coasterCollectionAdapter = new CoasterCollectionAdapter(this, listViewType);
 
-        lstvwCoasterCollection.setAdapter(coasterCollectionAdapter);
+        coasterCollectionAdapter.registerDataSetObserver(new CoasterCollectionDataSetObserver());
 
         searchView = (SearchView) findViewById(R.id.editTrademarkSearch);
+    }
+
+    @Override
+    public void onRestart() {
+        super.onRestart();
+
+        Log.i(LOG_TAG, "IN onRestart");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        Log.i(LOG_TAG, "IN onStart");
+
+        lstvwCoasterCollection.setOnItemLongClickListener(new CoasterOnItemLongClickListener());
+
+        lstvwCoasterCollection.setAdapter(coasterCollectionAdapter);
 
         searchView.setVisibility(View.GONE);
 
@@ -140,16 +178,48 @@ public class CoasterListActivity extends AppCompatActivity
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        Log.i(LOG_TAG, "IN onPause!");
+
+        Long idObj = (Long) coasterCollectionAdapter.getItem(lstvwCoasterCollection.getFirstVisiblePosition());
+
+        if (idObj != null) {
+            CoasterApplication.currentCoasterID = (long) idObj;
+        } else {
+            CoasterApplication.currentCoasterID = -1;
+        }
+
+        Log.i(LOG_TAG, "CoasterApplication.currentCoasterID SET to: " + CoasterApplication.currentCoasterID);
+
+        loadNewDataTask.cancel(true);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.i(LOG_TAG, "IN onStop!");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.i(LOG_TAG, "IN onDestroy!");
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
-        Log.i(LOG_TAG, "onResume!");
+        Log.i(LOG_TAG, "IN onResume!");
 
         // *** Hide SoftInputPanel:
 //        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 //
 //        imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
 
-        if (collectionData.notifyAdapter()) {
+        Log.i(LOG_TAG, "onResume! notify=" + collectionData.notifyAdapter());
+
+        if (CoasterApplication.collectionData.notifyAdapter()) {
             coasterCollectionAdapter.notifyDataSetChanged();
         }
 
@@ -168,13 +238,21 @@ public class CoasterListActivity extends AppCompatActivity
             // *** Fetch data from DB:
 
             loadNewData(this.trademarkFilter);
+        } else {
+            if (CoasterApplication.currentCoasterID != -1) {
+                Log.i(LOG_TAG, "Scroll to ID " + CoasterApplication.currentCoasterID);
+
+                int pos = coasterCollectionAdapter.getPositionOfCoaster(CoasterApplication.currentCoasterID);
+
+                lstvwCoasterCollection.setSelection(pos);
+            }
         }
 
         Log.i(LOG_TAG, "END onResume!");
     }
 
     private void loadNewData(String trademarkFilter) {
-        new LoadCoastersAsyncTask(dbHelper, coasterCollectionAdapter, isReverseOrder, progressBar, toolbar).execute();
+        loadNewDataTask = new LoadCoastersAsyncTask(dbHelper, coasterCollectionAdapter, isReverseOrder, progressBar, toolbar).execute();
     }
 
     private ArrayList<Long> getCoasterIds(String filterByTrademark) {
@@ -203,9 +281,7 @@ public class CoasterListActivity extends AppCompatActivity
     }
 
     private ArrayList<Long> getTrademarkIdList(String filterByTrademark) {
-//        LinkedHashMap<Long, Trademark> mapTrademarks = dbHelper.getTrademarksFromDB();
-
-        ArrayList<Trademark> lstTrademarks = new ArrayList<>(CoasterApplication.collectionData.mapTrademarks.values());
+        ArrayList<Trademark> lstTrademarks = new ArrayList<>(collectionData.mapTrademarks.values());
 
         ArrayList<Long> lstTrademarkIds = new ArrayList<>();
 
@@ -251,7 +327,6 @@ public class CoasterListActivity extends AppCompatActivity
 
         Snackbar snackbar;
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             snackbar = Snackbar.make(coordinatorLayout, "You clicked Settings", Snackbar.LENGTH_LONG);
 
@@ -307,10 +382,7 @@ public class CoasterListActivity extends AppCompatActivity
         Snackbar snackbar;
 
         if (id == R.id.nav_camera) {
-            // Handle the camera action
-            snackbar = Snackbar.make(coordinatorLayout, "You clicked Camera", Snackbar.LENGTH_LONG);
-
-            snackbar.show();
+            performTakePicture(CAMERA_CAPTURE);
         } else if (id == R.id.nav_gallery) {
             snackbar = Snackbar.make(coordinatorLayout, "You clicked Gallery", Snackbar.LENGTH_LONG);
 
@@ -335,13 +407,126 @@ public class CoasterListActivity extends AppCompatActivity
         return true;
     }
 
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        String imageName, path;
+        File imageFile;
+        Uri imageUri;
+        Bitmap bm;
+
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case CAMERA_CAPTURE:
+                    imageName = "Coaster_" + cameraImageTimestamp + "_camera.jpg";
+
+                    path = ImageManager.DIR_TEMP_IMAGES + File.separator + imageName;
+
+                    imageFile = new File(path);
+                    imageUri = Uri.fromFile(imageFile);
+
+                    //carry out the crop operation
+                    performCrop(imageUri, PIC_CROP);
+
+                    break;
+
+                case PIC_CROP:
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    }
+
+    private void performTakePicture(int requestCode) {
+        try {
+            cameraImageTimestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+
+            String imageName = "Coaster_" + cameraImageTimestamp + "_camera.jpg";
+            String path = ImageManager.DIR_TEMP_IMAGES + File.separator + imageName;
+
+            File file = new File(path);
+            Uri outputFileUri = Uri.fromFile(file);
+
+            //use standard intent to capture an image
+            Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+            captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+
+            //we will handle the returned data in onActivityResult
+            startActivityForResult(captureIntent, requestCode);
+        } catch (ActivityNotFoundException ex) {
+            //display an error message
+            String errorMessage = "Whoops - your device doesn't support capturing images!";
+
+            Toast.makeText(CoasterListActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+
+            Log.e(LOG_TAG, errorMessage);
+        }
+    }
+
+    private void performCrop(Uri picUri, int requestCode) {
+        try {
+            //call the standard crop action intent (the user device may not support it)
+            Intent cropIntent = new Intent("com.android.camera.action.CROP");
+
+            //indicate image type and Uri
+            cropIntent.setDataAndType(picUri, "image/*");
+
+            //set crop properties
+            cropIntent.putExtra("crop", "true");
+
+            // don't retrieve data on return
+            cropIntent.putExtra("return-data", false);
+
+            String imageName = "Coaster_" + cameraImageTimestamp + "_camera.jpg";
+            String path = ImageManager.DIR_TEMP_IMAGES + File.separator + imageName;
+
+            File file = new File(path);
+            cropIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
+
+            //start the activity - we handle returning in onActivityResult
+            startActivityForResult(cropIntent, requestCode);
+        } catch(ActivityNotFoundException ex) {
+            //display an error message
+            String errorMessage = "Whoops - your device doesn't support the crop action!";
+
+            Toast.makeText(CoasterListActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+
+            throw ex;
+        }
+    }
+
+    /*
+    ** INNERCLASS: CoasterCollectionDataSetObserver
+     */
+    private class CoasterCollectionDataSetObserver extends DataSetObserver {
+        @Override
+        public void onChanged() {
+            super.onChanged();
+
+            Log.i(LOG_TAG, "DataSetObserver: Scroll to ID " + CoasterApplication.currentCoasterID);
+
+            int pos = coasterCollectionAdapter.getPositionOfCoaster(CoasterApplication.currentCoasterID);
+
+            lstvwCoasterCollection.setSelection(pos);
+        }
+    }
+
     /*
     ** INNERCLASS: FabOnClickListener
      */
     private class FabOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
-            startActivity(new Intent(CoasterListActivity.this, AddCoasterActivity.class));
+            long currentCoasterID = (long) coasterCollectionAdapter.getItem(lstvwCoasterCollection.getFirstVisiblePosition());
+
+            long nextFreeCoasterID =  collectionData.getNextFreeCoasterID(currentCoasterID);
+
+            Intent newCoasterIntent = new Intent(CoasterListActivity.this, AddCoasterActivity.class);
+
+            newCoasterIntent.putExtra("extraNewCoasterID", nextFreeCoasterID);
+
+            startActivity(newCoasterIntent);
         }
     }
 

@@ -3,7 +3,6 @@ package josh.android.coastercollection.adapters;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,7 +78,47 @@ public class CoasterCollectionAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        return lstCoasterIds.get(position);
+        if (lstCoasterIds.size() > 0) {
+            return lstCoasterIds.get(position);
+        } else {
+            return null;
+        }
+    }
+
+    public int getPositionOfCoaster(long coasterID) {
+        boolean asc = (lstCoasterIds.get(0)<lstCoasterIds.get(lstCoasterIds.size()-1) ? true : false);
+
+        if (asc) {
+            for (int i=0; i<lstCoasterIds.size(); i++) {
+                if (lstCoasterIds.get(i) == coasterID) {
+                    return i;
+                } else {
+                    if (lstCoasterIds.get(i) > coasterID) {
+                        if (i>0) {
+                            return --i;
+                        } else {
+                            return 0;
+                        }
+                    }
+                }
+            }
+        } else {
+            for (int i=0; i<lstCoasterIds.size(); i++) {
+                if (lstCoasterIds.get(i) == coasterID) {
+                    return i;
+                } else {
+                    if (lstCoasterIds.get(i) < coasterID) {
+                        if (i>0) {
+                            return --i;
+                        } else {
+                            return 0;
+                        }
+                    }
+                }
+            }
+        }
+
+        return 0;
     }
 
     public Coaster getRealItem(int position) {
@@ -97,8 +136,6 @@ public class CoasterCollectionAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-//        Log.i("COASTER ADAPTER", "getView: pos: " + position);
-
         View rowView = convertView;
 
         Coaster coaster = getRealItem(position);
@@ -115,27 +152,9 @@ public class CoasterCollectionAdapter extends BaseAdapter {
 
         // Translate trademark id in trademark name:
 
-//        String trademark = "???";
-//
-//        for (Trademark tr : CoasterApplication.collectionData.lstTrademarks) {
-//            if (tr.getTrademarkID() == coaster.getCoasterTrademarkID()) {
-//                trademark = tr.getTrademark();
-//                break;
-//            }
-//        }
-
         String trademark = CoasterApplication.collectionData.mapTrademarks.get(coaster.getCoasterTrademarkID()).getTrademark();
 
         // Translate collector id in collector name:
-
-//        String collectorName = "???";
-//
-//        for (Collector col : CoasterApplication.collectionData.mapCollectors.values()) {
-//            if (col.getCollectorID() == coaster.getCollectorID()) {
-//                collectorName = col.getDisplayName();
-//                break;
-//            }
-//        }
 
         String collectorName = CoasterApplication.collectionData.mapCollectors.get(coaster.getCollectorID()).getDisplayName();
 
@@ -336,35 +355,6 @@ public class CoasterCollectionAdapter extends BaseAdapter {
             }
 
             cx.startActivity(imgIntent);
-        }
-    }
-
-    private class ImageSwitcherOnClickListener implements View.OnClickListener {
-        private Coaster coaster;
-        private boolean switcher = true;
-        private ImageView destinyImage;
-
-        public ImageSwitcherOnClickListener(Coaster coaster, ImageView destinyImage) {
-            this.coaster = coaster;
-            this.destinyImage = destinyImage;
-        }
-
-        @Override
-        public void onClick(View v) {
-            switcher = !switcher;
-
-            v.setTag(R.id.TAG_SWITCHER, switcher);
-            destinyImage.setTag(R.id.TAG_SWITCHER, switcher);
-
-            Bitmap bmp;
-
-            if ((boolean) v.getTag(R.id.TAG_SWITCHER)) {
-                bmp = ImageManager.getBitmap(coaster.getCoasterImageFrontName(), 250);
-            } else {
-                bmp = ImageManager.getBitmap(coaster.getCoasterImageBackName(), 250);
-            }
-
-            destinyImage.setImageBitmap(bmp);
         }
     }
 }

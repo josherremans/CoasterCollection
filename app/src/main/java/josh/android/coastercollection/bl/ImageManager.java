@@ -38,7 +38,6 @@ public class ImageManager {
 
     // Folders:
     public final static String DIR_TEMP_IMAGES = "/mnt/extSdCard/Android/data/josh.android.coastercollection/Coasters/temp";
-//    public final static String DIR_DEF_IMAGES = "/mnt/extSdCard/Coasters/images";
     public final static String DIR_DEF_IMAGES = "/mnt/extSdCard/Android/data/josh.android.coastercollection/Coasters/images";
 
 
@@ -57,7 +56,6 @@ public class ImageManager {
 
     private static int currentImageCacheIndex = 0;
 
-//    public void load(String filePath, ImageView v) {
     public void load(String fileName, String filePath, ImageView v){
         if(cancelPotentialSDLoad(fileName, filePath, v)) {
             SDLoadImageTask task = new SDLoadImageTask(v);
@@ -78,12 +76,9 @@ public class ImageManager {
         return photo;
         */
 
-        Log.i(LOG_TAG, "BEGIN: currentImageCacheIndex=" + currentImageCacheIndex + ", size imageCacheHistList=" + imageCacheHistList.size());
-
-        Log.i(LOG_TAG, "Searching in cache: " + fileName);
+//        Log.i(LOG_TAG, "BEGIN: currentImageCacheIndex=" + currentImageCacheIndex + ", size imageCacheHistList=" + imageCacheHistList.size());
 
         if (imageCache.containsKey(fileName)) {
-            Log.i(LOG_TAG, "END: FOUND in cache: " + fileName);
             return imageCache.get(fileName);
         }
 
@@ -111,7 +106,7 @@ public class ImageManager {
 
         currentImageCacheIndex++;
 
-        Log.i(LOG_TAG, "END: size imageCacheHistList=" + imageCacheHistList.size());
+//        Log.i(LOG_TAG, "END: size imageCacheHistList=" + imageCacheHistList.size());
 
         return myBitmap;
     }
