@@ -84,6 +84,9 @@
     <string name="lblMeas1">Meas1:</string>
     <string name="lblMeas2">Meas2:</string>
     <string name="lblMeasUnit">mm</string>
+    <string name="lbl_on_crash_title">Unexpected fault</string>
+    <string name="lbl_on_crash_message">This application has stopped unexpectedly.</string>
+    <string name="lbl_on_crash_details_title">Details</string>
 
     <string name="hint_trademark_search">Filter Trademark</string>
     <string name="hint_series_search">Filter Series</string>
@@ -102,4 +105,8 @@
     <string name="title_activity_add_trademark">AddTrademarkActivity</string>
 
     <string name="dialog_delete_coaster_text">Delete this coaster?</string>
+
+    <string name="btn_on_crash_details">Details</string>
+    <string name="btn_on_crash_stop_app">Stop</string>
+    <string name="btn_ok">Ok</string>
 </resources>
