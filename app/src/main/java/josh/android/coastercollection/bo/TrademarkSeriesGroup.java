@@ -9,7 +9,7 @@ import java.util.List;
 
 public class TrademarkSeriesGroup {
     public String trademark;
-    public final List<String> series = new ArrayList<String>();
+    public final List<Series> series = new ArrayList<>();
 
     public TrademarkSeriesGroup(String trademark) {
         this.trademark = trademark;

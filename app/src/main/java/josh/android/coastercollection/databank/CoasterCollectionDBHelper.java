@@ -551,6 +551,7 @@ public class CoasterCollectionDBHelper extends SQLiteOpenHelper {
 
         String whereClause = null;
         String whereArgs[] = null;
+        String orderByClause = null;
 
         if (trademarkID != -1) {
             whereClause = CoasterCollectionDBContract.SeriesEntry.COLUMN_TRADEMARK_ID + "=?";
@@ -558,7 +559,10 @@ public class CoasterCollectionDBHelper extends SQLiteOpenHelper {
             whereArgs[0] = String.valueOf(trademarkID);
         }
 
-        Cursor cursor = database.query(CoasterCollectionDBContract.SeriesEntry.TABLE_NAME, selectColumns, whereClause, whereArgs, null, null, null);
+        orderByClause = CoasterCollectionDBContract.SeriesEntry.COLUMN_TRADEMARK_ID + " asc";
+        orderByClause += ", " + CoasterCollectionDBContract.SeriesEntry.COLUMN_SERIES + " asc";
+
+        Cursor cursor = database.query(CoasterCollectionDBContract.SeriesEntry.TABLE_NAME, selectColumns, whereClause, whereArgs, null, null, orderByClause);
 
         cursor.moveToFirst();
 

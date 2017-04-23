@@ -104,7 +104,7 @@ public class SeriesListActivity extends AppCompatActivity
                 lstTrademarkSeriesGroup.append(i++, group);
             }
 
-            group.series.add(s.getSeries());
+            group.series.add(s);
         }
 
         seriesAdapter = new SeriesExpandableListAdapter(this, lstTrademarkSeriesGroup);

@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import josh.android.coastercollection.R;
+import josh.android.coastercollection.bo.Series;
 import josh.android.coastercollection.bo.TrademarkSeriesGroup;
 
 /**
@@ -43,22 +44,32 @@ public class SeriesExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getChildView(int groupPosition, final int childPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
-        final String children = (String) getChild(groupPosition, childPosition);
+        Series children = (Series) getChild(groupPosition, childPosition);
         TextView text = null;
+
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.item_series_list_details, null);
         }
 
         text = (TextView) convertView.findViewById(R.id.textView1);
-        text.setText(children);
+
+        String str = children.getSeries();
+
+        if (children.getMaxNumber() > 0) {
+            str = str + " (#" + children.getMaxNumber() + ")";
+        }
+
+        text.setText(str);
+
+        final String fstr = str;
 
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(activity, children,
-                        Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, fstr, Toast.LENGTH_SHORT).show();
             }
         });
+
         return convertView;
     }
 
