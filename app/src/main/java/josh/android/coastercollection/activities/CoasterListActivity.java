@@ -17,13 +17,13 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -46,7 +46,7 @@ import josh.android.coastercollection.databank.CoasterCollectionDBHelper;
 import static josh.android.coastercollection.application.CoasterApplication.collectionData;
 
 
-public class CoasterListActivity extends AppCompatActivity
+public class CoasterListActivity extends FabBaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private final static String LOG_TAG = "COASTER_LIST_ACTIVITY";
@@ -89,8 +89,10 @@ public class CoasterListActivity extends AppCompatActivity
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new FabOnClickListener());
+
+        setFabVisible();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -117,6 +119,19 @@ public class CoasterListActivity extends AppCompatActivity
         } else {
             lstvwCoasterCollection.setDividerHeight(5);
         }
+
+        lstvwCoasterCollection.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+                    setFabVisible();
+                }
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+            }
+        });
 
         coasterCollectionAdapter = new CoasterCollectionAdapter(this, listViewType);
 

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -14,7 +13,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -39,27 +37,18 @@ import josh.android.coastercollection.bo.Series;
 import josh.android.coastercollection.bo.Trademark;
 import josh.android.coastercollection.bo.TrademarkSeriesGroup;
 
-public class SeriesListActivity extends AppCompatActivity
+public class SeriesListActivity extends FabBaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private final static String LOG_TAG = "SERIES_LIST_ACTIVITY";
-    private final static int TAG_INDEX = 1;
-
-    private final static int FAB_VISIBLE_TIMEOUT = 5000; // msec
 
     private SeriesExpandableListAdapter seriesAdapter;
-    private ArrayList<Trademark> filteredList = new ArrayList<>();
     private LinkedHashMap<Character, Integer> mapIndex;
 
     private ExpandableListView lstvwSeries;
     private SearchView searchView;
     private Toolbar toolbar;
 
-    private FloatingActionButton fab;
-    private Handler fabHandler = new Handler();
-    private FabRunnable fabRunnable = new FabRunnable();
-
-    private String trademarkFilter = null;
     private String listViewType = "";
 
     public static boolean refreshTrademarkList = true;
@@ -186,14 +175,6 @@ public class SeriesListActivity extends AppCompatActivity
 
             Log.i(LOG_TAG, "END onResume!");
 //        }
-    }
-
-    private void setFabVisible() {
-        fab.setVisibility(View.VISIBLE);
-
-        fabHandler.removeCallbacks(fabRunnable);
-
-        fabHandler.postDelayed(fabRunnable, FAB_VISIBLE_TIMEOUT);
     }
 
     private void createIndexMap(SparseArray<TrademarkSeriesGroup> lstTrademarkSeriesGroup) {
@@ -415,16 +396,6 @@ public class SeriesListActivity extends AppCompatActivity
         @Override
         public void onClick(View view) {
             startActivity(new Intent(SeriesListActivity.this, AddSeriesActivity.class));
-        }
-    }
-
-    /*
-    ** INNERCLASS: FabOnClickListener
-     */
-    private class FabRunnable implements Runnable {
-        @Override
-        public void run() {
-            fab.setVisibility(View.GONE);
         }
     }
 }

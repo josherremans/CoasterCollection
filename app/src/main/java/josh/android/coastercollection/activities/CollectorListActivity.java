@@ -13,7 +13,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -38,11 +37,10 @@ import josh.android.coastercollection.application.CoasterApplication;
 import josh.android.coastercollection.bo.Collector;
 import josh.android.coastercollection.bo.CollectorComparator;
 
-public class CollectorListActivity extends AppCompatActivity
+public class CollectorListActivity extends FabBaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private final static String LOG_TAG = "COLLECTOR_LIST_ACTIVITY";
-    private final static int TAG_INDEX = 1;
 
     private CollectorAdapter collectorAdapter;
     private ArrayList<Collector> filteredList = new ArrayList<>();
@@ -75,8 +73,10 @@ public class CollectorListActivity extends AppCompatActivity
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new FabOnClickListener());
+
+        setFabVisible();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -101,6 +101,8 @@ public class CollectorListActivity extends AppCompatActivity
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
                 if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+                    setFabVisible();
+
                     int i = lstvwCollectors.getFirstVisiblePosition();
 
                     setIndexPosition(((Collector) lstvwCollectors.getAdapter().getItem(i)).getDisplayName().toUpperCase().charAt(0));

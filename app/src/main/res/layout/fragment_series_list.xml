@@ -6,11 +6,11 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/layoutSeriesList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".activities.SeriesListActivity"
+        android:orientation="horizontal"
+        android:background="@color/colorOrangeLight"
         android:weightSum="100" >
 
         <ExpandableListView
@@ -18,6 +18,8 @@
             android:layout_weight="85"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:divider="@color/colorOrangeDark"
+            android:dividerHeight="0px"
             android:childDivider="@android:color/darker_gray"
             android:groupIndicator="@null">
         </ExpandableListView>
