@@ -2,6 +2,7 @@ package josh.android.coastercollection.adapters;
 
 import android.app.Service;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +12,9 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import josh.android.coastercollection.R;
+import josh.android.coastercollection.activities.GalleryActivity;
 import josh.android.coastercollection.bo.Collector;
+import josh.android.coastercollection.enums.IIntentExtras;
 
 /**
  * Created by Jos on 2/02/2017.
@@ -73,7 +76,7 @@ public class CollectorAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View rowView = convertView;
 
-        Collector collector = (Collector) getItem(position);
+        final Collector collector = (Collector) getItem(position);
 
         // reuse views
         if (rowView == null) {
@@ -97,6 +100,18 @@ public class CollectorAdapter extends BaseAdapter {
         if ((collector.getAlias() != null) && (collector.getAlias().length() > 0)) {
             holder.collectorAlias.setText(collector.getAlias());
         }
+
+        rowView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent galleryIntent = new Intent(cx, GalleryActivity.class);
+
+                galleryIntent.putExtra(IIntentExtras.EXTRA_COLLECTORID, collector.getCollectorID());
+                galleryIntent.putExtra(IIntentExtras.EXTRA_GALLERY_NAME, collector.getDisplayName());
+
+                cx.startActivity(galleryIntent);
+            }
+        });
 
         return rowView;
     }

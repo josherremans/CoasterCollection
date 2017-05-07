@@ -1,18 +1,19 @@
 package josh.android.coastercollection.adapters;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.CheckedTextView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import josh.android.coastercollection.R;
+import josh.android.coastercollection.activities.GalleryActivity;
 import josh.android.coastercollection.bo.Series;
 import josh.android.coastercollection.bo.TrademarkSeriesGroup;
+import josh.android.coastercollection.enums.IIntentExtras;
 
 /**
  * Created by Jos on 20/03/2017.
@@ -44,14 +45,14 @@ public class SeriesExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getChildView(int groupPosition, final int childPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
-        Series children = (Series) getChild(groupPosition, childPosition);
+        final Series children = (Series) getChild(groupPosition, childPosition);
         TextView text = null;
 
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.item_series_list_details, null);
         }
 
-        text = (TextView) convertView.findViewById(R.id.textView1);
+        text = (TextView) convertView.findViewById(R.id.txtExpListSeries);
 
         String str = children.getSeries();
 
@@ -66,7 +67,13 @@ public class SeriesExpandableListAdapter extends BaseExpandableListAdapter {
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(activity, fstr, Toast.LENGTH_SHORT).show();
+                Intent galleryIntent = new Intent(activity, GalleryActivity.class);
+
+                galleryIntent.putExtra(IIntentExtras.EXTRA_SERIESID, children.getSeriesID());
+                galleryIntent.putExtra(IIntentExtras.EXTRA_GALLERY_NAME, fstr);
+
+                activity.startActivity(galleryIntent);
+//                Toast.makeText(activity, fstr, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -109,10 +116,12 @@ public class SeriesExpandableListAdapter extends BaseExpandableListAdapter {
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.item_series_list_group, null);
         }
+
+        TextView txtGroup = (TextView) convertView.findViewById(R.id.txtGroup);
+
         TrademarkSeriesGroup group = (TrademarkSeriesGroup) getGroup(groupPosition);
 
-        ((CheckedTextView) convertView).setText(group.trademark);
-        ((CheckedTextView) convertView).setChecked(isExpanded);
+        txtGroup.setText(group.trademark);
 
         return convertView;
     }

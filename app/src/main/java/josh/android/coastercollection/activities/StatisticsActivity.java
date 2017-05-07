@@ -21,13 +21,8 @@ import josh.android.coastercollection.R;
 import josh.android.coastercollection.bo.CollectionHistoryMatrix;
 import josh.android.coastercollection.utils.Util;
 
-public class StatisticsActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class StatisticsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private final static String LOG_TAG = "STATISTICS_ACTIVITY";
-
-//    private CoasterCollectionDBHelper dbHelper;
-
-//    private TextView txtTitleTrademark;
 
     private CollectionHistoryMatrix stats;
 
@@ -41,12 +36,6 @@ public class StatisticsActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         stats = Util.createHistoryMatrix();
-
-        // *** Titla:
-
-//        txtTitleTrademark = (TextView) findViewById(txtTitleTrademark);
-
-//        txtTitleTrademark.setText(txtTitleTrademark.getText() + " " + nextTrademarkID);
 
         tableLayout = (TableLayout) findViewById(R.id.layoutTableStatistics);
     }
@@ -73,7 +62,7 @@ public class StatisticsActivity extends AppCompatActivity
     private void addTitleRow() {
         TableRow titleRow = new TableRow(this);
 
-        titleRow.setBackgroundResource(R.color.colorAccent);
+        titleRow.setBackgroundResource(R.color.colorStatisticsTitle);
 
         addNewColomnTextView(titleRow, " Year", true);
         addNewColomnTextView(titleRow, " Total", true);
@@ -98,9 +87,9 @@ public class StatisticsActivity extends AppCompatActivity
         TableRow yearRow = new TableRow(this);
 
         if (startColor) {
-            yearRow.setBackgroundResource(R.color.colorSpinnerGradientStart);
+            yearRow.setBackgroundResource(R.color.colorStatisticsRowLight);
         } else {
-            yearRow.setBackgroundResource(R.color.colorSpinnerGradientEnd);
+            yearRow.setBackgroundResource(R.color.colorStatisticsRowDark);
         }
 
         addNewColomnTextView(yearRow, "" + year, true);
@@ -141,6 +130,7 @@ public class StatisticsActivity extends AppCompatActivity
 
         v.setText(text);
         v.setTextSize(20);
+        v.setTextColor(getResources().getColor(R.color.colorWhite));
         v.setMinWidth(100);
         v.setGravity(Gravity.END);
 
@@ -156,7 +146,7 @@ public class StatisticsActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_add_coaster, menu);
+        getMenuInflater().inflate(R.menu.menu_statistics, menu);
         return true;
     }
 
@@ -172,22 +162,6 @@ public class StatisticsActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             Snackbar snackbar = Snackbar.make(coordinatorLayout, "You clicked Settings", Snackbar.LENGTH_LONG);
-
-            snackbar.show();
-
-            return true;
-        }
-
-        if (id == R.id.action_save) {
-            Snackbar snackbar = Snackbar.make(coordinatorLayout, "You clicked Save", Snackbar.LENGTH_LONG);
-
-            snackbar.show();
-
-            return true;
-        }
-
-        if (id == R.id.action_copy) {
-            Snackbar snackbar = Snackbar.make(coordinatorLayout, "You clicked Copy", Snackbar.LENGTH_LONG);
 
             snackbar.show();
 

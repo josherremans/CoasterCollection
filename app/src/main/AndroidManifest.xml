@@ -52,32 +52,41 @@
             android:theme="@style/FullscreenTheme" />
         <activity
             android:name=".activities.TrademarkListActivity"
-            android:label="@string/app_name_short"
+            android:label="@string/app_name_trademarks"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.SeriesListActivity"
-            android:label="@string/app_name_short"
+            android:label="@string/app_name_series"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.AddTrademarkActivity"
-            android:label="@string/app_name_short"
+            android:label="@string/app_name_trademarks"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".activities.CollectorListActivity"
-            android:label="@string/app_name_short"
+            android:label="@string/app_name_collectors"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.AddCollectorActivity"
-            android:label="@string/app_name_short"
+            android:label="@string/app_name_collectors"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".activities.AddSeriesActivity"
+            android:label="@string/app_name_series"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".activities.StatisticsActivity"
-            android:label="@string/app_name_short"
+            android:label="@string/app_name_statistics"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".activities.GalleryActivity"
+            android:label="@string/app_name_gallery"
             android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 

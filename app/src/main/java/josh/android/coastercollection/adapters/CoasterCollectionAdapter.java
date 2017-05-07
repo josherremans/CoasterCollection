@@ -17,12 +17,14 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import josh.android.coastercollection.R;
+import josh.android.coastercollection.activities.GalleryActivity;
 import josh.android.coastercollection.activities.ImageFullscreenActivity;
 import josh.android.coastercollection.application.CoasterApplication;
 import josh.android.coastercollection.bl.ImageManager;
 import josh.android.coastercollection.bo.Coaster;
 import josh.android.coastercollection.bo.Series;
 import josh.android.coastercollection.bo.Shape;
+import josh.android.coastercollection.enums.IIntentExtras;
 import josh.android.coastercollection.utils.Util;
 
 import static josh.android.coastercollection.bl.ImageManager.DIR_DEF_IMAGES;
@@ -138,7 +140,7 @@ public class CoasterCollectionAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View rowView = convertView;
 
-        Coaster coaster = getRealItem(position);
+        final Coaster coaster = getRealItem(position);
 
         // reuse views
         if (rowView == null) {
@@ -152,11 +154,11 @@ public class CoasterCollectionAdapter extends BaseAdapter {
 
         // Translate trademark id in trademark name:
 
-        String trademark = CoasterApplication.collectionData.mapTrademarks.get(coaster.getCoasterTrademarkID()).getTrademark();
+        final String trademark = CoasterApplication.collectionData.mapTrademarks.get(coaster.getCoasterTrademarkID()).getTrademark();
 
         // Translate collector id in collector name:
 
-        String collectorName = CoasterApplication.collectionData.mapCollectors.get(coaster.getCollectorID()).getDisplayName();
+        final String collectorName = CoasterApplication.collectionData.mapCollectors.get(coaster.getCollectorID()).getDisplayName();
 
         // Translate shape id in shape name:
 
@@ -183,6 +185,16 @@ public class CoasterCollectionAdapter extends BaseAdapter {
         ViewHolder holder = (ViewHolder) rowView.getTag();
 
         holder.coasterID.setText("" + coaster.getCoasterID());
+
+        if (coaster.getCoasterQuality() > 0) {
+            if (coaster.getCoasterQuality() <= 5) {
+                holder.coasterID.setTextColor(cx.getResources().getColor(R.color.colorQualityVeryBad));
+            } else if (coaster.getCoasterQuality() <= 8) {
+                holder.coasterID.setTextColor(cx.getResources().getColor(R.color.colorQualityBad));
+            } else {
+                holder.coasterID.setTextColor(cx.getResources().getColor(R.color.colorQualityGood));
+            }
+        }
 
         String strImgFront = coaster.getCoasterImageFrontName();
         holder.txtImgCoasterFront.setVisibility(View.GONE);
@@ -261,6 +273,18 @@ public class CoasterCollectionAdapter extends BaseAdapter {
 
         holder.trademark.setText(trademark);
 
+        holder.trademark.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent galleryIntent = new Intent(cx, GalleryActivity.class);
+
+                galleryIntent.putExtra(IIntentExtras.EXTRA_TRADEMARKID, coaster.getCoasterTrademarkID());
+                galleryIntent.putExtra(IIntentExtras.EXTRA_GALLERY_NAME, trademark);
+
+                cx.startActivity(galleryIntent);
+            }
+        });
+
         if (coaster.getCoasterSeriesID() == -1) {
             holder.layoutSeries.setVisibility(View.GONE);
         } else {
@@ -275,6 +299,20 @@ public class CoasterCollectionAdapter extends BaseAdapter {
             }
 
             holder.seriesName.setText(foundSeries.getSeries());
+
+            final Series fseries = foundSeries;
+
+            holder.seriesName.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent galleryIntent = new Intent(cx, GalleryActivity.class);
+
+                    galleryIntent.putExtra(IIntentExtras.EXTRA_SERIESID, coaster.getCoasterSeriesID());
+                    galleryIntent.putExtra(IIntentExtras.EXTRA_GALLERY_NAME, fseries.getSeries());
+
+                    cx.startActivity(galleryIntent);
+                }
+            });
         }
 
         if (showAllInfo) {
@@ -282,6 +320,18 @@ public class CoasterCollectionAdapter extends BaseAdapter {
 
             holder.donationDate.setText(dateFormatter.format(coaster.getCollectionDate()));
             holder.donor.setText(collectorName);
+
+            holder.donor.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent galleryIntent = new Intent(cx, GalleryActivity.class);
+
+                    galleryIntent.putExtra(IIntentExtras.EXTRA_COLLECTORID, coaster.getCollectorID());
+                    galleryIntent.putExtra(IIntentExtras.EXTRA_GALLERY_NAME, collectorName);
+
+                    cx.startActivity(galleryIntent);
+                }
+            });
 
             if (coaster.getCoasterMainShape() != -1) {
                 holder.shape.setText(foundShape.getName());

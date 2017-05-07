@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:padding="@dimen/padding0"
     android:minHeight="@dimen/min_height_item_coaster_list"
-    android:background="@color/colorSpinnerGradientStart" >
+    android:background="@color/colorOrangeLight" >
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical"
@@ -16,7 +16,7 @@
         android:paddingBottom="@dimen/padding5"
         android:paddingRight="@dimen/padding10"
         android:paddingLeft="@dimen/padding0"
-        android:background="@color/colorSpinnerGradientStart">
+        android:background="@color/colorOrangeLight">
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:orientation="horizontal"

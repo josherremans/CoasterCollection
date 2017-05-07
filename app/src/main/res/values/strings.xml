@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">Coaster Collection</string>
     <string name="app_name_short">Coasters</string>
+    <string name="app_name_series">Series</string>
+    <string name="app_name_trademarks">Trademarks</string>
+    <string name="app_name_collectors">Collectors</string>
+    <string name="app_name_statistics">Statistics</string>
+    <string name="app_name_gallery">Gallery</string>
 
     <string name="pref_sorting_settings">Sorting</string>
     <string name="pref_listview_type_settings">Type of items in list screen</string>
@@ -52,6 +57,7 @@
     <string name="lblSeriesNbr">Series Nbr:</string>
     <string name="lblTitleAddCoaster">Coaster</string>
     <string name="lblTitleAddTrademark">Trademark</string>
+    <string name="lblTitleAddSeries">Series</string>
     <string name="lblTitleAddCollector">Collector</string>
 
     <string name="lblOops">Oops!</string>
@@ -84,6 +90,7 @@
     <string name="lblMeas1">Meas1:</string>
     <string name="lblMeas2">Meas2:</string>
     <string name="lblMeasUnit">mm</string>
+    <string name="lblSeriesMaxNbr">Max nbr:</string>
     <string name="lbl_on_crash_title">Unexpected fault</string>
     <string name="lbl_on_crash_message">This application has stopped unexpectedly.</string>
     <string name="lbl_on_crash_details_title">Details</string>
@@ -93,6 +100,8 @@
     <string name="hint_collector_search">Filter Collector</string>
     <string name="hint_trademark">Trademark</string>
     <string name="hint_brewery">Brewery</string>
+    <string name="hint_series">Series</string>
+    <string name="hint_max_nbr">N</string>
     <string name="hint_collector_last_name">Last name</string>
     <string name="hint_collector_first_name">First name</string>
     <string name="hint_collector_initials">Initials</string>

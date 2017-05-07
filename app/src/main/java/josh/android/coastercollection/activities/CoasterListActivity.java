@@ -328,10 +328,6 @@ public class CoasterListActivity extends AppCompatActivity
         Snackbar snackbar;
 
         if (id == R.id.action_settings) {
-            snackbar = Snackbar.make(coordinatorLayout, "You clicked Settings", Snackbar.LENGTH_LONG);
-
-            snackbar.show();
-
             this.startActivity(new Intent(this, SettingsActivity.class));
 
             return true;
@@ -384,9 +380,7 @@ public class CoasterListActivity extends AppCompatActivity
         if (id == R.id.nav_camera) {
             performTakePicture(CAMERA_CAPTURE);
         } else if (id == R.id.nav_gallery) {
-            snackbar = Snackbar.make(coordinatorLayout, "You clicked Gallery", Snackbar.LENGTH_LONG);
-
-            snackbar.show();
+            startActivity(new Intent(CoasterListActivity.this, GalleryActivity.class));
         } else if (id == R.id.nav_slideshow) {
             snackbar = Snackbar.make(coordinatorLayout, "You clicked Slideshow", Snackbar.LENGTH_LONG);
 

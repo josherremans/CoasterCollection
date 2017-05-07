@@ -6,4 +6,9 @@ package josh.android.coastercollection.enums;
 
 public interface IIntentExtras {
     String EXTRA_STACKTRACE = "cat.ereza.customactivityoncrash.EXTRA_STACK_TRACE";
+
+    String EXTRA_SERIESID = "extraSeriesID";
+    String EXTRA_TRADEMARKID = "extraTrademarkID";
+    String EXTRA_COLLECTORID = "extraCollectorID";
+    String EXTRA_GALLERY_NAME = "extraGalleryName";
 }

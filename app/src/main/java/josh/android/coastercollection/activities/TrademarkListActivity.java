@@ -304,15 +304,13 @@ public class TrademarkListActivity extends AppCompatActivity
     }
 
     private void setIndexViewNormal(TextView v) {
-        v.setTextColor(getResources().getColor(R.color.black_overlay));
         v.setTypeface(null, Typeface.NORMAL);
         v.setBackgroundColor(getResources().getColor(R.color.side_index_background_color_normal));
     }
 
     private void setIndexViewCurrent(TextView v) {
-        v.setTextColor(getResources().getColor(R.color.colorAccent));
         v.setTypeface(null, Typeface.BOLD);
-        v.setBackgroundColor(getResources().getColor(R.color.side_index_background_color_light));
+        v.setBackgroundColor(getResources().getColor(R.color.side_index_background_color_current));
     }
 
     @Override

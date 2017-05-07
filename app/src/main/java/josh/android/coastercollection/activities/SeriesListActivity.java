@@ -3,7 +3,9 @@ package josh.android.coastercollection.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -21,11 +23,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
+import android.widget.AbsListView;
 import android.widget.ExpandableListView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import josh.android.coastercollection.R;
 import josh.android.coastercollection.adapters.SeriesExpandableListAdapter;
@@ -40,6 +45,8 @@ public class SeriesListActivity extends AppCompatActivity
     private final static String LOG_TAG = "SERIES_LIST_ACTIVITY";
     private final static int TAG_INDEX = 1;
 
+    private final static int FAB_VISIBLE_TIMEOUT = 5000; // msec
+
     private SeriesExpandableListAdapter seriesAdapter;
     private ArrayList<Trademark> filteredList = new ArrayList<>();
     private LinkedHashMap<Character, Integer> mapIndex;
@@ -48,10 +55,16 @@ public class SeriesListActivity extends AppCompatActivity
     private SearchView searchView;
     private Toolbar toolbar;
 
+    private FloatingActionButton fab;
+    private Handler fabHandler = new Handler();
+    private FabRunnable fabRunnable = new FabRunnable();
+
     private String trademarkFilter = null;
     private String listViewType = "";
 
     public static boolean refreshTrademarkList = true;
+
+    SparseArray<TrademarkSeriesGroup> lstTrademarkSeriesGroup = new SparseArray<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,8 +82,10 @@ public class SeriesListActivity extends AppCompatActivity
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new FabOnClickListener());
+
+        setFabVisible();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -85,7 +100,7 @@ public class SeriesListActivity extends AppCompatActivity
 
         lstvwSeries = (ExpandableListView) findViewById(R.id.lstSeries);
 
-        SparseArray<TrademarkSeriesGroup> lstTrademarkSeriesGroup = new SparseArray<>();
+        lstTrademarkSeriesGroup = new SparseArray<>();
 
         int i = 0;
         long previousTrId = 0;
@@ -111,70 +126,30 @@ public class SeriesListActivity extends AppCompatActivity
 
         lstvwSeries.setAdapter(seriesAdapter);
 
-//        lstvwSeries.setOnItemLongClickListener(new SeriesOnItemLongClickListener());
+        lstvwSeries.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+                    setFabVisible();
 
-//        lstvwSeries.setOnScrollListener(new AbsListView.OnScrollListener() {
-//            @Override
-//            public void onScrollStateChanged(AbsListView view, int scrollState) {
-//                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
-//                    int i = lstvwSeries.getFirstVisiblePosition();
-//
-//                    setIndexPosition(((Trademark) lstvwSeries.getAdapter().getItem(i)).getTrademark().charAt(0));
-//                }
-//            }
-//
-//            @Override
-//            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-//            }
-//        });
+                    int i = lstvwSeries.getFirstVisiblePosition();
+                    long p = lstvwSeries.getExpandableListPosition(i);
+                    int g = lstvwSeries.getPackedPositionGroup(p);
+
+//                    Toast.makeText(SeriesListActivity.this, "Pos: i=" + i + ", p=" + p + ", g=" + g, Toast.LENGTH_LONG).show();
+
+                    setIndexPosition(lstTrademarkSeriesGroup.get(g).trademark.toUpperCase().charAt(0));
+                }
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+            }
+        });
 
         searchView = (SearchView) findViewById(R.id.editSeriesSearch);
 
         searchView.setVisibility(View.GONE);
-
-//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String query) {
-//                SeriesListActivity.this.trademarkFilter = query;
-//
-//                filteredList.clear();
-//                filteredList.addAll(getTrademarkList(query));
-//
-//                seriesAdapter.notifyDataSetChanged();
-//
-//                toolbar.setSubtitle("(" + seriesAdapter.getCount() + ")");
-//
-//                createIndexMap(filteredList);
-//
-//                displayIndex();
-//
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String newText) {
-//                if ((newText == null) || (newText.length() == 0)) {
-//                    SeriesListActivity.this.trademarkFilter = null;
-//
-//                    searchView.setVisibility(View.GONE);
-//
-////                    int n = CoasterApplication.collectionData.lstTrademarks.size();
-//
-//                    filteredList.clear();
-//                    filteredList.addAll(collectionData.mapTrademarks.values()); //subList(1,n));
-//
-//                    seriesAdapter.notifyDataSetChanged();
-//
-//                    toolbar.setSubtitle("(" + seriesAdapter.getCount() + ")");
-//
-//                    createIndexMap(filteredList);
-//
-//                    displayIndex();
-//                }
-//
-//                return false;
-//            }
-//        });
     }
 
     @Override
@@ -195,145 +170,119 @@ public class SeriesListActivity extends AppCompatActivity
 
             listViewType = sharedPref.getString(SettingsFragment.PREF_KEY_LISTVIEW_TYPE, getResources().getStringArray(R.array.pref_listview_type_values)[0]); //"CardType");
 
-            // *** Fetch data from DB:
-
-//            filteredList.clear();
-//
-//            if (trademarkFilter != null) {
-//                filteredList.addAll(getTrademarkList(trademarkFilter));
-//            } else {
-////                int n = CoasterApplication.collectionData.lstTrademarks.size();
-//
-//                filteredList.addAll(collectionData.mapTrademarks.values()); //.subList(1,n));
-//            }
-
-//            trademarkAdapter = new TrademarkAdapter(this, listViewType, filteredList);
-
             if (listViewType.equals(getResources().getStringArray(R.array.pref_listview_type_values)[0])) { // "CardType"
                 lstvwSeries.setDivider(null);
             } else {
                 lstvwSeries.setDividerHeight(5);
             }
 
-//            lstvwTrademarks.setAdapter(trademarkAdapter);
-
             seriesAdapter.notifyDataSetChanged();
 
-            toolbar.setSubtitle("(" + seriesAdapter.getGroupCount() + ")");
+            toolbar.setSubtitle("(" + CoasterApplication.collectionData.lstSeries.size() + " / " + seriesAdapter.getGroupCount() + ")");
 
-//            createIndexMap(filteredList);
+            createIndexMap(lstTrademarkSeriesGroup);
 
-//            displayIndex();
+            displayIndex();
 
             Log.i(LOG_TAG, "END onResume!");
 //        }
     }
 
-//    private ArrayList<Trademark> getTrademarkList(String strFilter) {
-//        ArrayList<Trademark> lstFiltered = new ArrayList<>();
-//
-//        if ((strFilter != null) && (strFilter.length() > 0)) {
-////            int n = CoasterApplication.collectionData.lstTrademarks.size();
-//
-//            for (Trademark t : collectionData.mapTrademarks.values()) {
-//                if (t.getTrademark().regionMatches(true, 0, strFilter, 0, strFilter.length())) {
-//                    lstFiltered.add(t);
-//                }
-//            }
-//        }
-//
-//        return lstFiltered;
-//    }
+    private void setFabVisible() {
+        fab.setVisibility(View.VISIBLE);
 
-//    private void createIndexMap(ArrayList<Trademark> lstTrademark) {
-//        mapIndex = new LinkedHashMap<>();
-//
-//        for (int i=0; i<lstTrademark.size(); i++) {
-//            Trademark tr = lstTrademark.get(i);
-//            Character indexChar = tr.getTrademark().charAt(0);
-//
-//            if (indexChar < 'A') {
-//                indexChar = '#';
-//            }
-//
-//            if (indexChar > 'Z') {
-//                indexChar = '$';
-//            }
-//
-//            if (mapIndex.get(indexChar) == null)
-//                mapIndex.put(indexChar, i);
-//        }
-//    }
-//
-//    private void displayIndex() {
-//        LinearLayout indexLayout = (LinearLayout) findViewById(R.id.side_index);
-//
-//        indexLayout.removeAllViews();
-//
-//        TextView textView;
-//
-//        List<Character> indexList = new ArrayList<>(mapIndex.keySet());
-//
-//        for (int i=0; i<indexList.size(); i++) {
-//            Character indexChar = indexList.get(i);
-//
-//            textView = (TextView) getLayoutInflater().inflate(R.layout.side_index_list_item, null);
-//
-//            textView.setText(indexChar.toString());
-//            textView.setTag(R.id.TAG_INDEX, indexChar);
-//
-//            if (i == 0) {
-//                setIndexViewCurrent(textView);
-//            }
-//
-//            textView.setOnClickListener(new IndexOnClickListener());
-//            indexLayout.addView(textView);
-//        }
-//    }
+        fabHandler.removeCallbacks(fabRunnable);
 
-//    private void setIndexPosition(Character c) {
-//        Character indexChar = c;
-//
-//        if (!(c.equals('#') || c.equals('$'))) {
-//            if (c < 'A') {
-//                indexChar = '#';
-//            }
-//
-//            if (c > 'Z') {
-//                indexChar = '$';
-//            }
-//        }
-//
-//        Log.i(LOG_TAG, "setIndexPosition on char: " + c + ", indexChar: " + indexChar);
-//
-//        LinearLayout indexLayout = (LinearLayout) findViewById(R.id.side_index);
-//
-//        final int childCount = indexLayout.getChildCount();
-//
-//        for (int i = 0; i < childCount; i++) {
-//            TextView v = (TextView) indexLayout.getChildAt(i);
-//
-//            if (v.getTag(R.id.TAG_INDEX).equals(indexChar)) {
-//                Log.i(LOG_TAG, "TAG gevonden!");
-//                setIndexViewCurrent(v);
-//            } else {
-//                Log.i(LOG_TAG, "TAG " + v.getTag(R.id.TAG_INDEX));
-//                setIndexViewNormal(v);
-//            }
-//        }
-//    }
+        fabHandler.postDelayed(fabRunnable, FAB_VISIBLE_TIMEOUT);
+    }
 
-//    private void setIndexViewNormal(TextView v) {
-//        v.setTextColor(getResources().getColor(R.color.black_overlay));
-//        v.setTypeface(null, Typeface.NORMAL);
-//        v.setBackgroundColor(getResources().getColor(R.color.side_index_background_color_normal));
-//    }
-//
-//    private void setIndexViewCurrent(TextView v) {
-//        v.setTextColor(getResources().getColor(R.color.colorAccent));
-//        v.setTypeface(null, Typeface.BOLD);
-//        v.setBackgroundColor(getResources().getColor(R.color.side_index_background_color_light));
-//    }
+    private void createIndexMap(SparseArray<TrademarkSeriesGroup> lstTrademarkSeriesGroup) {
+        mapIndex = new LinkedHashMap<>();
+
+        for (int i=0; i<lstTrademarkSeriesGroup.size(); i++) {
+            TrademarkSeriesGroup t = lstTrademarkSeriesGroup.get(i);
+            Character indexChar = t.trademark.toUpperCase().charAt(0);
+
+            if (indexChar < 'A') {
+                indexChar = '#';
+            }
+
+            if (indexChar > 'Z') {
+                indexChar = '$';
+            }
+
+            if (mapIndex.get(indexChar) == null)
+                mapIndex.put(indexChar, i);
+        }
+    }
+
+    private void displayIndex() {
+        LinearLayout indexLayout = (LinearLayout) findViewById(R.id.side_index);
+
+        indexLayout.removeAllViews();
+
+        TextView textView;
+
+        List<Character> indexList = new ArrayList<>(mapIndex.keySet());
+
+        for (int i=0; i<indexList.size(); i++) {
+            Character indexChar = indexList.get(i);
+
+            textView = (TextView) getLayoutInflater().inflate(R.layout.side_index_list_item, null);
+
+            textView.setText(indexChar.toString());
+            textView.setTag(R.id.TAG_INDEX, indexChar);
+
+            if (i == 0) {
+                setIndexViewCurrent(textView);
+            }
+
+            textView.setOnClickListener(new SeriesListActivity.IndexOnClickListener());
+            indexLayout.addView(textView);
+        }
+    }
+
+    private void setIndexPosition(Character c) {
+        Character indexChar = c;
+
+        if (!(c.equals('#') || c.equals('$'))) {
+            if (c < 'A') {
+                indexChar = '#';
+            }
+
+            if (c > 'Z') {
+                indexChar = '$';
+            }
+        }
+
+        Log.i(LOG_TAG, "setIndexPosition on char: " + c + ", indexChar: " + indexChar);
+
+        LinearLayout indexLayout = (LinearLayout) findViewById(R.id.side_index);
+
+        final int childCount = indexLayout.getChildCount();
+
+        for (int i = 0; i < childCount; i++) {
+            TextView v = (TextView) indexLayout.getChildAt(i);
+
+            if (v.getTag(R.id.TAG_INDEX).equals(indexChar)) {
+                Log.i(LOG_TAG, "TAG gevonden!");
+                setIndexViewCurrent(v);
+            } else {
+                Log.i(LOG_TAG, "TAG " + v.getTag(R.id.TAG_INDEX));
+                setIndexViewNormal(v);
+            }
+        }
+    }
+
+    private void setIndexViewNormal(TextView v) {
+        v.setTypeface(null, Typeface.NORMAL);
+        v.setBackgroundColor(getResources().getColor(R.color.side_index_background_color_normal));
+    }
+
+    private void setIndexViewCurrent(TextView v) {
+        v.setTypeface(null, Typeface.BOLD);
+        v.setBackgroundColor(getResources().getColor(R.color.side_index_background_color_current));
+    }
 
     @Override
     public void onBackPressed() {
@@ -448,15 +397,16 @@ public class SeriesListActivity extends AppCompatActivity
     /*
     **
      */
-//    private class IndexOnClickListener implements View.OnClickListener {
-//        @Override
-//        public void onClick(View view) {
-//            TextView selectedIndex = (TextView) view;
-//            lstvwSeries.setSelection(mapIndex.get(selectedIndex.getText().charAt(0)));
-//
-//            setIndexPosition(selectedIndex.getText().charAt(0));
-//        }
-//    }
+    private class IndexOnClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+            TextView selectedIndex = (TextView) view;
+            String strDisplayName = selectedIndex.getText().toString();
+            lstvwSeries.setSelectedGroup(mapIndex.get(strDisplayName.toUpperCase().charAt(0)));
+
+            setIndexPosition(strDisplayName.toUpperCase().charAt(0));
+        }
+    }
 
     /*
     ** INNERCLASS: FabOnClickListener
@@ -464,25 +414,17 @@ public class SeriesListActivity extends AppCompatActivity
     private class FabOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
-            startActivity(new Intent(SeriesListActivity.this, AddTrademarkActivity.class));
+            startActivity(new Intent(SeriesListActivity.this, AddSeriesActivity.class));
         }
     }
 
     /*
-    ** INNERCLASS: SeriesOnItemLongClickListener
+    ** INNERCLASS: FabOnClickListener
      */
-    private class SeriesOnItemLongClickListener implements AdapterView.OnItemLongClickListener {
+    private class FabRunnable implements Runnable {
         @Override
-        public boolean onItemLongClick(AdapterView<?> parent, View view, int pos, long id) {
-//            Trademark clickedTrademark = (Trademark) seriesAdapter.getItem(pos);
-//
-//            Intent alterTrademarkIntent = new Intent(SeriesListActivity.this, AddTrademarkActivity.class);
-//
-//            alterTrademarkIntent.putExtra("extraTrademarkID", clickedTrademark.getTrademarkID());
-//
-//            startActivity(alterTrademarkIntent);
-
-            return true;
+        public void run() {
+            fab.setVisibility(View.GONE);
         }
     }
 }

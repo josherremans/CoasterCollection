@@ -1,37 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="0dp"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/min_height_item_series_child"
+    android:gravity="center_vertical"
     android:clickable="true"
     android:orientation="vertical"
-    android:paddingLeft="32dp"
-    tools:context=".activities.SeriesListActivity" >
+    android:background="@color/colorWhite">
 
     <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:textSize="18sp"
-        android:textStyle="bold" >
-    </TextView>
-
-    <!--TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/shape_oops_yellow"
-        android:drawablePadding="5dp"
-        android:gravity="center_vertical"
-        android:text="hello_world"
-        android:textSize="14sp"
-        android:textStyle="bold" >
-    </TextView-->
-
-    <View
+        android:id="@+id/txtExpListSeries"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/black" />
+        android:layout_height="match_parent"
+        android:gravity="left|center_vertical"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:text="Series"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp">
+    </TextView>
 
 </LinearLayout>

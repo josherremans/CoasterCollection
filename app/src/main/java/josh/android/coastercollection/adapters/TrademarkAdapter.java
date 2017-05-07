@@ -2,6 +2,7 @@ package josh.android.coastercollection.adapters;
 
 import android.app.Service;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +12,9 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import josh.android.coastercollection.R;
+import josh.android.coastercollection.activities.GalleryActivity;
 import josh.android.coastercollection.bo.Trademark;
+import josh.android.coastercollection.enums.IIntentExtras;
 
 /**
  * Created by Jos on 2/02/2017.
@@ -73,7 +76,7 @@ public class TrademarkAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View rowView = convertView;
 
-        Trademark trademark = (Trademark) getItem(position);
+        final Trademark trademark = (Trademark) getItem(position);
 
         // reuse views
         if (rowView == null) {
@@ -90,6 +93,18 @@ public class TrademarkAdapter extends BaseAdapter {
 
         holder.trademark.setText(trademark.getTrademark());
         holder.brewery.setText(trademark.getBrewery());
+
+        rowView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent galleryIntent = new Intent(cx, GalleryActivity.class);
+
+                galleryIntent.putExtra(IIntentExtras.EXTRA_TRADEMARKID, trademark.getTrademarkID());
+                galleryIntent.putExtra(IIntentExtras.EXTRA_GALLERY_NAME, trademark.getTrademark());
+
+                cx.startActivity(galleryIntent);
+            }
+        });
 
         return rowView;
     }

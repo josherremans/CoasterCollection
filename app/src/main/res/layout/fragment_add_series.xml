@@ -32,8 +32,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/txtTitleCollector"
-                    android:text="@string/lblTitleAddCollector"
+                    android:id="@+id/txtTitleAddSeries"
+                    android:text="@string/lblTitleAddSeries"
                     android:textStyle="bold"
                     android:textSize="@dimen/textsizeSubTitle"/>
             </LinearLayout>
@@ -42,50 +42,64 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/layoutAddCollector"
+                android:id="@+id/layoutAddSeries"
                 android:layout_marginTop="5dp"
                 android:padding="@dimen/margin0">
 
-                <EditText
+                <AutoCompleteTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/editCollectorLastName"
-                    android:hint="@string/hint_collector_last_name"
+                    android:id="@+id/editTrademark"
+                    android:hint="@string/hint_trademark_search"
                     android:inputType="text"
-                    android:singleLine="true"
+                    android:maxLines="1"
                     android:imeOptions="actionNext"
                     android:ellipsize="end" />
 
-                <EditText
+                <Spinner
+                    android:id="@+id/spinTrademark"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:id="@+id/editCollectorFirstName"
-                    android:hint="@string/hint_collector_first_name"
-                    android:inputType="text"
-                    android:singleLine="true"
-                    android:ellipsize="end" />
+                    android:popupBackground="@color/colorSpinnerPopupBg"
+                    style="@style/spinner_style"
+                    android:spinnerMode="dropdown"
+                    android:layout_marginTop="@dimen/margin_top" />
 
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
-                    android:id="@+id/editCollectorInitials"
-                    android:hint="@string/hint_collector_initials"
+                    android:id="@+id/editSeries"
+                    android:hint="@string/hint_series"
                     android:inputType="text"
-                    android:singleLine="true"
+                    android:maxLines="2"
                     android:ellipsize="end" />
 
-                <EditText
+                <LinearLayout
+                    android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:id="@+id/editCollectorAlias"
-                    android:hint="@string/hint_collector_alias"
-                    android:inputType="text"
-                    android:singleLine="true"
-                    android:ellipsize="end" />
+                    android:layout_marginTop="@dimen/margin_top"
+                    android:id="@+id/layoutSeriesMaxNbr"
+                    android:weightSum="100">
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/txtSeriesMaxNbr"
+                        android:text="@string/lblSeriesMaxNbr"
+                        android:textStyle="bold"/>
+
+                    <EditText
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="10"
+                        android:id="@+id/editSeriesMaxNbr"
+                        android:hint="@string/hint_max_nbr"
+                        android:inputType="number"
+                        android:maxLines="1"
+                        android:ellipsize="end" />
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

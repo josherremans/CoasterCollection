@@ -4,23 +4,26 @@
     android:baselineAligned="false"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/padding5"
+    android:gravity="center_vertical"
     android:minHeight="@dimen/min_height_item_trademark_list"
-    android:background="@color/colorSpinnerGradientStart" >
+    android:background="@color/colorOrangeLight" >
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="5dp"
-        android:background="@color/colorSpinnerGradientStart">
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp" >
 
         <TextView
             android:id="@+id/txtCollectorFullName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
-            android:textSize="@dimen/textsizeTrademarkList1"
+            android:textSize="@dimen/textsizeCollectorList1"
+            android:textColor="@color/colorWhite"
             android:text="@string/dummy_donor" />
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -32,14 +35,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/margin10"
-                android:text="@string/dummy_donor_initials"/>
+                android:textStyle="normal"
+                android:textSize="@dimen/textsizeCollectorList2"
+                android:textColor="@color/colorWhite"
+                android:text="@string/dummy_donor_initials" />
 
             <TextView
                 android:id="@+id/txtCollectorAlias"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="normal"
-                android:textSize="@dimen/textsizeTrademarkList2"
+                android:textSize="@dimen/textsizeCollectorList2"
+                android:textColor="@color/colorWhite"
                 android:text="@string/dummy_donor_alias" />
         </LinearLayout>
     </LinearLayout>
