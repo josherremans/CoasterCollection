@@ -46,6 +46,8 @@
     <string name="action_copy">Copy</string>
     <string name="action_adv_filter">Advanced Filter</string>
     <string name="action_search">Filter</string>
+    <string name="action_zoom_in">Zoom In</string>
+    <string name="action_zoom_out">Zoom Out</string>
 
     <string name="contentDescImg">(image)</string>
 
@@ -91,6 +93,8 @@
     <string name="lblMeas2">Meas2:</string>
     <string name="lblMeasUnit">mm</string>
     <string name="lblSeriesMaxNbr">Max nbr:</string>
+    <string name="lblSeriesOrdered">Ordered:</string>
+    <string name="lblNoExistingSeries">No existing series</string>
     <string name="lbl_on_crash_title">Unexpected fault</string>
     <string name="lbl_on_crash_message">This application has stopped unexpectedly.</string>
     <string name="lbl_on_crash_details_title">Details</string>
@@ -101,7 +105,7 @@
     <string name="hint_trademark">Trademark</string>
     <string name="hint_brewery">Brewery</string>
     <string name="hint_series">Series</string>
-    <string name="hint_max_nbr">N</string>
+    <string name="hint_max_nbr">#</string>
     <string name="hint_collector_last_name">Last name</string>
     <string name="hint_collector_first_name">First name</string>
     <string name="hint_collector_initials">Initials</string>

@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -39,14 +40,27 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     public void onBindViewHolder(GalleryAdapter.ViewHolder viewHolder, int i) {
         viewHolder.img.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-        String strImg = galleryList.get(i).getImage_title();
+        String strImg = galleryList.get(i).getImageName();
 
         File imgFile = ImageManager.getImgFile(strImg);
+
+        viewHolder.txtCoasterID.setVisibility(View.GONE);
+        viewHolder.txtSeriesIndex.setVisibility(View.GONE);
 
         if (imgFile.exists()) {
             new ImageManager().load(strImg, DIR_DEF_IMAGES, viewHolder.img);
         } else {
             viewHolder.img.setImageResource(R.drawable.beer_bg_115);
+
+            if (galleryList.get(i).getCoasterID() != -1) {
+                viewHolder.txtCoasterID.setVisibility(View.VISIBLE);
+                viewHolder.txtCoasterID.setText("" + galleryList.get(i).getCoasterID());
+            }
+
+            if (galleryList.get(i).getSeriesNbr() != -1) {
+                viewHolder.txtSeriesIndex.setVisibility(View.VISIBLE);
+                viewHolder.txtSeriesIndex.setText("#" + galleryList.get(i).getSeriesNbr());
+            }
         }
     }
 
@@ -57,11 +71,15 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
 
     public class ViewHolder extends RecyclerView.ViewHolder{
         public ImageView img;
+        public TextView txtCoasterID;
+        public TextView txtSeriesIndex;
 
         public ViewHolder(View view) {
             super(view);
 
             img = (ImageView) view.findViewById(R.id.img);
+            txtCoasterID = (TextView) view.findViewById(R.id.txtCoasterID);
+            txtSeriesIndex = (TextView) view.findViewById(R.id.txtSeriesIndex);
         }
     }
 }

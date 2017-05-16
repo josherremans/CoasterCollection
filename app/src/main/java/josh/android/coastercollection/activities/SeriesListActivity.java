@@ -51,7 +51,7 @@ public class SeriesListActivity extends FabBaseActivity
 
     private String listViewType = "";
 
-    public static boolean refreshTrademarkList = true;
+    public static boolean refreshSeriesList = true;
 
     SparseArray<TrademarkSeriesGroup> lstTrademarkSeriesGroup = new SparseArray<>();
 
@@ -60,7 +60,7 @@ public class SeriesListActivity extends FabBaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_series_list);
 
-        refreshTrademarkList = true;
+        refreshSeriesList = true;
 
         // *** Read shared preferences:
 
@@ -115,6 +115,8 @@ public class SeriesListActivity extends FabBaseActivity
 
         lstvwSeries.setAdapter(seriesAdapter);
 
+//        lstvwSeries.setOnItemLongClickListener(new SeriesListActivity.SeriesOnItemLongClickListener());
+
         lstvwSeries.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -150,8 +152,8 @@ public class SeriesListActivity extends FabBaseActivity
 
         imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
 
-//        if (refreshTrademarkList) {
-            refreshTrademarkList = false;
+        if (refreshSeriesList) {
+            refreshSeriesList = false;
 
             // *** Read shared preferences:
 
@@ -174,7 +176,7 @@ public class SeriesListActivity extends FabBaseActivity
             displayIndex();
 
             Log.i(LOG_TAG, "END onResume!");
-//        }
+        }
     }
 
     private void createIndexMap(SparseArray<TrademarkSeriesGroup> lstTrademarkSeriesGroup) {
@@ -398,4 +400,37 @@ public class SeriesListActivity extends FabBaseActivity
             startActivity(new Intent(SeriesListActivity.this, AddSeriesActivity.class));
         }
     }
+
+//    /*
+//    ** INNERCLASS: SeriesOnItemLongClickListener
+//     */
+//    private class SeriesOnItemLongClickListener implements ExpandableListView.OnItemLongClickListener {
+//        @Override
+//        public boolean onItemLongClick(AdapterView<?> parent, View view, int pos, long id) {
+//            Log.w(LOG_TAG, "SeriesOnItemLongClickListener.onItemLongClick");
+//
+//            int itemType = ExpandableListView.getPackedPositionType(id);
+//            int groupPos = -1;
+//            int childPos = -1;
+//
+//            if ( itemType == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
+//                groupPos = lstvwSeries.getPackedPositionGroup(id);
+//                childPos = lstvwSeries.getPackedPositionChild(id);
+//            } else {
+//                Log.w(LOG_TAG, "Sorry NO CHILD item!");
+//
+//                return false;
+//            }
+//
+//            Series clickedSeries = (Series) seriesAdapter.getChild(groupPos, childPos);
+//
+//            Intent alterSeriesIntent = new Intent(SeriesListActivity.this, AddSeriesActivity.class);
+//
+//            alterSeriesIntent.putExtra(IIntentExtras.EXTRA_SERIESID, clickedSeries.getSeriesNbr());
+//
+//            startActivity(alterSeriesIntent);
+//
+//            return true;
+//        }
+//    }
 }

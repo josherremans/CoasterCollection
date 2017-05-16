@@ -6,22 +6,31 @@ package josh.android.coastercollection.bo;
 
 public class GalleryItem {
 
-    private String image_title;
-    private Long image_id;
+    private long coasterID;
+    private String imageName;
+    private long seriesNbr = -1;
 
-    public String getImage_title() {
-        return image_title;
+    public String getImageName() {
+        return imageName;
     }
 
-    public void setImage_title(String android_version_name) {
-        this.image_title = android_version_name;
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
     }
 
-    public Long getImage_ID() {
-        return image_id;
+    public Long getCoasterID() {
+        return coasterID;
     }
 
-    public void setImage_ID(Long android_image_url) {
-        this.image_id = android_image_url;
+    public void setCoasterID(long coasterID) {
+        this.coasterID = coasterID;
+    }
+
+    public long getSeriesNbr() {
+        return this.seriesNbr;
+    }
+
+    public void setSeriesNbr(long seriesNbr) {
+        this.seriesNbr = seriesNbr;
     }
 }

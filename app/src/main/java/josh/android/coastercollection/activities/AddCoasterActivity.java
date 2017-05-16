@@ -138,7 +138,7 @@ public class AddCoasterActivity extends AppCompatActivity
     private ArrayList<String> valProbs = new ArrayList<>();
 
     private Trademark dummyTrademark = new Trademark(-1, "(Select Trademark)");
-    private Series dummySeries = new Series(-1, -1, "(Select Series)", 0);
+    private Series dummySeries = new Series(-1, -1, "(Select Series)", 0, false);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -648,7 +648,9 @@ public class AddCoasterActivity extends AppCompatActivity
                 editShapeMeas1.setText("" + startCoaster.getMeasurement1());
                 editShapeMeas2.setText("" + startCoaster.getMeasurement2());
 
-                editQuality.setText("" + startCoaster.getCoasterQuality());
+                if (startCoaster.getCoasterQuality() != -1) {
+                    editQuality.setText("" + startCoaster.getCoasterQuality());
+                }
 
                 editSeriesNbr.setText("" + startCoaster.getCoasterSeriesIndex());
 
@@ -1090,7 +1092,7 @@ public class AddCoasterActivity extends AppCompatActivity
             res = false;
         }
 
-        if ((inputQuality < 0) || (inputQuality > 10)) {
+        if ((inputQuality != -1) && ((inputQuality < 0) || (inputQuality > 10))) {
             valProbs.add("Quality");
             res = false;
         }
@@ -1174,7 +1176,9 @@ public class AddCoasterActivity extends AppCompatActivity
         ArrayList<String> imageNames = new ArrayList<>(2);
         String imageNameFront = "";
         String imageNameBack = "";
-        String trademarkForImageName = trademark.toLowerCase().replaceAll("[ \"\']", "");
+        String trademarkForImageName = trademark.toLowerCase().replaceAll("[ \"\'.-]", "")
+                .replaceAll("ä","a").replaceAll("ë","e").replaceAll("ö","o")
+                .replaceAll("ï","i").replaceAll("ü","u");
 
         switch ((int) imagePossibilityFront.getId()) {
             case -1:

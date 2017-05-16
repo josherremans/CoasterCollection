@@ -14,38 +14,61 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 import josh.android.coastercollection.R;
 import josh.android.coastercollection.application.CoasterApplication;
+import josh.android.coastercollection.bo.Series;
 import josh.android.coastercollection.bo.Trademark;
 import josh.android.coastercollection.databank.CoasterCollectionDBHelper;
+import josh.android.coastercollection.enums.IIntentExtras;
+
+import static josh.android.coastercollection.application.CoasterApplication.collectionData;
 
 public class AddSeriesActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private final static String LOG_TAG = "ADD_SERIES_ACTIVITY";
 
-    private EditText editTrademark;
-    private EditText editBrewery;
+    private AutoCompleteTextView editTrademark;
+    private EditText editSeriesMaxNbr;
+    private EditText editSeries;
 
-    private Trademark startTrademark;
-    private Trademark endTrademark;
+    private Spinner spinTrademark;
+
+    private CheckBox chkboxSeriesOrdered;
+
+    private Series startSeries;
+    private Series endSeries;
 
     private CoasterCollectionDBHelper dbHelper;
 
-    private TextView txtTitleTrademark;
+    private ArrayList<Trademark> lstTrademarks = new ArrayList<>();
+    private ArrayAdapter<Trademark> adapterTrademarks;
 
-    private long nextTrademarkID;
+    private TextView txtTitleAddSeries;
+
+    private long nextSeriesID;
+
+    private Trademark dummyTrademark = new Trademark(-1, "(Select Trademark)");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_series);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -56,28 +79,82 @@ public class AddSeriesActivity extends AppCompatActivity
 
         Intent intentOrigine = this.getIntent();
 
-        long trademarkID = intentOrigine.getLongExtra("extraTrademarkID", -1);
+        long seriesID = intentOrigine.getLongExtra(IIntentExtras.EXTRA_SERIESID, -1);
 
-        editTrademark = (EditText) findViewById(R.id.editTrademark);
-        editBrewery = (EditText) findViewById(R.id.editBrewery);
+        editTrademark = (AutoCompleteTextView) findViewById(R.id.editTrademark);
+        editSeries = (EditText) findViewById(R.id.editSeries);
+        editSeriesMaxNbr = (EditText) findViewById(R.id.editSeriesMaxNbr);
+
+        spinTrademark = (Spinner) findViewById(R.id.spinTrademark);
+
+        chkboxSeriesOrdered = (CheckBox) findViewById(R.id.chkboxSeriesOrdered);
+
+        // *** Spinners and others:
+
+        editTrademark.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.i(LOG_TAG, "IN editTrademark.setOnItemClickListener");
+
+                long trId = ((Trademark) parent.getItemAtPosition(position)).getTrademarkID();
+
+                spinTrademark.setSelection(position);
+
+//                updateSeriesOutput();
+            }
+        });
+
+        spinTrademark.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Trademark tr = (Trademark) spinTrademark.getItemAtPosition(position);
+
+                long trId = tr.getTrademarkID();
+
+                if (trId == -1) {
+                    editTrademark.setText("");
+                } else {
+                    editTrademark.setText(tr.getTrademark());
+                    editTrademark.setSelection(editTrademark.length());
+                }
+
+//                updateSeriesOutput();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+//                updateSeriesOutput();
+            }
+        });
+
+        // *** Adapters and their data:
+
+        lstTrademarks.clear();
+        lstTrademarks.add(0, dummyTrademark);
+        lstTrademarks.addAll(collectionData.mapTrademarks.values());
+
+        adapterTrademarks = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, lstTrademarks);
+
+        spinTrademark.setAdapter(adapterTrademarks);
+        editTrademark.setAdapter(adapterTrademarks);
 
         // *** DBHELPER:
 
         dbHelper = new CoasterCollectionDBHelper(this);
 
-        // *** TrademarkID:
+        // *** SeriesID:
 
-        txtTitleTrademark = (TextView) findViewById(R.id.txtTitleTrademark);
+        txtTitleAddSeries = (TextView) findViewById(R.id.txtTitleAddSeries);
 
-        if (trademarkID != -1) {
-            startTrademark = dbHelper.getTrademarkByID(trademarkID);
+        if (seriesID != -1) {
+            startSeries = dbHelper.getSeriesByID(seriesID);
 
-            nextTrademarkID = trademarkID;
+            nextSeriesID = seriesID;
         } else {
-            nextTrademarkID = dbHelper.getNextTrademarkIDFromDB();
+            nextSeriesID = dbHelper.getNextSeriesIDFromDB();
         }
 
-        txtTitleTrademark.setText(txtTitleTrademark.getText() + " " + nextTrademarkID);
+        txtTitleAddSeries.setText(txtTitleAddSeries.getText() + " " + nextSeriesID);
 
     }
 
@@ -87,9 +164,24 @@ public class AddSeriesActivity extends AppCompatActivity
 
         Log.i(LOG_TAG, "IN onResume");
 
-        if (startTrademark != null) {
-            editTrademark.setText(startTrademark.getTrademark());
-            editBrewery.setText(startTrademark.getBrewery());
+        String currentTrademark = "";
+
+        if (startSeries != null) {
+            for (int i = 0; i < lstTrademarks.size(); i++) {
+                if (lstTrademarks.get(i).getTrademarkID() == startSeries.getTrademarkID()) {
+                    spinTrademark.setSelection(i);
+
+                    currentTrademark = lstTrademarks.get(i).getTrademark();
+
+                    break;
+                }
+            }
+
+            editTrademark.setText(currentTrademark);
+            editSeries.setText(startSeries.getSeries());
+            editSeriesMaxNbr.setText("" + startSeries.getMaxNumber());
+
+            chkboxSeriesOrdered.setChecked(startSeries.isOrdered());
         }
     }
 
@@ -119,7 +211,7 @@ public class AddSeriesActivity extends AppCompatActivity
         }
 
         if (id == R.id.action_save) {
-            saveTrademark();
+            saveSeries();
 
             return true;
         }
@@ -182,17 +274,19 @@ public class AddSeriesActivity extends AppCompatActivity
         return true;
     }
 
-    private boolean saveTrademark() {
-        boolean res = validateTrademark();
+    private boolean saveSeries() {
+        boolean res = validateSeries();
 
         if (res) {
-            // Save trademark to DB:
+            // Save series to DB:
 
-            dbHelper.putTrademarkInDB(endTrademark);
+            dbHelper.putSeriesInDB(endSeries);
 
-            CoasterApplication.collectionData.mapTrademarks.put(endTrademark.getTrademarkID(), endTrademark);
+            if (startSeries == null) {
+                CoasterApplication.collectionData.lstSeries.add(endSeries);
+            }
 
-            TrademarkListActivity.refreshTrademarkList = true;
+            SeriesListActivity.refreshSeriesList = true;
 
             CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorlayout);
 
@@ -210,32 +304,36 @@ public class AddSeriesActivity extends AppCompatActivity
         return true;
     }
 
-    private boolean validateTrademark() {
+    private boolean validateSeries() {
         boolean res = true;
 
-        String inputTrademark = (editTrademark.getEditableText() == null ? "" : editTrademark.getEditableText().toString());
-        String inputBrewery = (editBrewery.getEditableText() == null ? "" : editBrewery.getEditableText().toString());
+        long inputTrademarkID = ((Trademark) spinTrademark.getSelectedItem()).getTrademarkID();
+        String inputSeries = (editSeries.getEditableText() == null ? "" : editSeries.getEditableText().toString());
+        long inputSeriesMaxNbr = (editSeriesMaxNbr.getEditableText() == null ? -1 : editSeriesMaxNbr.getEditableText().toString().length() == 0 ? -1 : Long.parseLong(editSeriesMaxNbr.getEditableText().toString()));
+        boolean inputSeriesOrdered = chkboxSeriesOrdered.isChecked();
 
-        if (startTrademark == null) {
-            for (Trademark tr : CoasterApplication.collectionData.mapTrademarks.values()) {
-                if (tr.getTrademark().equals(inputTrademark)) {
+        if (startSeries == null) {
+            for (Series ser : CoasterApplication.collectionData.lstSeries) {
+                if ((ser.getTrademarkID() == inputTrademarkID) && (ser.getSeries().equals(inputSeries))) {
+                    Log.e(LOG_TAG, "SERIES ALREADY EXISTS!");
+
                     res = false;
                 }
             }
         }
 
-        if (inputTrademark.length() == 0) {
+        if (inputSeries.length() == 0) {
+            Log.w(LOG_TAG, "SERIES IS EMPTY!");
+
             res = false;
         }
 
         if (res) {
-            endTrademark = new Trademark(nextTrademarkID);
+            endSeries = new Series(nextSeriesID, inputTrademarkID, inputSeries, inputSeriesMaxNbr, inputSeriesOrdered);
 
-            if (startTrademark != null) {
-                endTrademark.setFetchedFromDB(startTrademark.isFetchedFromDB());
+            if (startSeries != null) {
+                endSeries.setFetchedFromDB(startSeries.isFetchedFromDB());
             }
-
-            endTrademark.fillTrademark(inputTrademark, inputBrewery);
         }
 
         return res;

@@ -18,9 +18,9 @@
         android:id="@+id/scrollView" >
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
 
             <LinearLayout
                 android:orientation="vertical"
@@ -91,7 +91,7 @@
                         android:textStyle="bold"/>
 
                     <EditText
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="10"
                         android:id="@+id/editSeriesMaxNbr"
@@ -99,6 +99,47 @@
                         android:inputType="number"
                         android:maxLines="1"
                         android:ellipsize="end" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_top"
+                    android:id="@+id/layoutSeriesOrdered">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/txtSeriesOrdered"
+                        android:text="@string/lblSeriesOrdered"
+                        android:textStyle="bold"/>
+
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/chkboxSeriesOrdered"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/layoutExistingSeries"
+                    android:padding="@dimen/margin0">
+
+                    <ScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/txtExistingSeries"
+                            android:text="@string/lblNoExistingSeries"
+                            android:textStyle="bold"
+                            android:textSize="@dimen/textsizeSubTitle"/>
+                    </ScrollView>
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

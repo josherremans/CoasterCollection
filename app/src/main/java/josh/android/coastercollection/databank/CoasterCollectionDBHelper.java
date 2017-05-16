@@ -125,6 +125,27 @@ public class CoasterCollectionDBHelper extends SQLiteOpenHelper {
         return ++nextID;
     }
 
+    public long getNextSeriesIDFromDB() {
+        SQLiteDatabase database = this.getReadableDatabase();
+
+        String[] selectColumns = {"MAX(" + CoasterCollectionDBContract.SeriesEntry._ID + ")"};
+
+        long nextID = 0;
+
+        Cursor cursor = database.query(CoasterCollectionDBContract.SeriesEntry.TABLE_NAME,
+                selectColumns, null, null, null, null, null);
+
+        cursor.moveToFirst();
+
+        if (!cursor.isAfterLast()) {
+            nextID = cursor.getLong(0);
+        }
+
+        database.close();
+
+        return ++nextID;
+    }
+
     public Coaster getCoasterByID(long id) {
         SQLiteDatabase database = this.getReadableDatabase();
 
@@ -265,6 +286,38 @@ public class CoasterCollectionDBHelper extends SQLiteOpenHelper {
         return c;
     }
 
+    public Series getSeriesByID(long id) {
+        SQLiteDatabase database = this.getReadableDatabase();
+
+        String[] selectColumns = {CoasterCollectionDBContract.SeriesEntry._ID,
+                CoasterCollectionDBContract.SeriesEntry.COLUMN_SERIES,
+                CoasterCollectionDBContract.SeriesEntry.COLUMN_TRADEMARK_ID,
+                CoasterCollectionDBContract.SeriesEntry.COLUMN_NUMBER,
+                CoasterCollectionDBContract.SeriesEntry.COLUMN_ORDERED};
+
+        String whereClause = CoasterCollectionDBContract.SeriesEntry._ID + " = ?";
+        String[] whereClauseArgs = {"" + id};
+        String orderByClause = null;
+
+        Cursor cursor = database.query(CoasterCollectionDBContract.SeriesEntry.TABLE_NAME,
+                selectColumns, whereClause, whereClauseArgs, null, null, orderByClause);
+
+        cursor.moveToFirst();
+
+        Series s = null;
+
+        if (!cursor.isAfterLast()) {
+            s = cursorToSeries(cursor);
+        }
+
+        // make sure to close the cursor
+        cursor.close();
+
+        database.close();
+
+        return s;
+    }
+
     public void removeCoasterFromDB(long coasterID) {
         SQLiteDatabase database = this.getWritableDatabase();
 
@@ -330,6 +383,29 @@ public class CoasterCollectionDBHelper extends SQLiteOpenHelper {
             database.update(CoasterCollectionDBContract.TrademarkEntry.TABLE_NAME, values, whereClause, whereArgs);
         } else {
             database.insert(CoasterCollectionDBContract.TrademarkEntry.TABLE_NAME, null, values);
+        }
+
+        database.close();
+    }
+
+    public void putSeriesInDB(Series series) {
+        SQLiteDatabase database = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+
+        values.put(CoasterCollectionDBContract.SeriesEntry._ID, series.getSeriesID());
+        values.put(CoasterCollectionDBContract.SeriesEntry.COLUMN_TRADEMARK_ID, series.getTrademarkID());
+        values.put(CoasterCollectionDBContract.SeriesEntry.COLUMN_SERIES, series.getSeries());
+        values.put(CoasterCollectionDBContract.SeriesEntry.COLUMN_NUMBER, series.getMaxNumber());
+        values.put(CoasterCollectionDBContract.SeriesEntry.COLUMN_ORDERED, (series.isOrdered() ? "T" : "F"));
+
+        if (series.isFetchedFromDB()) {
+            String whereClause = CoasterCollectionDBContract.SeriesEntry._ID + " = ?";
+            String[] whereArgs = {"" + series.getSeriesID()};
+
+            database.update(CoasterCollectionDBContract.SeriesEntry.TABLE_NAME, values, whereClause, whereArgs);
+        } else {
+            database.insert(CoasterCollectionDBContract.SeriesEntry.TABLE_NAME, null, values);
         }
 
         database.close();
@@ -544,10 +620,11 @@ public class CoasterCollectionDBHelper extends SQLiteOpenHelper {
 
         ArrayList<Series> lstSeries = new ArrayList<Series>();
 
-        String[] selectColumns = {CoasterCollectionDBContract.SeriesEntry._ID,
+        String[] selectColumns = {CoasterCollectionDBContract.SeriesEntry.TABLE_NAME + "." + CoasterCollectionDBContract.SeriesEntry._ID,
                 CoasterCollectionDBContract.SeriesEntry.COLUMN_SERIES,
                 CoasterCollectionDBContract.SeriesEntry.COLUMN_TRADEMARK_ID,
-                CoasterCollectionDBContract.SeriesEntry.COLUMN_NUMBER};
+                CoasterCollectionDBContract.SeriesEntry.COLUMN_NUMBER,
+                CoasterCollectionDBContract.SeriesEntry.COLUMN_ORDERED};
 
         String whereClause = null;
         String whereArgs[] = null;
@@ -559,10 +636,15 @@ public class CoasterCollectionDBHelper extends SQLiteOpenHelper {
             whereArgs[0] = String.valueOf(trademarkID);
         }
 
-        orderByClause = CoasterCollectionDBContract.SeriesEntry.COLUMN_TRADEMARK_ID + " asc";
+        String fromClause = CoasterCollectionDBContract.SeriesEntry.TABLE_NAME
+                + " INNER JOIN " + CoasterCollectionDBContract.TrademarkEntry.TABLE_NAME
+                + " ON " + CoasterCollectionDBContract.SeriesEntry.TABLE_NAME + "." + CoasterCollectionDBContract.SeriesEntry.COLUMN_TRADEMARK_ID
+                + " = " + CoasterCollectionDBContract.TrademarkEntry.TABLE_NAME + "." + CoasterCollectionDBContract.TrademarkEntry._ID;
+
+        orderByClause = CoasterCollectionDBContract.TrademarkEntry.COLUMN_TRADEMARK + " asc";
         orderByClause += ", " + CoasterCollectionDBContract.SeriesEntry.COLUMN_SERIES + " asc";
 
-        Cursor cursor = database.query(CoasterCollectionDBContract.SeriesEntry.TABLE_NAME, selectColumns, whereClause, whereArgs, null, null, orderByClause);
+        Cursor cursor = database.query(fromClause, selectColumns, whereClause, whereArgs, null, null, orderByClause);
 
         cursor.moveToFirst();
 
@@ -668,8 +750,15 @@ public class CoasterCollectionDBHelper extends SQLiteOpenHelper {
         String series = cursor.getString(1);
         long trademarkID = cursor.getLong(2);
         long maxNumber = cursor.getLong(3);
+        boolean ordered = false;
 
-        Series s = new Series(id, trademarkID, series, maxNumber);
+        if (cursor.getString(4) != null) {
+            ordered = (cursor.getString(4).trim().equals("T") ? true : false);
+        }
+
+        Series s = new Series(id, trademarkID, series, maxNumber, ordered);
+
+        s.setFetchedFromDB();
 
         return s;
     }

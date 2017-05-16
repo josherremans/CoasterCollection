@@ -104,5 +104,6 @@ public class CoasterCollectionDBContract {
         public static final String COLUMN_SERIES = "C_Series";
         public static final String COLUMN_TRADEMARK_ID = "C_Trademark_ID";
         public static final String COLUMN_NUMBER = "C_Number";
+        public static final String COLUMN_ORDERED = "C_Ordered";
     }
 }

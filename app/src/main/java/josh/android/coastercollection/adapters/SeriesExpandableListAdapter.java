@@ -2,6 +2,9 @@ package josh.android.coastercollection.adapters;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.TextAppearanceSpan;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +13,7 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
 import josh.android.coastercollection.R;
+import josh.android.coastercollection.activities.AddSeriesActivity;
 import josh.android.coastercollection.activities.GalleryActivity;
 import josh.android.coastercollection.bo.Series;
 import josh.android.coastercollection.bo.TrademarkSeriesGroup;
@@ -46,21 +50,33 @@ public class SeriesExpandableListAdapter extends BaseExpandableListAdapter {
     public View getChildView(int groupPosition, final int childPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
         final Series children = (Series) getChild(groupPosition, childPosition);
-        TextView text = null;
+        TextView txtVw = null;
 
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.item_series_list_details, null);
         }
 
-        text = (TextView) convertView.findViewById(R.id.txtExpListSeries);
-
         String str = children.getSeries();
 
+        int nStr = str.length();
+
         if (children.getMaxNumber() > 0) {
-            str = str + " (#" + children.getMaxNumber() + ")";
+            str = str + " (#" + children.getMaxNumber() + (children.isOrdered() ? "s" : "") + ")";
         }
 
-        text.setText(str);
+        txtVw = (TextView) convertView.findViewById(R.id.txtExpListSeries);
+
+        SpannableString text = new SpannableString(str);
+
+        text.setSpan(new TextAppearanceSpan(null, 0, 60, null, null), 0, nStr, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        if (str.length() > nStr) {
+            text.setSpan(new TextAppearanceSpan(null, 0, 40, null, null), nStr + 1, str.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+
+        txtVw.setText(text, TextView.BufferType.SPANNABLE);
+
+//        txtVw.setText(str);
 
         final String fstr = str;
 
@@ -73,7 +89,19 @@ public class SeriesExpandableListAdapter extends BaseExpandableListAdapter {
                 galleryIntent.putExtra(IIntentExtras.EXTRA_GALLERY_NAME, fstr);
 
                 activity.startActivity(galleryIntent);
-//                Toast.makeText(activity, fstr, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        convertView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Intent alterSeriesIntent = new Intent(activity, AddSeriesActivity.class);
+
+                alterSeriesIntent.putExtra(IIntentExtras.EXTRA_SERIESID, children.getSeriesID());
+
+                activity.startActivity(alterSeriesIntent);
+
+                return false;
             }
         });
 
