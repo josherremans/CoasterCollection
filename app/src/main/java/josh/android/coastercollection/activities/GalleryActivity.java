@@ -70,7 +70,7 @@ public class GalleryActivity extends AppCompatActivity {
 
         ArrayList<GalleryItem> galleryItems = prepareData(seriesID, trademarkID, collectorID);
 
-        adapter = new GalleryAdapter(getApplicationContext(), galleryItems);
+        adapter = new GalleryAdapter(this, galleryItems);
 
         recyclerView.setAdapter(adapter);
 
@@ -174,7 +174,7 @@ public class GalleryActivity extends AppCompatActivity {
 
             ArrayList<GalleryItem> galleryItems = prepareData(lstCoasters, seriesID, includeBackImages);
 
-            adapter = new GalleryAdapter(getApplicationContext(), galleryItems);
+            adapter = new GalleryAdapter(this, galleryItems);
 
             RecyclerView recyclerView = createRecyclerView(n_cols);
 

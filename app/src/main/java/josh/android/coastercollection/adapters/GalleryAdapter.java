@@ -1,6 +1,7 @@
 package josh.android.coastercollection.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import josh.android.coastercollection.R;
+import josh.android.coastercollection.activities.ImageFullscreenActivity;
 import josh.android.coastercollection.bl.ImageManager;
 import josh.android.coastercollection.bo.GalleryItem;
 
@@ -49,6 +51,8 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
 
         if (imgFile.exists()) {
             new ImageManager().load(strImg, DIR_DEF_IMAGES, viewHolder.img);
+
+            viewHolder.img.setOnClickListener(new ImageOnClickListener(strImg, true));
         } else {
             viewHolder.img.setImageResource(R.drawable.beer_bg_115);
 
@@ -61,6 +65,8 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
                 viewHolder.txtSeriesIndex.setVisibility(View.VISIBLE);
                 viewHolder.txtSeriesIndex.setText("#" + galleryList.get(i).getSeriesNbr());
             }
+
+            viewHolder.img.setOnClickListener(null);
         }
     }
 
@@ -80,6 +86,25 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
             img = (ImageView) view.findViewById(R.id.img);
             txtCoasterID = (TextView) view.findViewById(R.id.txtCoasterID);
             txtSeriesIndex = (TextView) view.findViewById(R.id.txtSeriesIndex);
+        }
+    }
+
+    private class ImageOnClickListener implements View.OnClickListener {
+        private String coasterImgName;
+        private boolean isFrontImage;
+
+        public ImageOnClickListener(String coasterImgName, boolean isFrontImage) {
+            this.coasterImgName = coasterImgName;
+            this.isFrontImage = isFrontImage;
+        }
+
+        @Override
+        public void onClick(View v) {
+            Intent imgIntent = new Intent(context, ImageFullscreenActivity.class);
+
+            imgIntent.putExtra("imgPath", coasterImgName);
+
+            context.startActivity(imgIntent);
         }
     }
 }
