@@ -48,6 +48,8 @@
     <string name="action_search">Filter</string>
     <string name="action_zoom_in">Zoom In</string>
     <string name="action_zoom_out">Zoom Out</string>
+    <string name="action_exclude_back">Exclude back image</string>
+    <string name="action_include_back">Include back image</string>
 
     <string name="contentDescImg">(image)</string>
 

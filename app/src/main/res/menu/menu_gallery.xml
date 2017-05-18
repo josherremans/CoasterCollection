@@ -14,8 +14,14 @@
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_zoom_out"
-        android:orderInCategory="200"
+        android:orderInCategory="300"
         android:icon="@drawable/zoom_out_48"
         android:title="@string/action_zoom_out"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_inexclude_back"
+        android:orderInCategory="400"
+        android:icon="@drawable/ic_back_images_exclude"
+        android:title="@string/action_exclude_back"
         app:showAsAction="ifRoom" />
 </menu>
