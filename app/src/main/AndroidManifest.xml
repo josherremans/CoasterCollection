@@ -30,7 +30,7 @@
             android:name=".activities.OnCrashActivity"
             android:label="@string/app_name_short"
             android:process=":error_activity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="cat.ereza.customactivityoncrash.ERROR" />
             </intent-filter>
@@ -64,7 +64,7 @@
             android:name=".activities.AddTrademarkActivity"
             android:label="@string/app_name_trademarks"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.CollectorListActivity"
             android:label="@string/app_name_collectors"
@@ -74,19 +74,24 @@
             android:name=".activities.AddCollectorActivity"
             android:label="@string/app_name_collectors"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.AddSeriesActivity"
             android:label="@string/app_name_series"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.StatisticsActivity"
             android:label="@string/app_name_statistics"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.GalleryActivity"
             android:label="@string/app_name_gallery"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.AdvancedSearchActivity"
+            android:label="@string/app_name_advanced_search"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 

@@ -652,7 +652,9 @@ public class AddCoasterActivity extends AppCompatActivity
                     editQuality.setText("" + startCoaster.getCoasterQuality());
                 }
 
-                editSeriesNbr.setText("" + startCoaster.getCoasterSeriesIndex());
+                if (startCoaster.getCoasterSeriesIndex() != -1) {
+                    editSeriesNbr.setText("" + startCoaster.getCoasterSeriesIndex());
+                }
 
                 imageName = startCoaster.getCoasterImageFrontName();
 

@@ -1,6 +1,8 @@
 package josh.android.coastercollection.activities;
 
+import android.app.Dialog;
 import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.DataSetObserver;
@@ -17,14 +19,20 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager.LayoutParams;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -42,6 +50,7 @@ import josh.android.coastercollection.bl.ImageManager;
 import josh.android.coastercollection.bo.Coaster;
 import josh.android.coastercollection.bo.Trademark;
 import josh.android.coastercollection.databank.CoasterCollectionDBHelper;
+import josh.android.coastercollection.enums.IIntentExtras;
 
 import static josh.android.coastercollection.application.CoasterApplication.collectionData;
 
@@ -68,6 +77,8 @@ public class CoasterListActivity extends FabBaseActivity
     private ProgressBar progressBar;
 
     private String trademarkFilter = null;
+    private String advancedSearchText = null;
+
     private boolean isReverseOrder = false;
     private String listViewType = "";
 
@@ -138,6 +149,8 @@ public class CoasterListActivity extends FabBaseActivity
         coasterCollectionAdapter.registerDataSetObserver(new CoasterCollectionDataSetObserver());
 
         searchView = (SearchView) findViewById(R.id.editTrademarkSearch);
+
+        advancedSearchText = this.getIntent().getStringExtra(IIntentExtras.EXTRA_ADVANCED_SEARCH_TEXT);
     }
 
     @Override
@@ -166,7 +179,7 @@ public class CoasterListActivity extends FabBaseActivity
 
                 CoasterListActivity.this.trademarkFilter = query;
 
-                coasterCollectionAdapter.updateCoasterForList(getCoasterIds(query));
+                coasterCollectionAdapter.updateCoasterForList(getCoasterIds(query, advancedSearchText));
 
                 toolbar.setSubtitle("(" + coasterCollectionAdapter.getCount() + ")");
 
@@ -182,7 +195,7 @@ public class CoasterListActivity extends FabBaseActivity
 
                     CoasterListActivity.this.trademarkFilter = null;
 
-                    coasterCollectionAdapter.updateCoasterForList(getCoasterIds(null));
+                    coasterCollectionAdapter.updateCoasterForList(getCoasterIds(null, advancedSearchText));
 
                     toolbar.setSubtitle("(" + coasterCollectionAdapter.getCount() + ")");
                 }
@@ -252,7 +265,7 @@ public class CoasterListActivity extends FabBaseActivity
 
             // *** Fetch data from DB:
 
-            loadNewData(this.trademarkFilter);
+            loadNewData();
         } else {
             if (CoasterApplication.currentCoasterID != -1) {
                 Log.i(LOG_TAG, "Scroll to ID " + CoasterApplication.currentCoasterID);
@@ -266,11 +279,21 @@ public class CoasterListActivity extends FabBaseActivity
         Log.i(LOG_TAG, "END onResume!");
     }
 
-    private void loadNewData(String trademarkFilter) {
+    private void loadNewData() {
         loadNewDataTask = new LoadCoastersAsyncTask(dbHelper, coasterCollectionAdapter, isReverseOrder, progressBar, toolbar).execute();
     }
 
-    private ArrayList<Long> getCoasterIds(String filterByTrademark) {
+    private ArrayList<Long> getCoasterIds(String filterByTrademark, String filterByCoasterText) {
+        // *** Conversions:
+
+        if ((filterByCoasterText != null) && (filterByCoasterText.length() == 0)) {
+            filterByCoasterText = null;
+        }
+
+        filterByCoasterText = filterByCoasterText.toLowerCase();
+
+        // *** Filter:
+
         ArrayList<Long> lstCoasterIds = new ArrayList<>();
 
         ArrayList<Long> lstTrademarkIds = new ArrayList<>();
@@ -279,13 +302,20 @@ public class CoasterListActivity extends FabBaseActivity
             lstTrademarkIds = getTrademarkIdList(filterByTrademark);
         }
 
-        if (filterByTrademark == null) {
+        if ((filterByTrademark == null) && (filterByCoasterText == null)) {
             lstCoasterIds.addAll(collectionData.mapCoasters.keySet());
         } else {
             for (Coaster c : collectionData.mapCoasters.values()) {
                 for (Long trId : lstTrademarkIds) {
                     if (c.getCoasterTrademarkID() == trId.longValue()) {
-                        lstCoasterIds.add(c.getCoasterID());
+                        if (filterByCoasterText == null) {
+                            lstCoasterIds.add(c.getCoasterID());
+                        } else {
+                            if (c.getCoasterText().toLowerCase().contains(filterByCoasterText)) {
+                                lstCoasterIds.add(c.getCoasterID());
+                            }
+                        }
+
                         break;
                     }
                 }
@@ -349,9 +379,7 @@ public class CoasterListActivity extends FabBaseActivity
         }
 
         if (id == R.id.action_adv_filter) {
-            snackbar = Snackbar.make(coordinatorLayout, "You clicked Advanced Filter", Snackbar.LENGTH_LONG);
-
-            snackbar.show();
+            this.startActivity(new Intent(this, AdvancedSearchActivity.class));
 
             return true;
         }
@@ -379,7 +407,67 @@ public class CoasterListActivity extends FabBaseActivity
             return true;
         }
 
+        if (id == R.id.action_goto) {
+            getGotoInput();
+
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
+    }
+
+    private void getGotoInput() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle(R.string.lblGotoDialogTitle);
+
+        // Set up the input
+        final EditText input = new EditText(this);
+
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+
+        builder.setView(input);
+
+        // Set up the buttons
+        builder.setPositiveButton(R.string.lblGotoDialogPosBtn, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String txtGoto = input.getText().toString();
+
+                if ((txtGoto != null) && (txtGoto.length()>0)) {
+                    int pos = coasterCollectionAdapter.getPositionOfCoaster(Long.parseLong(txtGoto));
+
+                    lstvwCoasterCollection.setSelection(pos);
+                }
+            }
+        });
+
+        builder.setNegativeButton(R.string.lblGotoDialogNegBtn, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        Dialog dialog = builder.create();
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.getWindow().setSoftInputMode(LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+
+        dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+
+                if ((keyCode == KeyEvent.KEYCODE_ENTER) || (event.getAction() == EditorInfo.IME_ACTION_DONE)) {
+                    ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE).callOnClick();
+                }
+
+                return true;
+            }
+        });
+
+        dialog.show();
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
