@@ -86,7 +86,7 @@ public class SeriesExpandableListAdapter extends BaseExpandableListAdapter {
                 Intent galleryIntent = new Intent(activity, GalleryActivity.class);
 
                 galleryIntent.putExtra(IIntentExtras.EXTRA_SERIESID, children.getSeriesID());
-                galleryIntent.putExtra(IIntentExtras.EXTRA_GALLERY_NAME, fstr);
+                galleryIntent.putExtra(IIntentExtras.EXTRA_GALLERY_SUBTITLE, fstr);
 
                 activity.startActivity(galleryIntent);
             }

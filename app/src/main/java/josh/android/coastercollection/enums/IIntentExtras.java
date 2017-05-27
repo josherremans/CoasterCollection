@@ -10,5 +10,7 @@ public interface IIntentExtras {
     String EXTRA_SERIESID = "extraSeriesID";
     String EXTRA_TRADEMARKID = "extraTrademarkID";
     String EXTRA_COLLECTORID = "extraCollectorID";
-    String EXTRA_GALLERY_NAME = "extraGalleryName";
+    String EXTRA_GALLERY_SUBTITLE = "extraGalleryName";
+
+    String EXTRA_ADVANCED_SEARCH_TEXT = "extraAdvancedSearchText";
 }

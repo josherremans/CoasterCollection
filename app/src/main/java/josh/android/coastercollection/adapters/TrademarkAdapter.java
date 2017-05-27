@@ -100,7 +100,7 @@ public class TrademarkAdapter extends BaseAdapter {
                 Intent galleryIntent = new Intent(cx, GalleryActivity.class);
 
                 galleryIntent.putExtra(IIntentExtras.EXTRA_TRADEMARKID, trademark.getTrademarkID());
-                galleryIntent.putExtra(IIntentExtras.EXTRA_GALLERY_NAME, trademark.getTrademark());
+                galleryIntent.putExtra(IIntentExtras.EXTRA_GALLERY_SUBTITLE, trademark.getTrademark());
 
                 cx.startActivity(galleryIntent);
             }

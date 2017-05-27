@@ -33,6 +33,7 @@ public class GalleryActivity extends AppCompatActivity {
     private GalleryAdapter adapter = null;
 
     private int n_coasters_shown;
+    private final int max_cols = 5;
     private static int n_cols = 2;
     private static boolean includeBackImages = true;
 
@@ -54,10 +55,10 @@ public class GalleryActivity extends AppCompatActivity {
         seriesID = intentOrigine.getLongExtra(IIntentExtras.EXTRA_SERIESID, -1);
         trademarkID = intentOrigine.getLongExtra(IIntentExtras.EXTRA_TRADEMARKID, -1);
         collectorID = intentOrigine.getLongExtra(IIntentExtras.EXTRA_COLLECTORID, -1);
-        String name = intentOrigine.getStringExtra(IIntentExtras.EXTRA_GALLERY_NAME);
+        String subTitle = intentOrigine.getStringExtra(IIntentExtras.EXTRA_GALLERY_SUBTITLE);
 
-        if (name == null) {
-            name = "";
+        if (subTitle == null) {
+            subTitle = "";
         }
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -79,13 +80,13 @@ public class GalleryActivity extends AppCompatActivity {
 
             if (seriesID != -1) {
                 getSupportActionBar().setTitle("Series");
-                toolbar.setSubtitle("(#" + n_coasters_shown + ") " + name);
+                toolbar.setSubtitle("(#" + n_coasters_shown + ") " + subTitle);
             } else if (trademarkID != -1) {
                 getSupportActionBar().setTitle("Trademark");
-                toolbar.setSubtitle("(#" + n_coasters_shown + ") " + name);
+                toolbar.setSubtitle("(#" + n_coasters_shown + ") " + subTitle);
             } else if (collectorID != -1) {
                 getSupportActionBar().setTitle("Collector");
-                toolbar.setSubtitle("(#" + n_coasters_shown + ") " + name);
+                toolbar.setSubtitle("(#" + n_coasters_shown + ") " + subTitle);
             } else {
                 getSupportActionBar().setTitle("Collection");
                 toolbar.setSubtitle("(#" + n_coasters_shown + ")");
@@ -131,7 +132,7 @@ public class GalleryActivity extends AppCompatActivity {
             if (n_cols > 1) {
                 n_cols--;
             }else {
-                n_cols = 4;
+                n_cols = max_cols;
             }
 
             RecyclerView recyclerView = createRecyclerView(n_cols);
@@ -144,7 +145,7 @@ public class GalleryActivity extends AppCompatActivity {
         }
 
         if (id == R.id.action_zoom_out) {
-            if (n_cols < 4) {
+            if (n_cols < max_cols) {
                 n_cols++;
             } else {
                 n_cols = 1;

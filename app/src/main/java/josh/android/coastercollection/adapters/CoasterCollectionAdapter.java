@@ -194,6 +194,8 @@ public class CoasterCollectionAdapter extends BaseAdapter {
             } else {
                 holder.coasterID.setTextColor(cx.getResources().getColor(R.color.colorQualityGood));
             }
+        } else {
+            holder.coasterID.setTextColor(cx.getResources().getColor(R.color.colorQualityGood));
         }
 
         String strImgFront = coaster.getCoasterImageFrontName();
@@ -279,7 +281,7 @@ public class CoasterCollectionAdapter extends BaseAdapter {
                 Intent galleryIntent = new Intent(cx, GalleryActivity.class);
 
                 galleryIntent.putExtra(IIntentExtras.EXTRA_TRADEMARKID, coaster.getCoasterTrademarkID());
-                galleryIntent.putExtra(IIntentExtras.EXTRA_GALLERY_NAME, trademark);
+                galleryIntent.putExtra(IIntentExtras.EXTRA_GALLERY_SUBTITLE, trademark);
 
                 cx.startActivity(galleryIntent);
             }
@@ -290,7 +292,7 @@ public class CoasterCollectionAdapter extends BaseAdapter {
         } else {
             holder.layoutSeries.setVisibility(View.VISIBLE);
 
-            if ((coaster.getCoasterSeriesIndex() > 0) || (foundSeries.getMaxNumber() > 0)) {
+            if ((coaster.getCoasterSeriesIndex() > 0) && (foundSeries.getMaxNumber() > 0)) {
                 holder.seriesNbr.setVisibility(View.VISIBLE);
 
                 holder.seriesNbr.setText("" + coaster.getCoasterSeriesIndex() + "/" + foundSeries.getMaxNumber() + ":");
@@ -307,8 +309,14 @@ public class CoasterCollectionAdapter extends BaseAdapter {
                 public void onClick(View v) {
                     Intent galleryIntent = new Intent(cx, GalleryActivity.class);
 
+                    String subTitle = fseries.getSeries();
+
+                    if (fseries.getMaxNumber() > 0 ) {
+                        subTitle += " (" + fseries.getMaxNumber() + (fseries.isOrdered() ? "s" : "") + ")";
+                    }
+
                     galleryIntent.putExtra(IIntentExtras.EXTRA_SERIESID, coaster.getCoasterSeriesID());
-                    galleryIntent.putExtra(IIntentExtras.EXTRA_GALLERY_NAME, fseries.getSeries());
+                    galleryIntent.putExtra(IIntentExtras.EXTRA_GALLERY_SUBTITLE, subTitle);
 
                     cx.startActivity(galleryIntent);
                 }
@@ -327,7 +335,7 @@ public class CoasterCollectionAdapter extends BaseAdapter {
                     Intent galleryIntent = new Intent(cx, GalleryActivity.class);
 
                     galleryIntent.putExtra(IIntentExtras.EXTRA_COLLECTORID, coaster.getCollectorID());
-                    galleryIntent.putExtra(IIntentExtras.EXTRA_GALLERY_NAME, collectorName);
+                    galleryIntent.putExtra(IIntentExtras.EXTRA_GALLERY_SUBTITLE, collectorName);
 
                     cx.startActivity(galleryIntent);
                 }

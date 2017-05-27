@@ -107,7 +107,7 @@ public class CollectorAdapter extends BaseAdapter {
                 Intent galleryIntent = new Intent(cx, GalleryActivity.class);
 
                 galleryIntent.putExtra(IIntentExtras.EXTRA_COLLECTORID, collector.getCollectorID());
-                galleryIntent.putExtra(IIntentExtras.EXTRA_GALLERY_NAME, collector.getDisplayName());
+                galleryIntent.putExtra(IIntentExtras.EXTRA_GALLERY_SUBTITLE, collector.getDisplayName());
 
                 cx.startActivity(galleryIntent);
             }
