@@ -9,11 +9,13 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import josh.android.coastercollection.R;
 import josh.android.coastercollection.bl.ImageManager;
+import josh.android.coastercollection.utils.PanAndZoomListener;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -97,6 +99,8 @@ public class ImageFullscreenActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_image_fullscreen);
 
+        FrameLayout fl = (FrameLayout) findViewById(R.id.imgFrameLayout);
+
         Intent origineIntent = this.getIntent();
 
         String imgName = origineIntent.getStringExtra("imgPath");
@@ -105,6 +109,8 @@ public class ImageFullscreenActivity extends AppCompatActivity {
 
         mContentView = (ImageView) findViewById(R.id.fullscreen_content);
         mContentView.setImageBitmap(bmp);
+
+        fl.setOnTouchListener(new PanAndZoomListener(this, fl, mContentView, PanAndZoomListener.Anchor.TOPLEFT));
 
         TextView imageName = (TextView) findViewById(R.id.imageName);
 
