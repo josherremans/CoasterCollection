@@ -190,7 +190,8 @@ public class AddCollectorActivity extends AppCompatActivity
 
             CoasterApplication.collectionData.mapCollectors.put(endCollector.getCollectorID(), endCollector);
 
-            CollectorListActivity.refreshCollectorList = true;
+//            CollectorListActivity.refreshCollectorList = true;
+            CoasterApplication.refreshCollectors = true;
 
             CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorlayout);
 

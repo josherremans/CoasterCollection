@@ -179,7 +179,10 @@ public class AddSeriesActivity extends AppCompatActivity
 
             editTrademark.setText(currentTrademark);
             editSeries.setText(startSeries.getSeries());
-            editSeriesMaxNbr.setText("" + startSeries.getMaxNumber());
+
+            if (startSeries.getMaxNumber() != -1) {
+                editSeriesMaxNbr.setText("" + startSeries.getMaxNumber());
+            }
 
             chkboxSeriesOrdered.setChecked(startSeries.isOrdered());
         }
@@ -282,11 +285,12 @@ public class AddSeriesActivity extends AppCompatActivity
 
             dbHelper.putSeriesInDB(endSeries);
 
-            if (startSeries == null) {
+            if ((startSeries == null) || (!startSeries.isFetchedFromDB())) {
                 CoasterApplication.collectionData.lstSeries.add(endSeries);
             }
 
-            SeriesListActivity.refreshSeriesList = true;
+//            SeriesListActivity.refreshSeriesList = true;
+            CoasterApplication.refreshSeries = true;
 
             CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorlayout);
 

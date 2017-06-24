@@ -6,13 +6,8 @@
         <CheckBoxPreference
             android:key="pref_key_sort_reverse"
             android:title="@string/pref_sort_reverse"
-            android:summary="@string/pref_summary_sort_reverse"
-            android:defaultValue="false" />
-        <CheckBoxPreference
-            android:key="pref_key_show_backimage"
-            android:title="@string/pref_show_backimage"
-            android:summary="@string/pref_summary_show_backimage"
-            android:defaultValue="false" />
+            android:summary="@string/pref_sort_reverse_summary"
+            android:defaultValue="true" />
         <!--Preference
             android:key="pref_key_sms_delete_limit"
             android:dependency="pref_key_sort_reverse"
@@ -23,6 +18,69 @@
             android:dependency="pref_key_sort_reverse"
             android:title="@string/pref_title_mms_delete"
             android:summary="@string/pref_summary_delete_limit" /-->
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/pref_show_info_settings"
+        android:key="pref_key_show_info_settings">
+
+        <CheckBoxPreference
+            android:key="@string/pref_key_show_info_details"
+            android:title="@string/pref_show_info_details"
+            android:defaultValue="true" />
+
+        <CheckBoxPreference
+            android:key="@string/pref_key_show_info_description"
+            android:dependency="pref_key_show_info_details"
+            android:title="@string/pref_show_info_description"
+            android:defaultValue="true" />
+        <CheckBoxPreference
+            android:key="@string/pref_key_show_info_text"
+            android:dependency="pref_key_show_info_details"
+            android:title="@string/pref_show_info_text"
+            android:defaultValue="true" />
+        <CheckBoxPreference
+            android:key="@string/pref_key_show_info_collector"
+            android:dependency="pref_key_show_info_details"
+            android:title="@string/pref_show_info_collector"
+            android:defaultValue="true" />
+        <CheckBoxPreference
+            android:key="@string/pref_key_show_info_series"
+            android:dependency="pref_key_show_info_details"
+            android:title="@string/pref_show_info_series"
+            android:defaultValue="true" />
+        <CheckBoxPreference
+            android:key="@string/pref_key_show_info_location"
+            android:dependency="pref_key_show_info_details"
+            android:title="@string/pref_show_info_location"
+            android:defaultValue="false" />
+        <CheckBoxPreference
+            android:key="@string/pref_key_show_info_date"
+            android:dependency="pref_key_show_info_details"
+            android:title="@string/pref_show_info_date"
+            android:defaultValue="true" />
+        <CheckBoxPreference
+            android:key="@string/pref_key_show_info_shape"
+            android:dependency="pref_key_show_info_details"
+            android:title="@string/pref_show_info_shape"
+            android:defaultValue="false" />
+        <CheckBoxPreference
+            android:key="@string/pref_key_show_info_quality"
+            android:dependency="pref_key_show_info_details"
+            android:title="@string/pref_show_info_quality"
+            android:defaultValue="false" />
+        <CheckBoxPreference
+            android:key="@string/pref_key_show_info_coaster_type"
+            android:dependency="pref_key_show_info_details"
+            android:title="@string/pref_show_info_coaster_type"
+            android:defaultValue="true" />
+        <CheckBoxPreference
+            android:key="@string/pref_key_show_info_image_back"
+            android:dependency="pref_key_show_info_details"
+            android:title="@string/pref_show_info_image_back"
+            android:summary="@string/pref_show_info_image_back_summary"
+            android:defaultValue="true" />
+
     </PreferenceCategory>
 
     <PreferenceCategory

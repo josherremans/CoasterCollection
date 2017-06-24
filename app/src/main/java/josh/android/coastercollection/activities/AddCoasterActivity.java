@@ -192,6 +192,8 @@ public class AddCoasterActivity extends AppCompatActivity
                 if (trId == -1) {
                     editTrademark.setText("");
                 } else {
+                    Log.i(LOG_TAG, "editTrademark.setText: " + tr.getTrademark());
+
                     editTrademark.setText(tr.getTrademark());
                     editTrademark.setSelection(editTrademark.length());
                 }
@@ -1256,7 +1258,8 @@ public class AddCoasterActivity extends AppCompatActivity
     private void deleteCoaster() {
         dbHelper.removeCoasterFromDB(startCoaster.getCoasterID());
 
-        CoasterListActivity.refreshCoasterList = true;
+//        CoasterListActivity.refreshCoasterList = true;
+        CoasterApplication.refreshCoasters = true;
 
         CoasterApplication.currentCoasterID = startCoaster.getCoasterID();
 
@@ -1315,13 +1318,16 @@ public class AddCoasterActivity extends AppCompatActivity
                 e.printStackTrace();
             }
 
-            collectionData.mapCoasters.put(endCoaster.getCoasterID(), endCoaster);
-
-            // if (startCoasterID != endCoaster.getCoasterID()) {
             if (!startCoaster.isFetchedFromDB()) {
-                CoasterListActivity.refreshCoasterList = true;
+                CoasterApplication.refreshCoasters = true;
             } else {
-                collectionData.setNotifyAdapter(true);
+                if (startCoasterID != endCoaster.getCoasterID()) {
+                    CoasterApplication.refreshCoasters = true;
+                } else {
+                    collectionData.mapCoasters.put(endCoaster.getCoasterID(), endCoaster);
+
+                    collectionData.setNotifyAdapter(true);
+                }
             }
 
             CoasterApplication.currentCoasterID = endCoaster.getCoasterID();

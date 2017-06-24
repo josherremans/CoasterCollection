@@ -36,6 +36,7 @@ import josh.android.coastercollection.application.CoasterApplication;
 import josh.android.coastercollection.bo.Series;
 import josh.android.coastercollection.bo.Trademark;
 import josh.android.coastercollection.bo.TrademarkSeriesGroup;
+import josh.android.coastercollection.databank.CoasterCollectionDBHelper;
 
 public class SeriesListActivity extends FabBaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -51,7 +52,7 @@ public class SeriesListActivity extends FabBaseActivity
 
     private String listViewType = "";
 
-    public static boolean refreshSeriesList = true;
+//    public static boolean refreshSeriesList = true;
 
     SparseArray<TrademarkSeriesGroup> lstTrademarkSeriesGroup = new SparseArray<>();
 
@@ -60,13 +61,14 @@ public class SeriesListActivity extends FabBaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_series_list);
 
-        refreshSeriesList = true;
+//        refreshSeriesList = true;
+        CoasterApplication.refreshSeries = true;
 
         // *** Read shared preferences:
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
-        listViewType = sharedPref.getString(SettingsFragment.PREF_KEY_LISTVIEW_TYPE, getResources().getStringArray(R.array.pref_listview_type_values)[0]); //"CardType");
+        listViewType = CoasterApplication.listViewType; //"CardType");
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -91,25 +93,7 @@ public class SeriesListActivity extends FabBaseActivity
 
         lstTrademarkSeriesGroup = new SparseArray<>();
 
-        int i = 0;
-        long previousTrId = 0;
-        TrademarkSeriesGroup group = null;
-
-        for (Series s : CoasterApplication.collectionData.lstSeries) {
-            long trid = s.getTrademarkID();
-
-            if (trid != previousTrId) {
-                previousTrId = trid;
-
-                Trademark tr = CoasterApplication.collectionData.mapTrademarks.get(trid);
-
-                group = new TrademarkSeriesGroup(tr.getTrademark());
-
-                lstTrademarkSeriesGroup.append(i++, group);
-            }
-
-            group.series.add(s);
-        }
+        populateList(false);
 
         seriesAdapter = new SeriesExpandableListAdapter(this, lstTrademarkSeriesGroup);
 
@@ -152,20 +136,20 @@ public class SeriesListActivity extends FabBaseActivity
 
         imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
 
-        if (refreshSeriesList) {
-            refreshSeriesList = false;
+        if (CoasterApplication.refreshSeries) {
+            CoasterApplication.refreshSeries = false;
 
             // *** Read shared preferences:
 
-            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-
-            listViewType = sharedPref.getString(SettingsFragment.PREF_KEY_LISTVIEW_TYPE, getResources().getStringArray(R.array.pref_listview_type_values)[0]); //"CardType");
+            listViewType = CoasterApplication.listViewType;
 
             if (listViewType.equals(getResources().getStringArray(R.array.pref_listview_type_values)[0])) { // "CardType"
                 lstvwSeries.setDivider(null);
             } else {
                 lstvwSeries.setDividerHeight(5);
             }
+
+            populateList(true);
 
             seriesAdapter.notifyDataSetChanged();
 
@@ -176,6 +160,36 @@ public class SeriesListActivity extends FabBaseActivity
             displayIndex();
 
             Log.i(LOG_TAG, "END onResume!");
+        }
+    }
+
+    private void populateList(boolean refreshFromDB) {
+        int i = 0;
+        long previousTrId = 0;
+        TrademarkSeriesGroup group = null;
+
+        CoasterCollectionDBHelper dbHelper = new CoasterCollectionDBHelper(this);
+
+        if (refreshFromDB) {
+            CoasterApplication.collectionData.lstSeries.clear();
+            CoasterApplication.collectionData.lstSeries.addAll(dbHelper.getSeriesFromDB(-1));
+            Log.i(LOG_TAG, "data.lstSeries: size:" + CoasterApplication.collectionData.lstSeries.size());
+        }
+
+        for (Series s : CoasterApplication.collectionData.lstSeries) {
+            long trid = s.getTrademarkID();
+
+            if (trid != previousTrId) {
+                previousTrId = trid;
+
+                Trademark tr = CoasterApplication.collectionData.mapTrademarks.get(trid);
+
+                group = new TrademarkSeriesGroup(tr.getTrademark());
+
+                lstTrademarkSeriesGroup.append(i++, group);
+            }
+
+            group.series.add(s);
         }
     }
 
@@ -400,37 +414,4 @@ public class SeriesListActivity extends FabBaseActivity
             startActivity(new Intent(SeriesListActivity.this, AddSeriesActivity.class));
         }
     }
-
-//    /*
-//    ** INNERCLASS: SeriesOnItemLongClickListener
-//     */
-//    private class SeriesOnItemLongClickListener implements ExpandableListView.OnItemLongClickListener {
-//        @Override
-//        public boolean onItemLongClick(AdapterView<?> parent, View view, int pos, long id) {
-//            Log.w(LOG_TAG, "SeriesOnItemLongClickListener.onItemLongClick");
-//
-//            int itemType = ExpandableListView.getPackedPositionType(id);
-//            int groupPos = -1;
-//            int childPos = -1;
-//
-//            if ( itemType == ExpandableListView.PACKED_POSITION_TYPE_CHILD) {
-//                groupPos = lstvwSeries.getPackedPositionGroup(id);
-//                childPos = lstvwSeries.getPackedPositionChild(id);
-//            } else {
-//                Log.w(LOG_TAG, "Sorry NO CHILD item!");
-//
-//                return false;
-//            }
-//
-//            Series clickedSeries = (Series) seriesAdapter.getChild(groupPos, childPos);
-//
-//            Intent alterSeriesIntent = new Intent(SeriesListActivity.this, AddSeriesActivity.class);
-//
-//            alterSeriesIntent.putExtra(IIntentExtras.EXTRA_SERIESID, clickedSeries.getSeriesNbr());
-//
-//            startActivity(alterSeriesIntent);
-//
-//            return true;
-//        }
-//    }
 }

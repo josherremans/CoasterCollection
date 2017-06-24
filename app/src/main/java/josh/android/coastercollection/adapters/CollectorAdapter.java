@@ -6,47 +6,33 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
 import josh.android.coastercollection.R;
+import josh.android.coastercollection.activities.AddCollectorActivity;
 import josh.android.coastercollection.activities.GalleryActivity;
 import josh.android.coastercollection.bo.Collector;
+import josh.android.coastercollection.comparators.CollectorComparator;
 import josh.android.coastercollection.enums.IIntentExtras;
 
 /**
  * Created by Jos on 2/02/2017.
  */
-public class CollectorAdapter extends BaseAdapter {
+public class CollectorAdapter extends ArrayAdapter<Collector> {
 
     private ArrayList<Collector> lstCollectors;
 
     private LayoutInflater layoutInflater;
 
     private int listViewTypeId;
-    private boolean showAllInfo = false;
 
-    private Context cx;
+    public CollectorAdapter(Context context, ArrayList<Collector> lstCollectors) {
+        super(context, R.layout.item_collector_list, lstCollectors);
 
-    public CollectorAdapter(Context context, String listViewType, ArrayList<Collector> lstCollectors) {
-        cx = context;
-
-        if (listViewType.equals(cx.getResources().getStringArray(R.array.pref_listview_type_values)[0])) { // "CardType"
-            listViewTypeId = R.layout.item_collector_list;
-            showAllInfo = true;
-        }
-
-        if (listViewType.equals(cx.getResources().getStringArray(R.array.pref_listview_type_values)[1])) { // "FullWidthType"
-            listViewTypeId = R.layout.item_collector_list;
-            showAllInfo = true;
-        }
-
-        if (listViewType.equals(cx.getResources().getStringArray(R.array.pref_listview_type_values)[2])) { // "FullWidthTypeSum"
-            listViewTypeId = R.layout.item_collector_list;
-            showAllInfo = false;
-        }
+        listViewTypeId = R.layout.item_collector_list;
 
         this.lstCollectors = lstCollectors;
 
@@ -63,7 +49,7 @@ public class CollectorAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
+    public Collector getItem(int position) {
         return lstCollectors.get(position);
     }
 
@@ -73,14 +59,22 @@ public class CollectorAdapter extends BaseAdapter {
     }
 
     @Override
+    public void notifyDataSetChanged() {
+        this.setNotifyOnChange(false); // To prevent looping!
+
+        sort(new CollectorComparator());
+        // Remark: this will automatically call super.notifyDataSetChanged() !!!
+    }
+
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View rowView = convertView;
 
-        final Collector collector = (Collector) getItem(position);
+        final Collector collector = getItem(position);
 
         // reuse views
         if (rowView == null) {
-            rowView = layoutInflater.inflate(listViewTypeId, null);
+            rowView = layoutInflater.inflate(this.listViewTypeId, null);
 
             // configure view holder
             ViewHolder viewHolder = new ViewHolder(rowView);
@@ -104,12 +98,25 @@ public class CollectorAdapter extends BaseAdapter {
         rowView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent galleryIntent = new Intent(cx, GalleryActivity.class);
+                Intent galleryIntent = new Intent(getContext(), GalleryActivity.class);
 
                 galleryIntent.putExtra(IIntentExtras.EXTRA_COLLECTORID, collector.getCollectorID());
                 galleryIntent.putExtra(IIntentExtras.EXTRA_GALLERY_SUBTITLE, collector.getDisplayName());
 
-                cx.startActivity(galleryIntent);
+                getContext().startActivity(galleryIntent);
+            }
+        });
+
+        rowView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Intent alterCollectorIntent = new Intent(getContext(), AddCollectorActivity.class);
+
+                alterCollectorIntent.putExtra(IIntentExtras.EXTRA_COLLECTORID, collector.getCollectorID());
+
+                getContext().startActivity(alterCollectorIntent);
+
+                return true;
             }
         });
 

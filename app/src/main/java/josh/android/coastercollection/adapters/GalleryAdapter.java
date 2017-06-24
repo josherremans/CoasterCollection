@@ -16,6 +16,7 @@ import josh.android.coastercollection.R;
 import josh.android.coastercollection.activities.ImageFullscreenActivity;
 import josh.android.coastercollection.bl.ImageManager;
 import josh.android.coastercollection.bo.GalleryItem;
+import josh.android.coastercollection.enums.IIntentExtras;
 
 import static josh.android.coastercollection.bl.ImageManager.DIR_DEF_IMAGES;
 
@@ -52,7 +53,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         if (imgFile.exists()) {
             new ImageManager().load(strImg, DIR_DEF_IMAGES, viewHolder.img);
 
-            viewHolder.img.setOnClickListener(new ImageOnClickListener(strImg, true));
+            viewHolder.img.setOnClickListener(new ImageOnClickListener(galleryList.get(i).getCoasterID(), strImg, true));
         } else {
             viewHolder.img.setImageResource(R.drawable.beer_bg_115);
 
@@ -92,8 +93,10 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     private class ImageOnClickListener implements View.OnClickListener {
         private String coasterImgName;
         private boolean isFrontImage;
+        private long coasterID;
 
-        public ImageOnClickListener(String coasterImgName, boolean isFrontImage) {
+        public ImageOnClickListener(long coasterID, String coasterImgName, boolean isFrontImage) {
+            this.coasterID = coasterID;
             this.coasterImgName = coasterImgName;
             this.isFrontImage = isFrontImage;
         }
@@ -102,7 +105,8 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         public void onClick(View v) {
             Intent imgIntent = new Intent(context, ImageFullscreenActivity.class);
 
-            imgIntent.putExtra("imgPath", coasterImgName);
+            imgIntent.putExtra(IIntentExtras.EXTRA_COASTERID, coasterID);
+            imgIntent.putExtra(IIntentExtras.EXTRA_IMAGE_PATH, coasterImgName);
 
             context.startActivity(imgIntent);
         }

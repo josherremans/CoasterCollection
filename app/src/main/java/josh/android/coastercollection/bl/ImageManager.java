@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
+import josh.android.coastercollection.R;
 import josh.android.coastercollection.bo.Coaster;
 
 /**
@@ -56,6 +57,13 @@ public class ImageManager {
 
     private static int currentImageCacheIndex = 0;
 
+    public static void clearCache() {
+        imageCacheHistList.clear();
+        imageCache.clear();
+
+        currentImageCacheIndex = 0;
+    }
+
     public void load(String fileName, String filePath, ImageView v){
         if(cancelPotentialSDLoad(fileName, filePath, v)) {
             SDLoadImageTask task = new SDLoadImageTask(v);
@@ -65,7 +73,7 @@ public class ImageManager {
         }
     }
 
-    private synchronized Bitmap loadImageFromSDCard(String fileName, String filePath) {
+    private synchronized Bitmap loadImageFromSDCard(String fileName, String filePath, int width) {
         /*
         BitmapFactory.Options bfo = new BitmapFactory.Options();
         bfo.inSampleSize = 4;
@@ -84,7 +92,10 @@ public class ImageManager {
 
         Bitmap myBitmap = BitmapFactory.decodeFile(filePath + File.separator + fileName);
 
-        int width = 350;
+        //int width = 550; //350;
+        if (width <= 0) {
+            width = 500;
+        }
 
         int height = (width * myBitmap.getHeight()) / myBitmap.getWidth();
 
@@ -140,6 +151,7 @@ public class ImageManager {
 
         private String mFileName;
         private String mFilePath;
+        private int width;
         private final WeakReference<ImageView> mImageViewReference;
 
         public String getmFileName() {
@@ -147,6 +159,12 @@ public class ImageManager {
         }
 
         public SDLoadImageTask(ImageView v) {
+            Object tagObj = v.getTag(R.id.TAG_SIZE);
+
+            if (tagObj != null) {
+                width = (Integer) tagObj;
+            }
+
             mImageViewReference = new WeakReference<ImageView>(v);
         }
 
@@ -166,7 +184,7 @@ public class ImageManager {
         protected Bitmap doInBackground(String... params) {
             mFileName = params[0];
             mFilePath = params[1];
-            return loadImageFromSDCard(mFileName, mFilePath);
+            return loadImageFromSDCard(mFileName, mFilePath, width);
         }
     }
 

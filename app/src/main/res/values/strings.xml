@@ -8,14 +8,42 @@
     <string name="app_name_gallery">Gallery</string>
     <string name="app_name_advanced_search">Search</string>
 
-    <string name="pref_sorting_settings">Sorting</string>
+    <string name="pref_sorting_settings">Coaster List: Sort</string>
+    <string name="pref_show_info_settings">Coaster: Show Info</string>
     <string name="pref_listview_type_settings">Type of items in list screen</string>
+
     <string name="pref_sort_reverse">Reverse order</string>
-    <string name="pref_summary_sort_reverse">Highest coaster id first</string>
-    <string name="pref_show_backimage">Show backimage</string>
-    <string name="pref_summary_show_backimage">Show backimage in list if available</string>
+    <string name="pref_sort_reverse_summary">Highest coaster id first</string>
     <string name="pref_title_listview_type">List type</string>
     <string name="pref_dialogtitle_listview_type">List type</string>
+
+    <string name="pref_show_info_details">Coaster Details</string>
+    <string name="pref_show_info_description">Coaster Description</string>
+    <string name="pref_show_info_text">Coaster Text</string>
+    <string name="pref_show_info_collector">Collector</string>
+    <string name="pref_show_info_series">Series</string>
+    <string name="pref_show_info_location">Location</string>
+    <string name="pref_show_info_shape">Shape</string>
+    <string name="pref_show_info_date">Date</string>
+    <string name="pref_show_info_quality">Quality</string>
+    <string name="pref_show_info_coaster_type">Coaster Type</string>
+    <string name="pref_show_info_image_back">Show Backside Image</string>
+    <string name="pref_show_info_image_back_summary">Show backside image in list if available</string>
+
+    <string name="pref_key_sort_reverse">pref_key_sort_reverse</string>
+    <string name="pref_key_listview_type">pref_key_listview_type</string>
+
+    <string name="pref_key_show_info_details">pref_key_show_info_details</string>
+    <string name="pref_key_show_info_description">pref_key_show_info_description</string>
+    <string name="pref_key_show_info_text">pref_key_show_info_text</string>
+    <string name="pref_key_show_info_collector">pref_key_show_info_collector</string>
+    <string name="pref_key_show_info_series">pref_key_show_info_series</string>
+    <string name="pref_key_show_info_location">pref_key_show_info_location</string>
+    <string name="pref_key_show_info_shape">pref_key_show_info_shape</string>
+    <string name="pref_key_show_info_date">pref_key_show_info_date</string>
+    <string name="pref_key_show_info_quality">pref_key_show_info_quality</string>
+    <string name="pref_key_show_info_coaster_type">pref_key_show_info_coaster_type</string>
+    <string name="pref_key_show_info_image_back">pref_key_show_info_image_back</string>
 
     <string-array name="pref_listview_type_entries">
         <item>@string/listview_type_1_entry</item>
@@ -85,7 +113,7 @@
     <string name="dummy_donor">Janssens, Jan</string>
     <string name="dummy_donor_alias">De Jan</string>
     <string name="dummy_donor_initials">(JJ)</string>
-    <string name="dummy_donation_place">Halle - Café Dummy</string>
+    <string name="dummy_collect_place">Halle - Café Dummy</string>
     <string name="dummy_shape">Square</string>
     <string name="dummy_measurements">(Side: 78mm)</string>
     <string name="dummy_quality">8/10</string>
@@ -94,6 +122,8 @@
     <string name="dummy_image_name">trademark_1234_fb.jpg</string>
     <string name="txtQuality">Quality:</string>
     <string name="txtFound">Found:</string>
+    <string name="txtLoadingCoasterList">Loading coasters...</string>
+    <string name="txtEmptyCoasterList">No coasters found!</string>
     <string name="lblCoaster">Coaster</string>
     <string name="lblShape">Shape</string>
     <string name="lblImages">Images</string>

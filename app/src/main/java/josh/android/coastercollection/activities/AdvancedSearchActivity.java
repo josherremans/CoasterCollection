@@ -11,8 +11,8 @@ import android.view.MenuItem;
 import android.widget.EditText;
 
 import josh.android.coastercollection.R;
+import josh.android.coastercollection.application.CoasterApplication;
 import josh.android.coastercollection.databank.CoasterCollectionDBHelper;
-import josh.android.coastercollection.enums.IIntentExtras;
 
 public class AdvancedSearchActivity extends AppCompatActivity {
 
@@ -36,6 +36,13 @@ public class AdvancedSearchActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        editTextSearch.setText(CoasterApplication.searchCoasterText);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_advanced_search, menu);
@@ -53,9 +60,10 @@ public class AdvancedSearchActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_filter) {
-            Intent intent = new Intent(AdvancedSearchActivity.this, CoasterListActivity.class);
+            CoasterApplication.searchCoasterText = editTextSearch.getEditableText().toString();
+            CoasterApplication.refreshCoasters = true;
 
-            intent.putExtra(IIntentExtras.EXTRA_ADVANCED_SEARCH_TEXT, editTextSearch.getEditableText().toString());
+            Intent intent = new Intent(AdvancedSearchActivity.this, CoasterListActivity.class);
 
             startActivity(intent);
 

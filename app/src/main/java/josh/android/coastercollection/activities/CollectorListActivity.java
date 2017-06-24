@@ -21,13 +21,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -35,7 +33,6 @@ import josh.android.coastercollection.R;
 import josh.android.coastercollection.adapters.CollectorAdapter;
 import josh.android.coastercollection.application.CoasterApplication;
 import josh.android.coastercollection.bo.Collector;
-import josh.android.coastercollection.bo.CollectorComparator;
 
 public class CollectorListActivity extends FabBaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -53,8 +50,6 @@ public class CollectorListActivity extends FabBaseActivity
     private String collectorFilter = null;
     private String listViewType = "";
 
-    public static boolean refreshCollectorList = true;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,13 +57,14 @@ public class CollectorListActivity extends FabBaseActivity
 
         Log.i(LOG_TAG, "onCreate");
 
-        refreshCollectorList = true;
+        CoasterApplication.refreshCollectors = true;
 
         // *** Read shared preferences:
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
-        listViewType = sharedPref.getString(SettingsFragment.PREF_KEY_LISTVIEW_TYPE, getResources().getStringArray(R.array.pref_listview_type_values)[0]); //"CardType");
+        listViewType = sharedPref.getString(getResources().getString(R.string.pref_key_listview_type),
+                getResources().getStringArray(R.array.pref_listview_type_values)[0]); //"CardType");
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -91,11 +87,9 @@ public class CollectorListActivity extends FabBaseActivity
 
         lstvwCollectors = (ListView) findViewById(R.id.lstCollectors);
 
-        collectorAdapter = new CollectorAdapter(this, listViewType, filteredList);
+        collectorAdapter = new CollectorAdapter(this, filteredList);
 
         lstvwCollectors.setAdapter(collectorAdapter);
-
-        lstvwCollectors.setOnItemLongClickListener(new CollectorOnItemLongClickListener());
 
         lstvwCollectors.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
@@ -126,8 +120,6 @@ public class CollectorListActivity extends FabBaseActivity
                 filteredList.clear();
                 filteredList.addAll(getCollectorList(query));
 
-                Collections.sort(filteredList, new CollectorComparator());
-
                 collectorAdapter.notifyDataSetChanged();
 
                 toolbar.setSubtitle("(" + collectorAdapter.getCount() + ")");
@@ -148,8 +140,6 @@ public class CollectorListActivity extends FabBaseActivity
 
                     filteredList.clear();
                     filteredList.addAll(CoasterApplication.collectionData.mapCollectors.values());
-
-                    Collections.sort(filteredList, new CollectorComparator());
 
                     collectorAdapter.notifyDataSetChanged();
 
@@ -176,14 +166,15 @@ public class CollectorListActivity extends FabBaseActivity
 
         imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
 
-        if (refreshCollectorList) {
-            refreshCollectorList = false;
+        if (CoasterApplication.refreshCollectors) {
+            CoasterApplication.refreshCollectors = false;
 
             // *** Read shared preferences:
 
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
-            listViewType = sharedPref.getString(SettingsFragment.PREF_KEY_LISTVIEW_TYPE, getResources().getStringArray(R.array.pref_listview_type_values)[0]); //"CardType");
+            listViewType = sharedPref.getString(getResources().getString(R.string.pref_key_listview_type),
+                    getResources().getStringArray(R.array.pref_listview_type_values)[0]); //"CardType");
 
             // *** Fetch data from DB:
 
@@ -195,15 +186,7 @@ public class CollectorListActivity extends FabBaseActivity
                 filteredList.addAll(CoasterApplication.collectionData.mapCollectors.values());
             }
 
-//            collectorAdapter = new CollectorAdapter(this, listViewType, filteredList);
-
-//            if (listViewType.equals(getResources().getStringArray(R.array.pref_listview_type_values)[0])) { // "CardType"
-//                lstvwCollectors.setDivider(null);
-//            } else {
-                lstvwCollectors.setDividerHeight(5);
-//            }
-
-            Collections.sort(filteredList, new CollectorComparator());
+            lstvwCollectors.setDividerHeight(5);
 
             collectorAdapter.notifyDataSetChanged();
 
@@ -450,24 +433,6 @@ public class CollectorListActivity extends FabBaseActivity
         @Override
         public void onClick(View view) {
             startActivity(new Intent(CollectorListActivity.this, AddCollectorActivity.class));
-        }
-    }
-
-    /*
-    ** INNERCLASS: CollectorOnItemLongClickListener
-     */
-    private class CollectorOnItemLongClickListener implements AdapterView.OnItemLongClickListener {
-        @Override
-        public boolean onItemLongClick(AdapterView<?> parent, View view, int pos, long id) {
-            Collector clickedCollector = (Collector) collectorAdapter.getItem(pos);
-
-            Intent alterCollectorIntent = new Intent(CollectorListActivity.this, AddCollectorActivity.class);
-
-            alterCollectorIntent.putExtra("extraCollectorID", clickedCollector.getCollectorID());
-
-            startActivity(alterCollectorIntent);
-
-            return true;
         }
     }
 }

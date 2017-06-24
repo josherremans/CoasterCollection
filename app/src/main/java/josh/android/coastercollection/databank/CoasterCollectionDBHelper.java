@@ -434,7 +434,7 @@ public class CoasterCollectionDBHelper extends SQLiteOpenHelper {
         database.close();
     }
 
-    public void getCoasterCollectionFromDB(ArrayList<Long> lstTrademarkIDs, boolean isReverseOrder) {
+    public void getCoasterCollectionFromDB(ArrayList<Long> lstTrademarkIDs, boolean isReverseOrder, String searchCoasterText) {
         Log.i(LOG_TAG, "getCoasterCollectionFromDB(..)");
 
         SQLiteDatabase database = this.getReadableDatabase();
@@ -470,6 +470,16 @@ public class CoasterCollectionDBHelper extends SQLiteOpenHelper {
                 whereClauseArgs = constructInClauseArgs(lstTrademarkIDs);
             } else {
                 return;
+            }
+        }
+
+        if (searchCoasterText != null) {
+            String whereClauseSearch = CoasterCollectionDBContract.CollectionEntry.COLUMN_TEXT + " LIKE \"%" + searchCoasterText + "%\"";
+
+            if (whereClause != null) {
+                whereClause += " AND " + whereClauseSearch;
+            } else {
+                whereClause = whereClauseSearch;
             }
         }
 

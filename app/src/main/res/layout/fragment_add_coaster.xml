@@ -149,6 +149,7 @@
                     android:layout_marginTop="@dimen/margin_top"
                     android:id="@+id/editCoasterDesc"
                     android:hint="coaster description"
+                    android:inputType="textCapSentences|textMultiLine"
                     android:lines="3"
                     android:gravity="top"
                     android:textStyle="italic"
@@ -160,6 +161,7 @@
                     android:layout_marginTop="@dimen/margin_top"
                     android:id="@+id/editCoasterText"
                     android:hint="coaster text"
+                    android:inputType="textCapSentences|textMultiLine"
                     android:lines="3"
                     android:gravity="top"
                     android:ellipsize="end" />

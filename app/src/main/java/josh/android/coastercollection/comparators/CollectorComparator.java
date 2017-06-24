@@ -1,6 +1,8 @@
-package josh.android.coastercollection.bo;
+package josh.android.coastercollection.comparators;
 
 import java.util.Comparator;
+
+import josh.android.coastercollection.bo.Collector;
 
 /**
  * Created by Jos on 28/02/2017.

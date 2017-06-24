@@ -14,7 +14,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import josh.android.coastercollection.R;
+import josh.android.coastercollection.application.CoasterApplication;
 import josh.android.coastercollection.bl.ImageManager;
+import josh.android.coastercollection.enums.IIntentExtras;
 import josh.android.coastercollection.utils.PanAndZoomListener;
 
 /**
@@ -103,7 +105,8 @@ public class ImageFullscreenActivity extends AppCompatActivity {
 
         Intent origineIntent = this.getIntent();
 
-        String imgName = origineIntent.getStringExtra("imgPath");
+        String imgName = origineIntent.getStringExtra(IIntentExtras.EXTRA_IMAGE_PATH);
+        final long coasterID = origineIntent.getLongExtra(IIntentExtras.EXTRA_COASTERID, -1);
 
         Bitmap bmp = ImageManager.getBitmap(imgName, 500);
 
@@ -111,6 +114,25 @@ public class ImageFullscreenActivity extends AppCompatActivity {
         mContentView.setImageBitmap(bmp);
 
         fl.setOnTouchListener(new PanAndZoomListener(this, fl, mContentView, PanAndZoomListener.Anchor.TOPLEFT));
+
+        ImageView imgIconViewList = (ImageView) findViewById(R.id.imgIconViewList);
+
+        if (imgIconViewList != null) {
+            imgIconViewList.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (coasterID != -1) {
+                        CoasterApplication.currentCoasterID = coasterID;
+
+                        Intent intent = new Intent(ImageFullscreenActivity.this, CoasterListActivity.class);
+
+                        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+
+                        startActivity(intent);
+                    }
+                }
+            });
+        }
 
         TextView imageName = (TextView) findViewById(R.id.imageName);
 

@@ -48,6 +48,64 @@
         </LinearLayout>
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/layoutCoasterImagesOnly"
+            android:orientation="horizontal"
+            android:baselineAligned="false"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/padding5"
+            android:minHeight="@dimen/min_height_item_coaster_list"
+            android:layout_weight="100">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_weight="48"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/imgCoasterFrontBig"
+                    android:contentDescription="@string/contentDescImg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scaleType="fitCenter" />
+                <TextView
+                    android:id="@+id/txtImgCoasterFrontBig"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="@dimen/textsizeTitle"
+                    android:textStyle="bold"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_weight="4"
+                android:layout_height="wrap_content">
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_weight="48"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/imgCoasterBackBig"
+                    android:contentDescription="@string/contentDescImg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scaleType="fitCenter" />
+                <TextView
+                    android:id="@+id/txtImgCoasterBackBig"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="@dimen/textsizeTitle"
+                    android:textStyle="bold"/>
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/layoutCoasterDetails"
             android:orientation="horizontal"
             android:baselineAligned="false"
@@ -155,7 +213,8 @@
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingTop="@dimen/padding5">
+                    android:paddingTop="@dimen/padding5"
+                    android:id="@+id/layoutDonation">
                     <TextView
                         android:id="@+id/txtDonationDate"
                         android:layout_width="wrap_content"
@@ -170,6 +229,20 @@
                         android:paddingStart="@dimen/padding10"
                         android:textStyle="normal"
                         android:text="@string/dummy_donor" />
+                </LinearLayout>
+
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/padding5"
+                    android:id="@+id/layoutCollectPlace">
+                    <TextView
+                        android:id="@+id/txtCollectPlace"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="normal"
+                        android:text="@string/dummy_collect_place" />
                 </LinearLayout>
 
                 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

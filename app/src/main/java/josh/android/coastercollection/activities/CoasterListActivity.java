@@ -4,13 +4,11 @@ import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.DataSetObserver;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -22,7 +20,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.text.InputType;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -35,6 +32,7 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -50,7 +48,6 @@ import josh.android.coastercollection.bl.ImageManager;
 import josh.android.coastercollection.bo.Coaster;
 import josh.android.coastercollection.bo.Trademark;
 import josh.android.coastercollection.databank.CoasterCollectionDBHelper;
-import josh.android.coastercollection.enums.IIntentExtras;
 
 import static josh.android.coastercollection.application.CoasterApplication.collectionData;
 
@@ -76,15 +73,11 @@ public class CoasterListActivity extends FabBaseActivity
 
     private ProgressBar progressBar;
 
-    private String trademarkFilter = null;
-    private String advancedSearchText = null;
+//    private String advancedSearchText = null;
 
-    private boolean isReverseOrder = false;
     private String listViewType = "";
 
     private String cameraImageTimestamp = "";
-
-    public static boolean refreshCoasterList = true;
 
     private AsyncTask loadNewDataTask;
 
@@ -93,9 +86,11 @@ public class CoasterListActivity extends FabBaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_coaster_list);
 
+        Log.i(LOG_TAG, "IN onCreate");
+
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
-        refreshCoasterList = true;
+        CoasterApplication.refreshCoasters = true;
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -116,10 +111,11 @@ public class CoasterListActivity extends FabBaseActivity
 
         // *** Read shared preferences:
 
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        isReverseOrder = sharedPref.getBoolean(SettingsFragment.PREF_KEY_SORT_REVERSE, false);
+//        isReverseOrder = CoasterApplication.showInReverseOrder;
+        listViewType = CoasterApplication.listViewType;
 
-        listViewType = sharedPref.getString(SettingsFragment.PREF_KEY_LISTVIEW_TYPE, getResources().getStringArray(R.array.pref_listview_type_values)[0]); //"CardType");
+        // TODO TEMP VAST listViewType!!!
+        listViewType = "FullWidthType"; // OFTE getResources().getStringArray(R.array.pref_listview_type_values)[1];
 
         // *** VIEWS:
 
@@ -148,9 +144,11 @@ public class CoasterListActivity extends FabBaseActivity
 
         coasterCollectionAdapter.registerDataSetObserver(new CoasterCollectionDataSetObserver());
 
+        lstvwCoasterCollection.setAdapter(coasterCollectionAdapter);
+
         searchView = (SearchView) findViewById(R.id.editTrademarkSearch);
 
-        advancedSearchText = this.getIntent().getStringExtra(IIntentExtras.EXTRA_ADVANCED_SEARCH_TEXT);
+//        advancedSearchText = this.getIntent().getStringExtra(IIntentExtras.EXTRA_ADVANCED_SEARCH_TEXT);
     }
 
     @Override
@@ -168,7 +166,7 @@ public class CoasterListActivity extends FabBaseActivity
 
         lstvwCoasterCollection.setOnItemLongClickListener(new CoasterOnItemLongClickListener());
 
-        lstvwCoasterCollection.setAdapter(coasterCollectionAdapter);
+//        lstvwCoasterCollection.setAdapter(coasterCollectionAdapter);
 
         searchView.setVisibility(View.GONE);
 
@@ -177,9 +175,10 @@ public class CoasterListActivity extends FabBaseActivity
             public boolean onQueryTextSubmit(String query) {
                 Log.i(LOG_TAG, "onQueryTextSubmit!");
 
-                CoasterListActivity.this.trademarkFilter = query;
+//                CoasterListActivity.this.trademarkFilter = query;
 
-                coasterCollectionAdapter.updateCoasterForList(getCoasterIds(query, advancedSearchText));
+//                coasterCollectionAdapter.updateCoasterForList(getCoasterIds(query, advancedSearchText));
+                coasterCollectionAdapter.updateCoasterForList(getCoasterIds(query));
 
                 toolbar.setSubtitle("(" + coasterCollectionAdapter.getCount() + ")");
 
@@ -193,9 +192,10 @@ public class CoasterListActivity extends FabBaseActivity
                 if ((newText == null) || (newText.length() == 0)) {
                     Log.i(LOG_TAG, "onQueryTextChange! EMPTY");
 
-                    CoasterListActivity.this.trademarkFilter = null;
+//                    CoasterListActivity.this.trademarkFilter = null;
 
-                    coasterCollectionAdapter.updateCoasterForList(getCoasterIds(null, advancedSearchText));
+//                    coasterCollectionAdapter.updateCoasterForList(getCoasterIds(null, advancedSearchText));
+                    coasterCollectionAdapter.updateCoasterForList(getCoasterIds(null));
 
                     toolbar.setSubtitle("(" + coasterCollectionAdapter.getCount() + ")");
                 }
@@ -227,6 +227,8 @@ public class CoasterListActivity extends FabBaseActivity
     public void onStop() {
         super.onStop();
         Log.i(LOG_TAG, "IN onStop!");
+
+//        CoasterApplication.refreshCoasters = true;
     }
 
     @Override
@@ -245,28 +247,25 @@ public class CoasterListActivity extends FabBaseActivity
 //
 //        imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
 
-        Log.i(LOG_TAG, "onResume! notify=" + collectionData.notifyAdapter());
-
-        if (CoasterApplication.collectionData.notifyAdapter()) {
-            coasterCollectionAdapter.notifyDataSetChanged();
-        }
-
-        if (refreshCoasterList) {
+        if (CoasterApplication.refreshCoasters) {
             Log.i(LOG_TAG, "onResume! Refreshing!");
-
-            refreshCoasterList = false;
-
-            // *** Read shared preferences:
-
-            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-            isReverseOrder = sharedPref.getBoolean(SettingsFragment.PREF_KEY_SORT_REVERSE, false);
-
-            listViewType = sharedPref.getString(SettingsFragment.PREF_KEY_LISTVIEW_TYPE, getResources().getStringArray(R.array.pref_listview_type_values)[0]); //"CardType");
 
             // *** Fetch data from DB:
 
             loadNewData();
         } else {
+            if (CoasterApplication.collectionData.notifyAdapter()) {
+                Log.i(LOG_TAG, "Notify adapter!");
+
+                ArrayList<Long> lstCoasterIds = new ArrayList<>();
+
+                lstCoasterIds.addAll(collectionData.mapCoasters.keySet());
+
+                coasterCollectionAdapter.updateCoasterForList(lstCoasterIds);
+
+                coasterCollectionAdapter.notifyDataSetChanged();
+            }
+
             if (CoasterApplication.currentCoasterID != -1) {
                 Log.i(LOG_TAG, "Scroll to ID " + CoasterApplication.currentCoasterID);
 
@@ -280,17 +279,18 @@ public class CoasterListActivity extends FabBaseActivity
     }
 
     private void loadNewData() {
-        loadNewDataTask = new LoadCoastersAsyncTask(dbHelper, coasterCollectionAdapter, isReverseOrder, progressBar, toolbar).execute();
+        loadNewDataTask = new LoadCoastersAsyncTask(dbHelper, coasterCollectionAdapter, CoasterApplication.showInReverseOrder, progressBar, toolbar).execute();
     }
 
-    private ArrayList<Long> getCoasterIds(String filterByTrademark, String filterByCoasterText) {
+//    private ArrayList<Long> getCoasterIds(String filterByTrademark, String filterByCoasterText) {
+    private ArrayList<Long> getCoasterIds(String filterByTrademark) {
         // *** Conversions:
 
-        if ((filterByCoasterText != null) && (filterByCoasterText.length() == 0)) {
-            filterByCoasterText = null;
-        }
-
-        filterByCoasterText = filterByCoasterText.toLowerCase();
+//        if ((filterByCoasterText == null) || (filterByCoasterText.length() == 0)) {
+//            filterByCoasterText = null;
+//        } else {
+//            filterByCoasterText = filterByCoasterText.toLowerCase();
+//        }
 
         // *** Filter:
 
@@ -302,19 +302,20 @@ public class CoasterListActivity extends FabBaseActivity
             lstTrademarkIds = getTrademarkIdList(filterByTrademark);
         }
 
-        if ((filterByTrademark == null) && (filterByCoasterText == null)) {
+//        if ((filterByTrademark == null) && (filterByCoasterText == null)) {
+        if (filterByTrademark == null) {
             lstCoasterIds.addAll(collectionData.mapCoasters.keySet());
         } else {
             for (Coaster c : collectionData.mapCoasters.values()) {
                 for (Long trId : lstTrademarkIds) {
                     if (c.getCoasterTrademarkID() == trId.longValue()) {
-                        if (filterByCoasterText == null) {
+//                        if (filterByCoasterText == null) {
                             lstCoasterIds.add(c.getCoasterID());
-                        } else {
-                            if (c.getCoasterText().toLowerCase().contains(filterByCoasterText)) {
-                                lstCoasterIds.add(c.getCoasterID());
-                            }
-                        }
+//                        } else {
+//                            if (c.getCoasterText().toLowerCase().contains(filterByCoasterText)) {
+//                                lstCoasterIds.add(c.getCoasterID());
+//                            }
+//                        }
 
                         break;
                     }
@@ -339,6 +340,16 @@ public class CoasterListActivity extends FabBaseActivity
         }
 
         return lstTrademarkIds;
+    }
+
+    @Override
+    public void onContentChanged() {
+        super.onContentChanged();
+
+        TextView empty = (TextView) findViewById(R.id.emptyListView);
+//        empty.setText(R.string.txtEmptyCoasterList);
+        ListView list = (ListView) findViewById(R.id.lstCoasterCollection);
+        list.setEmptyView(empty);
     }
 
     @Override
@@ -424,8 +435,8 @@ public class CoasterListActivity extends FabBaseActivity
         // Set up the input
         final EditText input = new EditText(this);
 
-        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
-        input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        // Specify the type of input expected
+        input.setInputType(EditorInfo.TYPE_CLASS_NUMBER);
 
         builder.setView(input);
 
@@ -463,7 +474,7 @@ public class CoasterListActivity extends FabBaseActivity
                     ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE).callOnClick();
                 }
 
-                return true;
+                return false;
             }
         });
 
@@ -606,6 +617,11 @@ public class CoasterListActivity extends FabBaseActivity
             int pos = coasterCollectionAdapter.getPositionOfCoaster(CoasterApplication.currentCoasterID);
 
             lstvwCoasterCollection.setSelection(pos);
+
+            if (lstvwCoasterCollection.getAdapter().isEmpty()) {
+                TextView empty = (TextView) findViewById(R.id.emptyListView);
+                empty.setText(R.string.txtEmptyCoasterList);
+            }
         }
     }
 

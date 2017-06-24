@@ -9,8 +9,9 @@
         android:id="@+id/imgLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_weight="100">
+        android:weightSum="100"
+        android:orientation="vertical">
+
         <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/imgFrameLayout"
@@ -20,23 +21,42 @@
 
             <ImageView
                 android:id="@+id/fullscreen_content"
-                android:contentDescription="@string/contentDescImg"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:contentDescription="@string/contentDescImg"
                 android:scaleType="fitCenter"
                 android:src="@drawable/help" />
         </FrameLayout>
 
-        <TextView
-            android:id="@+id/imageName"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/dimen_zero"
+            android:orientation="horizontal"
             android:layout_weight="10"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
-            android:textSize="@dimen/textsizeTitle"
-            android:textStyle="bold"
-            android:text="@string/dummy_image_name"
-            android:gravity="center_horizontal"/>
+            android:weightSum="100"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@+id/imageName"
+                android:layout_width="@dimen/dimen_zero"
+                android:layout_height="wrap_content"
+                android:layout_weight="80"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:gravity="center"
+                android:text="@string/dummy_image_name"
+                android:textSize="@dimen/textsizeTitle"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/imgIconViewList"
+                android:layout_width="@dimen/dimen_zero"
+                android:layout_height="match_parent"
+                android:layout_weight="20"
+                android:contentDescription="@string/contentDescImg"
+                android:src="@drawable/ic_view_list"
+                android:layout_gravity="fill"
+                android:gravity="center"/>
+        </LinearLayout>
     </LinearLayout>
 </FrameLayout>

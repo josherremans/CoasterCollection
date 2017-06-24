@@ -37,28 +37,28 @@ public class CoasterCollectionAdapter extends BaseAdapter {
     private LayoutInflater layoutInflater;
 
     private int listViewTypeId;
-    private boolean showAllInfo = false;
 
     private Context cx;
 
     private ArrayList<Long> lstCoasterIds = new ArrayList<>();
 
     public CoasterCollectionAdapter(Context context, String listViewType) {
+//    public CoasterCollectionAdapter(Context context, ArrayList<Long> lstCoasterIds, int listViewType) {
+//        super(context, listViewType, lstCoasterIds);
+
         cx = context;
+//        this.listViewTypeId = listViewType;
 
         if (listViewType.equals(cx.getResources().getStringArray(R.array.pref_listview_type_values)[0])) { // "CardType"
             listViewTypeId = R.layout.item_coaster_list_card;
-            showAllInfo = true;
         }
 
         if (listViewType.equals(cx.getResources().getStringArray(R.array.pref_listview_type_values)[1])) { // "FullWidthType"
             listViewTypeId = R.layout.item_coaster_list_more;
-            showAllInfo = true;
         }
 
         if (listViewType.equals(cx.getResources().getStringArray(R.array.pref_listview_type_values)[2])) { // "FullWidthTypeSum"
             listViewTypeId = R.layout.item_coaster_list_less;
-            showAllInfo = false;
         }
 
         layoutInflater = (LayoutInflater) context.getSystemService(Service.LAYOUT_INFLATER_SERVICE);
@@ -79,7 +79,7 @@ public class CoasterCollectionAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
+    public Long getItem(int position) {
         if (lstCoasterIds.size() > 0) {
             return lstCoasterIds.get(position);
         } else {
@@ -88,7 +88,8 @@ public class CoasterCollectionAdapter extends BaseAdapter {
     }
 
     public int getPositionOfCoaster(long coasterID) {
-        boolean asc = (lstCoasterIds.get(0)<lstCoasterIds.get(lstCoasterIds.size()-1) ? true : false);
+        boolean asc = !CoasterApplication.showInReverseOrder;
+//        boolean asc = (lstCoasterIds.get(0) < lstCoasterIds.get(lstCoasterIds.size()-1) ? true : false);
 
         if (asc) {
             for (int i=0; i<lstCoasterIds.size(); i++) {
@@ -142,14 +143,16 @@ public class CoasterCollectionAdapter extends BaseAdapter {
 
         final Coaster coaster = getRealItem(position);
 
+        ViewHolder holder;
+
         // reuse views
         if (rowView == null) {
-            rowView = layoutInflater.inflate(listViewTypeId, null);
+            rowView = layoutInflater.inflate(this.listViewTypeId, null);
 
             // configure view holder
-            ViewHolder viewHolder = new ViewHolder(rowView);
+            holder = new ViewHolder(rowView);
 
-            rowView.setTag(viewHolder);
+            rowView.setTag(holder);
         }
 
         // Translate trademark id in trademark name:
@@ -182,96 +185,9 @@ public class CoasterCollectionAdapter extends BaseAdapter {
         }
 
         // fill data
-        ViewHolder holder = (ViewHolder) rowView.getTag();
+        holder = (ViewHolder) rowView.getTag();
 
         holder.coasterID.setText("" + coaster.getCoasterID());
-
-        if (coaster.getCoasterQuality() > 0) {
-            if (coaster.getCoasterQuality() <= 5) {
-                holder.coasterID.setTextColor(cx.getResources().getColor(R.color.colorQualityVeryBad));
-            } else if (coaster.getCoasterQuality() <= 8) {
-                holder.coasterID.setTextColor(cx.getResources().getColor(R.color.colorQualityBad));
-            } else {
-                holder.coasterID.setTextColor(cx.getResources().getColor(R.color.colorQualityGood));
-            }
-        } else {
-            holder.coasterID.setTextColor(cx.getResources().getColor(R.color.colorQualityGood));
-        }
-
-        String strImgFront = coaster.getCoasterImageFrontName();
-        holder.txtImgCoasterFront.setVisibility(View.GONE);
-
-        if ((strImgFront != null) && (strImgFront.length() > 0)) {
-            if (strImgFront.equals("-")) {
-                holder.imgCoasterFront.setImageResource(R.drawable.beer_bg_115);
-                holder.txtImgCoasterFront.setVisibility(View.VISIBLE);
-                holder.txtImgCoasterFront.setText(R.string.lblNameUndefined);
-            } else {
-                File imgFile = ImageManager.getImgFile(strImgFront);
-
-                if (imgFile.exists()) {
-                    new ImageManager().load(strImgFront, DIR_DEF_IMAGES, holder.imgCoasterFront);
-                } else {
-                    holder.imgCoasterFront.setImageResource(R.drawable.beer_bg_115);
-                    holder.txtImgCoasterFront.setVisibility(View.VISIBLE);
-                    holder.txtImgCoasterFront.setText(R.string.lblOops);
-                }
-            }
-        } else {
-            holder.imgCoasterFront.setImageResource(R.drawable.beer_bg_115);
-            holder.txtImgCoasterFront.setVisibility(View.VISIBLE);
-            holder.txtImgCoasterFront.setText(R.string.lblUnknown);
-        }
-
-        String strImgBack = coaster.getCoasterImageBackName();
-        holder.txtImgCoasterBack.setVisibility(View.GONE);
-
-        if ((strImgBack != null) && (strImgBack.length() > 0)) {
-            holder.imgCoasterBack.setVisibility(View.VISIBLE);
-
-            if (strImgBack.equals("-")) {
-                holder.imgCoasterBack.setImageResource(R.drawable.beer_bg_115);
-                holder.txtImgCoasterBack.setVisibility(View.VISIBLE);
-                holder.txtImgCoasterBack.setText(R.string.lblNameUndefined);
-            } else {
-                File imgFile = ImageManager.getImgFile(strImgBack);
-
-                if (imgFile.exists()) {
-                    new ImageManager().load(strImgBack, DIR_DEF_IMAGES, holder.imgCoasterBack);
-                } else {
-                    holder.imgCoasterBack.setImageResource(R.drawable.beer_bg_115);
-                    holder.txtImgCoasterBack.setVisibility(View.VISIBLE);
-                    holder.txtImgCoasterBack.setText(R.string.lblOops);
-                }
-            }
-        } else {
-            holder.imgCoasterBack.setVisibility(View.GONE);
-            holder.txtImgCoasterBack.setVisibility(View.GONE);
-        }
-
-        holder.imgCoasterFront.setOnClickListener(new ImageOnClickListener(coaster, true));
-        holder.imgCoasterBack.setOnClickListener(new ImageOnClickListener(coaster, false));
-        //holder.imgCoasterBack.setOnClickListener(new ImageSwitcherOnClickListener(coaster, holder.imgCoasterFront));
-
-        holder.imgCoasterFront.setTag(R.id.TAG_SWITCHER, true);
-        holder.imgCoasterBack.setTag(R.id.TAG_SWITCHER, true);
-
-        String desc = coaster.getCoasterDescription();
-        String text = coaster.getCoasterText();
-
-        if ((desc == null) || (desc.length() == 0)) {
-            holder.coasterDesc.setVisibility(View.GONE);
-        } else {
-            holder.coasterDesc.setVisibility(View.VISIBLE);
-            holder.coasterDesc.setText(coaster.getCoasterDescription());
-        }
-
-        if ((text == null) || (text.length() == 0)) {
-            holder.coasterText.setVisibility(View.GONE);
-        } else {
-            holder.coasterText.setVisibility(View.VISIBLE);
-            holder.coasterText.setText(coaster.getCoasterText());
-        }
 
         holder.trademark.setText(trademark);
 
@@ -287,67 +203,258 @@ public class CoasterCollectionAdapter extends BaseAdapter {
             }
         });
 
-        if (coaster.getCoasterSeriesID() == -1) {
-            holder.layoutSeries.setVisibility(View.GONE);
-        } else {
-            holder.layoutSeries.setVisibility(View.VISIBLE);
 
-            if ((coaster.getCoasterSeriesIndex() > 0) && (foundSeries.getMaxNumber() > 0)) {
-                holder.seriesNbr.setVisibility(View.VISIBLE);
+        holder.layoutCoasterImagesOnly.setVisibility(View.GONE);
+        holder.imgCoasterFrontBig.setVisibility(View.GONE);
+        holder.txtImgCoasterFrontBig.setVisibility(View.GONE);
+        holder.imgCoasterBackBig.setVisibility(View.GONE);
+        holder.txtImgCoasterBackBig.setVisibility(View.GONE);
 
-                holder.seriesNbr.setText("" + coaster.getCoasterSeriesIndex() + "/" + foundSeries.getMaxNumber() + ":");
-            } else {
-                holder.seriesNbr.setVisibility(View.GONE);
+        holder.imgCoasterFrontBig.setTag(R.id.TAG_SIZE, new Integer(550));
+        holder.imgCoasterBackBig.setTag(R.id.TAG_SIZE, new Integer(550));
+
+        holder.imgCoasterFront.setTag(R.id.TAG_SIZE, new Integer(350));
+        holder.imgCoasterBack.setTag(R.id.TAG_SIZE, new Integer(350));
+
+        holder.layoutCoasterDetails.setVisibility(View.GONE);
+        holder.layoutCollectPlace.setVisibility(View.GONE);
+        holder.imgCoasterFront.setVisibility(View.GONE);
+        holder.txtImgCoasterFront.setVisibility(View.GONE);
+        holder.imgCoasterBack.setVisibility(View.GONE);
+        holder.txtImgCoasterBack.setVisibility(View.GONE);
+        holder.coasterDesc.setVisibility(View.GONE);
+        holder.coasterText.setVisibility(View.GONE);
+        holder.layoutSeries.setVisibility(View.GONE);
+        holder.donationDate.setVisibility(View.GONE);
+        holder.donor.setVisibility(View.GONE);
+        holder.shape.setVisibility(View.GONE);
+        holder.measurements.setVisibility(View.GONE);
+
+        if (CoasterApplication.showCoasterDetails) {
+            holder.layoutCoasterDetails.setVisibility(View.VISIBLE);
+
+            if (CoasterApplication.showCoasterQuality) {
+                if (coaster.getCoasterQuality() > 0) {
+                    if (coaster.getCoasterQuality() <= 5) {
+                        holder.coasterID.setTextColor(cx.getResources().getColor(R.color.colorQualityVeryBad));
+                    } else if (coaster.getCoasterQuality() <= 8) {
+                        holder.coasterID.setTextColor(cx.getResources().getColor(R.color.colorQualityBad));
+                    } else {
+                        holder.coasterID.setTextColor(cx.getResources().getColor(R.color.colorQualityGood));
+                    }
+                } else {
+                    holder.coasterID.setTextColor(cx.getResources().getColor(R.color.colorQualityGood));
+                }
             }
 
-            holder.seriesName.setText(foundSeries.getSeries());
+            String strImgFront = coaster.getCoasterImageFrontName();
+            holder.imgCoasterFront.setVisibility(View.VISIBLE);
 
-            final Series fseries = foundSeries;
+            if ((strImgFront != null) && (strImgFront.length() > 0)) {
+                if (strImgFront.equals("-")) {
+                    holder.imgCoasterFront.setImageResource(R.drawable.beer_bg_115);
+                    holder.txtImgCoasterFront.setVisibility(View.VISIBLE);
+                    holder.txtImgCoasterFront.setText(R.string.lblNameUndefined);
+                } else {
+                    File imgFile = ImageManager.getImgFile(strImgFront);
 
-            holder.seriesName.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent galleryIntent = new Intent(cx, GalleryActivity.class);
+                    if (imgFile.exists()) {
+                        new ImageManager().load(strImgFront, DIR_DEF_IMAGES, holder.imgCoasterFront);
+                    } else {
+                        holder.imgCoasterFront.setImageResource(R.drawable.beer_bg_115);
+                        holder.txtImgCoasterFront.setVisibility(View.VISIBLE);
+                        holder.txtImgCoasterFront.setText(R.string.lblOops);
+                    }
+                }
+            } else {
+                holder.imgCoasterFront.setImageResource(R.drawable.beer_bg_115);
+                holder.txtImgCoasterFront.setVisibility(View.VISIBLE);
+                holder.txtImgCoasterFront.setText(R.string.lblUnknown);
+            }
 
-                    String subTitle = fseries.getSeries();
+            if (CoasterApplication.showImageBackside) {
+                String strImgBack = coaster.getCoasterImageBackName();
 
-                    if (fseries.getMaxNumber() > 0 ) {
-                        subTitle += " (" + fseries.getMaxNumber() + (fseries.isOrdered() ? "s" : "") + ")";
+                if ((strImgBack != null) && (strImgBack.length() > 0)) {
+                    holder.imgCoasterBack.setVisibility(View.VISIBLE);
+
+                    if (strImgBack.equals("-")) {
+                        holder.imgCoasterBack.setImageResource(R.drawable.beer_bg_115);
+                        holder.txtImgCoasterBack.setVisibility(View.VISIBLE);
+                        holder.txtImgCoasterBack.setText(R.string.lblNameUndefined);
+                    } else {
+                        File imgFile = ImageManager.getImgFile(strImgBack);
+
+                        if (imgFile.exists()) {
+                            new ImageManager().load(strImgBack, DIR_DEF_IMAGES, holder.imgCoasterBack);
+                        } else {
+                            holder.imgCoasterBack.setImageResource(R.drawable.beer_bg_115);
+                            holder.txtImgCoasterBack.setVisibility(View.VISIBLE);
+                            holder.txtImgCoasterBack.setText(R.string.lblOops);
+                        }
+                    }
+                }
+            }
+
+            holder.imgCoasterFront.setOnClickListener(new ImageOnClickListener(coaster, true));
+            holder.imgCoasterBack.setOnClickListener(new ImageOnClickListener(coaster, false));
+
+            holder.imgCoasterFront.setTag(R.id.TAG_SWITCHER, true);
+            holder.imgCoasterBack.setTag(R.id.TAG_SWITCHER, true);
+
+            if (CoasterApplication.showCoasterDescription) {
+                String desc = coaster.getCoasterDescription();
+
+                if ((desc != null) && (desc.length() > 0)) {
+                    holder.coasterDesc.setVisibility(View.VISIBLE);
+                    holder.coasterDesc.setText(desc);
+                }
+            }
+
+            if (CoasterApplication.showCoasterText) {
+                String text = coaster.getCoasterText();
+
+                if ((text != null) && (text.length() > 0)) {
+                    holder.coasterText.setVisibility(View.VISIBLE);
+                    holder.coasterText.setText(text);
+                }
+            }
+
+            if (CoasterApplication.showSeries) {
+                if (coaster.getCoasterSeriesID() != -1) {
+                    holder.layoutSeries.setVisibility(View.VISIBLE);
+
+                    if ((coaster.getCoasterSeriesIndex() > 0) && (foundSeries.getMaxNumber() > 0)) {
+                        holder.seriesNbr.setVisibility(View.VISIBLE);
+
+                        holder.seriesNbr.setText("" + coaster.getCoasterSeriesIndex() + "/" + foundSeries.getMaxNumber() + ":");
+                    } else {
+                        holder.seriesNbr.setVisibility(View.GONE);
                     }
 
-                    galleryIntent.putExtra(IIntentExtras.EXTRA_SERIESID, coaster.getCoasterSeriesID());
-                    galleryIntent.putExtra(IIntentExtras.EXTRA_GALLERY_SUBTITLE, subTitle);
+                    holder.seriesName.setText(foundSeries.getSeries());
 
-                    cx.startActivity(galleryIntent);
+                    final Series fseries = foundSeries;
+
+                    holder.seriesName.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent galleryIntent = new Intent(cx, GalleryActivity.class);
+
+                            String subTitle = fseries.getSeries();
+
+                            if (fseries.getMaxNumber() > 0) {
+                                subTitle += " (" + fseries.getMaxNumber() + (fseries.isOrdered() ? "s" : "") + ")";
+                            }
+
+                            galleryIntent.putExtra(IIntentExtras.EXTRA_SERIESID, coaster.getCoasterSeriesID());
+                            galleryIntent.putExtra(IIntentExtras.EXTRA_GALLERY_SUBTITLE, subTitle);
+
+                            cx.startActivity(galleryIntent);
+                        }
+                    });
                 }
-            });
-        }
-
-        if (showAllInfo) {
-            final SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
-
-            holder.donationDate.setText(dateFormatter.format(coaster.getCollectionDate()));
-            holder.donor.setText(collectorName);
-
-            holder.donor.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent galleryIntent = new Intent(cx, GalleryActivity.class);
-
-                    galleryIntent.putExtra(IIntentExtras.EXTRA_COLLECTORID, coaster.getCollectorID());
-                    galleryIntent.putExtra(IIntentExtras.EXTRA_GALLERY_SUBTITLE, collectorName);
-
-                    cx.startActivity(galleryIntent);
-                }
-            });
-
-            if (coaster.getCoasterMainShape() != -1) {
-                holder.shape.setText(foundShape.getName());
-                holder.measurements.setText("(" + Util.getDisplayMeasurements(foundShape, coaster) + ")");
-            } else {
-                holder.shape.setVisibility(View.GONE);
-                holder.measurements.setVisibility(View.GONE);
             }
+
+            if (CoasterApplication.showCollectDate) {
+                holder.donationDate.setVisibility(View.VISIBLE);
+
+                final SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
+
+                holder.donationDate.setText(dateFormatter.format(coaster.getCollectionDate()));
+            }
+
+            if (CoasterApplication.showCollector) {
+                holder.donor.setVisibility(View.VISIBLE);
+
+                holder.donor.setText(collectorName);
+
+                holder.donor.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent galleryIntent = new Intent(cx, GalleryActivity.class);
+
+                        galleryIntent.putExtra(IIntentExtras.EXTRA_COLLECTORID, coaster.getCollectorID());
+                        galleryIntent.putExtra(IIntentExtras.EXTRA_GALLERY_SUBTITLE, collectorName);
+
+                        cx.startActivity(galleryIntent);
+                    }
+                });
+            }
+
+            if (CoasterApplication.showLocation) {
+                if ((coaster.getCollectionPlace() != null) && (coaster.getCollectionPlace().length() > 0)) {
+                    holder.layoutCollectPlace.setVisibility(View.VISIBLE);
+
+                    holder.collectPlace.setText(coaster.getCollectionPlace());
+                }
+            }
+
+            if (CoasterApplication.showShape) {
+                if (coaster.getCoasterMainShape() != -1) {
+                    holder.shape.setVisibility(View.VISIBLE);
+                    holder.measurements.setVisibility(View.VISIBLE);
+
+                    holder.shape.setText(foundShape.getName());
+                    holder.measurements.setText("(" + Util.getDisplayMeasurements(foundShape, coaster) + ")");
+                }
+            }
+        } else {
+            holder.layoutCoasterImagesOnly.setVisibility(View.VISIBLE);
+
+            String strImgFront = coaster.getCoasterImageFrontName();
+            holder.imgCoasterFrontBig.setVisibility(View.VISIBLE);
+
+            if ((strImgFront != null) && (strImgFront.length() > 0)) {
+                if (strImgFront.equals("-")) {
+                    holder.imgCoasterFrontBig.setImageResource(R.drawable.beer_bg_115);
+                    holder.txtImgCoasterFrontBig.setVisibility(View.VISIBLE);
+                    holder.txtImgCoasterFrontBig.setText(R.string.lblNameUndefined);
+                } else {
+                    File imgFile = ImageManager.getImgFile(strImgFront);
+
+                    if (imgFile.exists()) {
+                        new ImageManager().load(strImgFront, DIR_DEF_IMAGES, holder.imgCoasterFrontBig);
+                    } else {
+                        holder.imgCoasterFrontBig.setImageResource(R.drawable.beer_bg_115);
+                        holder.txtImgCoasterFrontBig.setVisibility(View.VISIBLE);
+                        holder.txtImgCoasterFrontBig.setText(R.string.lblOops);
+                    }
+                }
+            } else {
+                holder.imgCoasterFrontBig.setImageResource(R.drawable.beer_bg_115);
+                holder.txtImgCoasterFrontBig.setVisibility(View.VISIBLE);
+                holder.txtImgCoasterFrontBig.setText(R.string.lblUnknown);
+            }
+
+
+            String strImgBack = coaster.getCoasterImageBackName();
+
+            if ((strImgBack != null) && (strImgBack.length() > 0)) {
+                holder.imgCoasterBackBig.setVisibility(View.VISIBLE);
+
+                if (strImgBack.equals("-")) {
+                    holder.imgCoasterBackBig.setImageResource(R.drawable.beer_bg_115);
+                    holder.txtImgCoasterBackBig.setVisibility(View.VISIBLE);
+                    holder.txtImgCoasterBackBig.setText(R.string.lblNameUndefined);
+                } else {
+                    File imgFile = ImageManager.getImgFile(strImgBack);
+
+                    if (imgFile.exists()) {
+                        new ImageManager().load(strImgBack, DIR_DEF_IMAGES, holder.imgCoasterBackBig);
+                    } else {
+                        holder.imgCoasterBackBig.setImageResource(R.drawable.beer_bg_115);
+                        holder.txtImgCoasterBackBig.setVisibility(View.VISIBLE);
+                        holder.txtImgCoasterBackBig.setText(R.string.lblOops);
+                    }
+                }
+            }
+
+            holder.imgCoasterFrontBig.setOnClickListener(new ImageOnClickListener(coaster, true));
+            holder.imgCoasterBackBig.setOnClickListener(new ImageOnClickListener(coaster, false));
+
+            holder.imgCoasterFrontBig.setTag(R.id.TAG_SWITCHER, true);
+            holder.imgCoasterBackBig.setTag(R.id.TAG_SWITCHER, true);
         }
 
         return rowView;
@@ -356,15 +463,26 @@ public class CoasterCollectionAdapter extends BaseAdapter {
     private class ViewHolder {
         public TextView coasterID;
         public TextView trademark;
+
+        public LinearLayout layoutCoasterImagesOnly;
+
+        public ImageView imgCoasterFrontBig;
+        public ImageView imgCoasterBackBig;
+        public TextView txtImgCoasterFrontBig;
+        public TextView txtImgCoasterBackBig;
+
         public LinearLayout layoutCoasterDetails;
+
         public LinearLayout layoutImages;
         public LinearLayout layoutSeries;
+        public LinearLayout layoutCollectPlace;
         public TextView seriesNbr;
         public TextView seriesName;
         public TextView shape;
         public TextView measurements;
         public TextView donationDate;
         public TextView donor;
+        public TextView collectPlace;
         public ImageView imgCoasterFront;
         public ImageView imgCoasterBack;
         public TextView txtImgCoasterFront;
@@ -374,6 +492,13 @@ public class CoasterCollectionAdapter extends BaseAdapter {
 
         public ViewHolder(View parent) {
             coasterID = (TextView) parent.findViewById(R.id.txtCoasterID);
+
+            layoutCoasterImagesOnly = (LinearLayout) parent.findViewById(R.id.layoutCoasterImagesOnly);
+            imgCoasterFrontBig = (ImageView) parent.findViewById(R.id.imgCoasterFrontBig);
+            imgCoasterBackBig = (ImageView) parent.findViewById(R.id.imgCoasterBackBig);
+            txtImgCoasterFrontBig = (TextView) parent.findViewById(R.id.txtImgCoasterFrontBig);
+            txtImgCoasterBackBig = (TextView) parent.findViewById(R.id.txtImgCoasterBackBig);
+
             layoutCoasterDetails = (LinearLayout) parent.findViewById(R.id.layoutCoasterDetails);
             layoutImages = (LinearLayout) parent.findViewById(R.id.layoutImages);
             imgCoasterFront = (ImageView) parent.findViewById(R.id.imgCoasterFront);
@@ -390,6 +515,8 @@ public class CoasterCollectionAdapter extends BaseAdapter {
             measurements = (TextView) parent.findViewById(R.id.txtMeasurements);
             donationDate = (TextView) parent.findViewById(R.id.txtDonationDate);
             donor = (TextView) parent.findViewById(R.id.txtDonor);
+            layoutCollectPlace = (LinearLayout) parent.findViewById(R.id.layoutCollectPlace);
+            collectPlace = (TextView) parent.findViewById(R.id.txtCollectPlace);
         }
     }
 
@@ -406,10 +533,12 @@ public class CoasterCollectionAdapter extends BaseAdapter {
         public void onClick(View v) {
             Intent imgIntent = new Intent(cx, ImageFullscreenActivity.class);
 
+            imgIntent.putExtra(IIntentExtras.EXTRA_COASTERID, coaster.getCoasterID());
+
             if (((boolean) v.getTag(R.id.TAG_SWITCHER)) && (isFrontImage)) {
-                imgIntent.putExtra("imgPath", coaster.getCoasterImageFrontName());
+                imgIntent.putExtra(IIntentExtras.EXTRA_IMAGE_PATH, coaster.getCoasterImageFrontName());
             } else {
-                imgIntent.putExtra("imgPath", coaster.getCoasterImageBackName());
+                imgIntent.putExtra(IIntentExtras.EXTRA_IMAGE_PATH, coaster.getCoasterImageBackName());
             }
 
             cx.startActivity(imgIntent);

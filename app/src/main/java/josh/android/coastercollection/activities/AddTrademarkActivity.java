@@ -192,7 +192,8 @@ public class AddTrademarkActivity extends AppCompatActivity
 
             CoasterApplication.collectionData.mapTrademarks.put(endTrademark.getTrademarkID(), endTrademark);
 
-            TrademarkListActivity.refreshTrademarkList = true;
+//            TrademarkListActivity.refreshTrademarkList = true;
+            CoasterApplication.refreshTrademarks = true;
 
             CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorlayout);
 

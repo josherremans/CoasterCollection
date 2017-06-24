@@ -2,4 +2,5 @@
 <resources>
     <item name="TAG_SWITCHER" type="id"/>
     <item name="TAG_INDEX" type="id"/>
+    <item name="TAG_SIZE" type="id"/>
 </resources>

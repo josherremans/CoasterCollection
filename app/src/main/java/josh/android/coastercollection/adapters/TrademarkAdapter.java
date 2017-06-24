@@ -6,12 +6,13 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
 import josh.android.coastercollection.R;
+import josh.android.coastercollection.activities.AddTrademarkActivity;
 import josh.android.coastercollection.activities.GalleryActivity;
 import josh.android.coastercollection.bo.Trademark;
 import josh.android.coastercollection.enums.IIntentExtras;
@@ -19,7 +20,7 @@ import josh.android.coastercollection.enums.IIntentExtras;
 /**
  * Created by Jos on 2/02/2017.
  */
-public class TrademarkAdapter extends BaseAdapter {
+public class TrademarkAdapter extends ArrayAdapter<Trademark> {
 
     private ArrayList<Trademark> lstTrademarks;
 
@@ -28,27 +29,12 @@ public class TrademarkAdapter extends BaseAdapter {
     private int listViewTypeId;
     private boolean showAllInfo = false;
 
-    private Context cx;
-
-    public TrademarkAdapter(Context context, String listViewType, ArrayList<Trademark> lstTrademarks) {
-        cx = context;
-
-        if (listViewType.equals(cx.getResources().getStringArray(R.array.pref_listview_type_values)[0])) { // "CardType"
-            listViewTypeId = R.layout.item_trademark_list_card;
-            showAllInfo = true;
-        }
-
-        if (listViewType.equals(cx.getResources().getStringArray(R.array.pref_listview_type_values)[1])) { // "FullWidthType"
-            listViewTypeId = R.layout.item_trademark_list;
-            showAllInfo = true;
-        }
-
-        if (listViewType.equals(cx.getResources().getStringArray(R.array.pref_listview_type_values)[2])) { // "FullWidthTypeSum"
-            listViewTypeId = R.layout.item_trademark_list;
-            showAllInfo = false;
-        }
+    public TrademarkAdapter(Context context, ArrayList<Trademark> lstTrademarks) {
+        super(context, R.layout.item_trademark_list, lstTrademarks);
 
         this.lstTrademarks = lstTrademarks;
+
+        listViewTypeId = R.layout.item_trademark_list;
 
         layoutInflater = (LayoutInflater) context.getSystemService(Service.LAYOUT_INFLATER_SERVICE);
     }
@@ -63,7 +49,7 @@ public class TrademarkAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
+    public Trademark getItem(int position) {
         return lstTrademarks.get(position);
     }
 
@@ -76,7 +62,7 @@ public class TrademarkAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View rowView = convertView;
 
-        final Trademark trademark = (Trademark) getItem(position);
+        final Trademark trademark = getItem(position);
 
         // reuse views
         if (rowView == null) {
@@ -97,15 +83,27 @@ public class TrademarkAdapter extends BaseAdapter {
         rowView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent galleryIntent = new Intent(cx, GalleryActivity.class);
+                Intent galleryIntent = new Intent(getContext(), GalleryActivity.class);
 
                 galleryIntent.putExtra(IIntentExtras.EXTRA_TRADEMARKID, trademark.getTrademarkID());
                 galleryIntent.putExtra(IIntentExtras.EXTRA_GALLERY_SUBTITLE, trademark.getTrademark());
 
-                cx.startActivity(galleryIntent);
+                getContext().startActivity(galleryIntent);
             }
         });
 
+        rowView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Intent alterTrademarkIntent = new Intent(getContext(), AddTrademarkActivity.class);
+
+                alterTrademarkIntent.putExtra(IIntentExtras.EXTRA_TRADEMARKID, trademark.getTrademarkID());
+
+                getContext().startActivity(alterTrademarkIntent);
+
+                return true;
+            }
+        });
         return rowView;
     }
 

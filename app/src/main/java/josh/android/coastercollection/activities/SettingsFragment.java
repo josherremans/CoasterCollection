@@ -1,19 +1,23 @@
 package josh.android.coastercollection.activities;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.support.annotation.Nullable;
 
 import josh.android.coastercollection.R;
+import josh.android.coastercollection.application.CoasterApplication;
+import josh.android.coastercollection.bl.ImageManager;
 
 /**
  * Created by Jos on 19/12/2016.
  */
 public class SettingsFragment extends PreferenceFragment {
-    public static String PREF_KEY_SORT_REVERSE = "pref_key_sort_reverse";
-    public static String PREF_KEY_LISTVIEW_TYPE = "pref_key_listview_type";
-    public static String PREF_KEY_SHOW_BACKIMAGE = "pref_key_show_backimage";
+
+    CoasterApplication coasterApplication;
+    String keyShowDetails;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -21,35 +25,42 @@ public class SettingsFragment extends PreferenceFragment {
 
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.preferences);
+    }
 
-        Preference orderPref = getPreferenceManager().findPreference(PREF_KEY_SORT_REVERSE);
-        Preference showBackImagePref = getPreferenceManager().findPreference(PREF_KEY_SHOW_BACKIMAGE);
-        ListPreference listViewTypePref = (ListPreference) getPreferenceManager().findPreference(PREF_KEY_LISTVIEW_TYPE);
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        if (coasterApplication == null) {
+            coasterApplication = (CoasterApplication) getActivity().getApplication();
+
+            keyShowDetails = getString(R.string.pref_key_show_info_details);
+        }
+
+        getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
+            @Override
+            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                // Re-read the preferences!
+                coasterApplication.readPreferences();
+
+//                CoasterApplication.refreshCoasters = true;
+                CoasterApplication.collectionData.setNotifyAdapter(true);
+
+                if (key.equals(keyShowDetails)) {
+                    ImageManager.clearCache();
+                }
+            }
+        });
+
+        ListPreference listViewTypePref = (ListPreference) getPreferenceManager().findPreference(getString(R.string.pref_key_listview_type));
 
         listViewTypePref.setSummary(listViewTypePref.getEntry());
-
-        orderPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                CoasterListActivity.refreshCoasterList = true;
-
-                return true;
-            }
-        });
-
-        showBackImagePref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue) {
-                CoasterListActivity.refreshCoasterList = true;
-
-                return true;
-            }
-        });
 
         listViewTypePref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
-                CoasterListActivity.refreshCoasterList = true;
+                CoasterApplication.listViewType = (String) newValue;
+                CoasterApplication.refreshCoasters = true;
 
                 ListPreference listPref = (ListPreference) preference;
 

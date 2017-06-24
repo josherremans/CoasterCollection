@@ -2,10 +2,8 @@ package josh.android.coastercollection.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -21,7 +19,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -51,20 +48,18 @@ public class TrademarkListActivity extends FabBaseActivity
     private String trademarkFilter = null;
     private String listViewType = "";
 
-    public static boolean refreshTrademarkList = true;
+//    public static boolean refreshTrademarkList = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trademark_list);
 
-        refreshTrademarkList = true;
+        CoasterApplication.refreshTrademarks = true;
 
         // *** Read shared preferences:
 
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-
-        listViewType = sharedPref.getString(SettingsFragment.PREF_KEY_LISTVIEW_TYPE, getResources().getStringArray(R.array.pref_listview_type_values)[0]); //"CardType");
+        listViewType = CoasterApplication.listViewType;
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -87,11 +82,9 @@ public class TrademarkListActivity extends FabBaseActivity
 
         lstvwTrademarks = (ListView) findViewById(R.id.lstTrademarks);
 
-        trademarkAdapter = new TrademarkAdapter(this, listViewType, filteredList);
+        trademarkAdapter = new TrademarkAdapter(this, filteredList);
 
         lstvwTrademarks.setAdapter(trademarkAdapter);
-
-        lstvwTrademarks.setOnItemLongClickListener(new TrademarkOnItemLongClickListener());
 
         lstvwTrademarks.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
@@ -168,14 +161,12 @@ public class TrademarkListActivity extends FabBaseActivity
 
         imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
 
-        if (refreshTrademarkList) {
-            refreshTrademarkList = false;
+        if (CoasterApplication.refreshTrademarks) {
+            CoasterApplication.refreshTrademarks = false;
 
             // *** Read shared preferences:
 
-            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-
-            listViewType = sharedPref.getString(SettingsFragment.PREF_KEY_LISTVIEW_TYPE, getResources().getStringArray(R.array.pref_listview_type_values)[0]); //"CardType");
+            listViewType = CoasterApplication.listViewType;
 
             // *** Fetch data from DB:
 
@@ -445,24 +436,6 @@ public class TrademarkListActivity extends FabBaseActivity
         @Override
         public void onClick(View view) {
             startActivity(new Intent(TrademarkListActivity.this, AddTrademarkActivity.class));
-        }
-    }
-
-    /*
-    ** INNERCLASS: TrademarkOnItemLongClickListener
-     */
-    private class TrademarkOnItemLongClickListener implements AdapterView.OnItemLongClickListener {
-        @Override
-        public boolean onItemLongClick(AdapterView<?> parent, View view, int pos, long id) {
-            Trademark clickedTrademark = (Trademark) trademarkAdapter.getItem(pos);
-
-            Intent alterTrademarkIntent = new Intent(TrademarkListActivity.this, AddTrademarkActivity.class);
-
-            alterTrademarkIntent.putExtra("extraTrademarkID", clickedTrademark.getTrademarkID());
-
-            startActivity(alterTrademarkIntent);
-
-            return true;
         }
     }
 }
