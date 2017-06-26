@@ -71,7 +71,7 @@
                     android:ems="10"
                     android:id="@+id/editSeries"
                     android:hint="@string/hint_series"
-                    android:inputType="text"
+                    android:inputType="textCapSentences"
                     android:maxLines="2"
                     android:ellipsize="end" />
 

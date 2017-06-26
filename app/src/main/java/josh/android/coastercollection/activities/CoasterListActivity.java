@@ -90,7 +90,8 @@ public class CoasterListActivity extends FabBaseActivity
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
-        CoasterApplication.refreshCoasters = true;
+//        CoasterApplication.refreshCoasters = true;
+        CoasterApplication.collectionData.setNotifyAdapter(true);
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -147,8 +148,6 @@ public class CoasterListActivity extends FabBaseActivity
         lstvwCoasterCollection.setAdapter(coasterCollectionAdapter);
 
         searchView = (SearchView) findViewById(R.id.editTrademarkSearch);
-
-//        advancedSearchText = this.getIntent().getStringExtra(IIntentExtras.EXTRA_ADVANCED_SEARCH_TEXT);
     }
 
     @Override
@@ -220,7 +219,9 @@ public class CoasterListActivity extends FabBaseActivity
 
         Log.i(LOG_TAG, "CoasterApplication.currentCoasterID SET to: " + CoasterApplication.currentCoasterID);
 
-        loadNewDataTask.cancel(true);
+        if (loadNewDataTask != null) {
+            loadNewDataTask.cancel(true);
+        }
     }
 
     @Override
@@ -241,11 +242,6 @@ public class CoasterListActivity extends FabBaseActivity
     protected void onResume() {
         super.onResume();
         Log.i(LOG_TAG, "IN onResume!");
-
-        // *** Hide SoftInputPanel:
-//        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-//
-//        imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
 
         if (CoasterApplication.refreshCoasters) {
             Log.i(LOG_TAG, "onResume! Refreshing!");

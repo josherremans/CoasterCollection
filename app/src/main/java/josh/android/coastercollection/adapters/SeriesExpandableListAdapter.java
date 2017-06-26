@@ -78,15 +78,26 @@ public class SeriesExpandableListAdapter extends BaseExpandableListAdapter {
 
 //        txtVw.setText(str);
 
-        final String fstr = str;
+//        final String fstr = str;
 
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String maxOrdered = "";
+
+                if (children.getMaxNumber() > 0) {
+                    maxOrdered += children.getMaxNumber();
+
+                    if (children.isOrdered()) {
+                        maxOrdered += "s";
+                    }
+                }
+
                 Intent galleryIntent = new Intent(activity, GalleryActivity.class);
 
                 galleryIntent.putExtra(IIntentExtras.EXTRA_SERIESID, children.getSeriesID());
-                galleryIntent.putExtra(IIntentExtras.EXTRA_GALLERY_SUBTITLE, fstr);
+                galleryIntent.putExtra(IIntentExtras.EXTRA_SERIESMAX_ORDERED, maxOrdered);
+                galleryIntent.putExtra(IIntentExtras.EXTRA_GALLERY_SUBTITLE, children.getSeries());
 
                 activity.startActivity(galleryIntent);
             }

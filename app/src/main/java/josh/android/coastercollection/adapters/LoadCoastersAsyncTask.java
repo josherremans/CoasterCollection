@@ -132,7 +132,7 @@ public class LoadCoastersAsyncTask extends AsyncTask<Void, Integer, CoasterColle
 
         adapter.updateCoasterForList(lstCoasterIds);
 
-        toolbar.setSubtitle("(" + adapter.getCount() + ")");
+        toolbar.setSubtitle("(#" + adapter.getCount() + ")");
 
         adapter.notifyDataSetChanged();
     }

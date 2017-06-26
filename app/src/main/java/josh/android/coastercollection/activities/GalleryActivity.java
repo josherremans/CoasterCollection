@@ -40,6 +40,7 @@ public class GalleryActivity extends AppCompatActivity {
     private ArrayList<Coaster> lstCoasters = new ArrayList<>();
 
     private Long seriesID;
+    private String seriesMaxOrdered;
     private Long trademarkID;
     private Long collectorID;
 
@@ -53,6 +54,7 @@ public class GalleryActivity extends AppCompatActivity {
         Intent intentOrigine = this.getIntent();
 
         seriesID = intentOrigine.getLongExtra(IIntentExtras.EXTRA_SERIESID, -1);
+        seriesMaxOrdered = intentOrigine.getStringExtra(IIntentExtras.EXTRA_SERIESMAX_ORDERED);
         trademarkID = intentOrigine.getLongExtra(IIntentExtras.EXTRA_TRADEMARKID, -1);
         collectorID = intentOrigine.getLongExtra(IIntentExtras.EXTRA_COLLECTORID, -1);
         String subTitle = intentOrigine.getStringExtra(IIntentExtras.EXTRA_GALLERY_SUBTITLE);
@@ -80,7 +82,12 @@ public class GalleryActivity extends AppCompatActivity {
 
             if (seriesID != -1) {
                 getSupportActionBar().setTitle("Series");
-                toolbar.setSubtitle("(#" + n_coasters_shown + ") " + subTitle);
+
+                if ((seriesMaxOrdered != null) && (seriesMaxOrdered.length() > 0)) {
+                    toolbar.setSubtitle("(#" + n_coasters_shown + "/" + seriesMaxOrdered + ") " + subTitle);
+                } else {
+                    toolbar.setSubtitle("(#" + n_coasters_shown + ") " + subTitle);
+                }
             } else if (trademarkID != -1) {
                 getSupportActionBar().setTitle("Trademark");
                 toolbar.setSubtitle("(#" + n_coasters_shown + ") " + subTitle);

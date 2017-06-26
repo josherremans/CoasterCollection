@@ -9,6 +9,7 @@ public interface IIntentExtras {
 
     String EXTRA_COASTERID = "extraCoasterID";
     String EXTRA_SERIESID = "extraSeriesID";
+    String EXTRA_SERIESMAX_ORDERED = "extraSeriesMaxOrdered";
     String EXTRA_TRADEMARKID = "extraTrademarkID";
     String EXTRA_COLLECTORID = "extraCollectorID";
     String EXTRA_IMAGE_PATH = "extraImagePath";

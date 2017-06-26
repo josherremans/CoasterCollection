@@ -65,6 +65,8 @@ public class AdvancedSearchActivity extends AppCompatActivity {
 
             Intent intent = new Intent(AdvancedSearchActivity.this, CoasterListActivity.class);
 
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
             startActivity(intent);
 
             return true;

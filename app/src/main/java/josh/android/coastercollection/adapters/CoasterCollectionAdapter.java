@@ -339,16 +339,21 @@ public class CoasterCollectionAdapter extends BaseAdapter {
                     holder.seriesName.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Intent galleryIntent = new Intent(cx, GalleryActivity.class);
-
-                            String subTitle = fseries.getSeries();
+                            String maxOrdered = "";
 
                             if (fseries.getMaxNumber() > 0) {
-                                subTitle += " (" + fseries.getMaxNumber() + (fseries.isOrdered() ? "s" : "") + ")";
+                                maxOrdered += fseries.getMaxNumber();
+
+                                if (fseries.isOrdered()) {
+                                    maxOrdered += "s";
+                                }
                             }
 
+                            Intent galleryIntent = new Intent(cx, GalleryActivity.class);
+
                             galleryIntent.putExtra(IIntentExtras.EXTRA_SERIESID, coaster.getCoasterSeriesID());
-                            galleryIntent.putExtra(IIntentExtras.EXTRA_GALLERY_SUBTITLE, subTitle);
+                            galleryIntent.putExtra(IIntentExtras.EXTRA_SERIESMAX_ORDERED, maxOrdered);
+                            galleryIntent.putExtra(IIntentExtras.EXTRA_GALLERY_SUBTITLE, fseries.getSeries());
 
                             cx.startActivity(galleryIntent);
                         }
