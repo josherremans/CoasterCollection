@@ -67,6 +67,8 @@ public class CoasterCollectionAdapter extends BaseAdapter {
     public void updateCoasterForList(ArrayList<Long> lstCoasterIds) {
         this.lstCoasterIds.clear();
         this.lstCoasterIds.addAll(lstCoasterIds);
+
+        this.notifyDataSetChanged();
     }
 
     @Override

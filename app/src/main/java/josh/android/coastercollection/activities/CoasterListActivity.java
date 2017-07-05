@@ -486,23 +486,44 @@ public class CoasterListActivity extends FabBaseActivity
         CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorlayout);
 
         Snackbar snackbar;
+        Intent intent;
 
         if (id == R.id.nav_camera) {
             performTakePicture(CAMERA_CAPTURE);
         } else if (id == R.id.nav_gallery) {
-            startActivity(new Intent(CoasterListActivity.this, GalleryActivity.class));
+            intent = new Intent(CoasterListActivity.this, GalleryActivity.class);
+
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+            this.startActivity(intent);
         } else if (id == R.id.nav_slideshow) {
             snackbar = Snackbar.make(coordinatorLayout, "You clicked Slideshow", Snackbar.LENGTH_LONG);
 
             snackbar.show();
         } else if (id == R.id.nav_statistics) {
-            startActivity(new Intent(CoasterListActivity.this, StatisticsActivity.class));
+            intent = new Intent(CoasterListActivity.this, StatisticsActivity.class);
+
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+            this.startActivity(intent);
         } else if (id == R.id.nav_trademarks) {
-            startActivity(new Intent(CoasterListActivity.this, TrademarkListActivity.class));
+            intent = new Intent(CoasterListActivity.this, TrademarkListActivity.class);
+
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+            this.startActivity(intent);
         } else if (id == R.id.nav_series) {
-            startActivity(new Intent(CoasterListActivity.this, SeriesListActivity.class));
+            intent = new Intent(CoasterListActivity.this, SeriesListActivity.class);
+
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+            this.startActivity(intent);
         } else if (id == R.id.nav_donors) {
-            startActivity(new Intent(CoasterListActivity.this, CollectorListActivity.class));
+            intent = new Intent(CoasterListActivity.this, CollectorListActivity.class);
+
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+            this.startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -615,8 +636,13 @@ public class CoasterListActivity extends FabBaseActivity
             lstvwCoasterCollection.setSelection(pos);
 
             if (lstvwCoasterCollection.getAdapter().isEmpty()) {
-                TextView empty = (TextView) findViewById(R.id.emptyListView);
-                empty.setText(R.string.txtEmptyCoasterList);
+                if (CoasterApplication.refreshCoasters) {
+                    TextView empty = (TextView) findViewById(R.id.emptyListView);
+                    empty.setText(R.string.txtLoadingCoasterList);
+                } else {
+                    TextView empty = (TextView) findViewById(R.id.emptyListView);
+                    empty.setText(R.string.txtEmptyCoasterList);
+                }
             }
         }
     }

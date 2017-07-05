@@ -2,26 +2,32 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_zoom_in"
         android:orderInCategory="100"
+        android:icon="@drawable/zoom_in_48"
+        android:title="@string/action_zoom_in"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_inexclude_back"
+        android:orderInCategory="200"
+        android:icon="@drawable/ic_back_images_exclude"
+        android:title="@string/action_exclude_back"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="300"
         android:title="@string/action_settings"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_zoom_in"
-        android:orderInCategory="200"
+        android:id="@+id/action_zoom_in_never"
+        android:orderInCategory="400"
         android:icon="@drawable/zoom_in_48"
         android:title="@string/action_zoom_in"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
     <item
         android:id="@+id/action_zoom_out"
-        android:orderInCategory="300"
+        android:orderInCategory="500"
         android:icon="@drawable/zoom_out_48"
         android:title="@string/action_zoom_out"
         app:showAsAction="never" />
-    <item
-        android:id="@+id/action_inexclude_back"
-        android:orderInCategory="400"
-        android:icon="@drawable/ic_back_images_exclude"
-        android:title="@string/action_exclude_back"
-        app:showAsAction="ifRoom" />
 </menu>

@@ -61,6 +61,10 @@ public class SeriesListActivity extends FabBaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_series_list);
 
+        NavigationView navView = (NavigationView) this.findViewById(R.id.nav_view);
+
+        navView.getMenu().findItem(R.id.nav_series).setVisible(false);
+
 //        refreshSeriesList = true;
         CoasterApplication.refreshSeries = true;
 
@@ -309,14 +313,15 @@ public class SeriesListActivity extends FabBaseActivity
         CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorlayout);
 
         Snackbar snackbar;
+        Intent intent;
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            snackbar = Snackbar.make(coordinatorLayout, "You clicked Settings", Snackbar.LENGTH_LONG);
+            intent = new Intent(this, SettingsActivity.class);
 
-            snackbar.show();
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-            this.startActivity(new Intent(this, SettingsActivity.class));
+            this.startActivity(intent);
 
             return true;
         }
@@ -355,34 +360,42 @@ public class SeriesListActivity extends FabBaseActivity
         CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorlayout);
 
         Snackbar snackbar;
+        Intent intent;
 
         if (id == R.id.nav_camera) {
+//            performTakePicture(CAMERA_CAPTURE);
             // Handle the camera action
             snackbar = Snackbar.make(coordinatorLayout, "You clicked Camera", Snackbar.LENGTH_LONG);
 
             snackbar.show();
         } else if (id == R.id.nav_gallery) {
-            snackbar = Snackbar.make(coordinatorLayout, "You clicked Gallery", Snackbar.LENGTH_LONG);
+            intent = new Intent(SeriesListActivity.this, GalleryActivity.class);
 
-            snackbar.show();
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+            this.startActivity(intent);
         } else if (id == R.id.nav_slideshow) {
             snackbar = Snackbar.make(coordinatorLayout, "You clicked Slideshow", Snackbar.LENGTH_LONG);
 
             snackbar.show();
         } else if (id == R.id.nav_statistics) {
-            snackbar = Snackbar.make(coordinatorLayout, "You clicked Statistics", Snackbar.LENGTH_LONG);
+            intent = new Intent(SeriesListActivity.this, StatisticsActivity.class);
 
-            snackbar.show();
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+            this.startActivity(intent);
         } else if (id == R.id.nav_trademarks) {
-            snackbar = Snackbar.make(coordinatorLayout, "You clicked Trademarks", Snackbar.LENGTH_LONG);
+            intent = new Intent(SeriesListActivity.this, TrademarkListActivity.class);
 
-            snackbar.show();
-        } else if (id == R.id.nav_series) {
-            snackbar = Snackbar.make(coordinatorLayout, "You clicked Series", Snackbar.LENGTH_LONG);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-            snackbar.show();
+            this.startActivity(intent);
         } else if (id == R.id.nav_donors) {
-            startActivity(new Intent(SeriesListActivity.this, CollectorListActivity.class));
+            intent = new Intent(SeriesListActivity.this, CollectorListActivity.class);
+
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+            this.startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

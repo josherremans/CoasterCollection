@@ -2,8 +2,6 @@ package josh.android.coastercollection.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -35,7 +33,8 @@ public class GalleryActivity extends AppCompatActivity {
     private int n_coasters_shown;
     private final int max_cols = 5;
     private static int n_cols = 2;
-    private static boolean includeBackImages = true;
+    private static boolean includeThisSideImages = true;
+    private static boolean switchIncludeBackImages = true;
 
     private ArrayList<Coaster> lstCoasters = new ArrayList<>();
 
@@ -113,6 +112,14 @@ public class GalleryActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_gallery, menu);
 
+        if (!checkPresenceBackImages()) {
+            MenuItem i = menu.findItem(R.id.action_inexclude_back);
+
+            i.setVisible(false);
+        } else {
+            checkImagesToExclude();
+        }
+
         return true;
     }
 
@@ -125,17 +132,14 @@ public class GalleryActivity extends AppCompatActivity {
 
         Log.i(LOG_TAG, "item id clicked: " + id);
 
-        CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorlayout);
-
-        Snackbar snackbar;
-
         if (id == R.id.action_settings) {
             this.startActivity(new Intent(this, SettingsActivity.class));
 
             return true;
         }
 
-        if (id == R.id.action_zoom_in) {
+        if ((id == R.id.action_zoom_in)
+            || (id == R.id.action_zoom_in_never)) {
             if (n_cols > 1) {
                 n_cols--;
             }else {
@@ -145,8 +149,6 @@ public class GalleryActivity extends AppCompatActivity {
             RecyclerView recyclerView = createRecyclerView(n_cols);
 
             recyclerView.setAdapter(adapter);
-
-//            adapter.notifyDataSetChanged();
 
             return true;
         }
@@ -162,15 +164,13 @@ public class GalleryActivity extends AppCompatActivity {
 
             recyclerView.setAdapter(adapter);
 
-//            adapter.notifyDataSetChanged();
-
             return true;
         }
 
         if (id == R.id.action_inexclude_back) {
-            includeBackImages = !includeBackImages;
+            includeThisSideImages = !includeThisSideImages;
 
-            if (includeBackImages) {
+            if (includeThisSideImages) {
                 item.setTitle(R.string.action_exclude_back);
                 item.setIcon(R.drawable.ic_back_images_exclude);
             } else {
@@ -178,9 +178,7 @@ public class GalleryActivity extends AppCompatActivity {
                 item.setIcon(R.drawable.ic_back_images_include);
             }
 
-            Log.i(LOG_TAG, "Now includeBackImages is " + includeBackImages);
-
-            ArrayList<GalleryItem> galleryItems = prepareData(lstCoasters, seriesID, includeBackImages);
+            ArrayList<GalleryItem> galleryItems = prepareData(lstCoasters, seriesID, includeThisSideImages);
 
             adapter = new GalleryAdapter(this, galleryItems);
 
@@ -264,15 +262,58 @@ public class GalleryActivity extends AppCompatActivity {
             }
         }
 
-        return prepareData(lstCoasters, seriesID, includeBackImages);
+        return prepareData(lstCoasters, seriesID, includeThisSideImages);
     }
 
-    private ArrayList<GalleryItem> prepareData(ArrayList<Coaster> lstCoasters, long seriesID, boolean includeBackImages) {
-        ArrayList<GalleryItem> lstImages = new ArrayList<>();
+    private boolean checkPresenceBackImages() {
+        for (Coaster c: lstCoasters) {
+            if ((c.getCoasterImageBackName() != null)
+                    && (c.getCoasterImageBackName().length() > 0)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void checkImagesToExclude() {
+        ArrayList<String> uniqueImageNamesFront = new ArrayList<>();
+        ArrayList<String> uniqueImageNamesBack = new ArrayList<>();
 
         for (Coaster c: lstCoasters) {
-            if ((c.getCoasterImageFrontName() != null)
-                    && (c.getCoasterImageFrontName().length() > 0)) {
+            String imageFrontName = c.getCoasterImageFrontName();
+            String imageBackName = c.getCoasterImageBackName();
+
+            if ((imageFrontName != null) && (imageFrontName.length() > 0)) {
+                if (!uniqueImageNamesFront.contains(imageFrontName)) {
+                    uniqueImageNamesFront.add(imageFrontName);
+                }
+            }
+
+            if ((imageBackName != null) && (imageBackName.length() > 0)) {
+                if (!uniqueImageNamesBack.contains(imageBackName)) {
+                    uniqueImageNamesBack.add(imageBackName);
+                }
+            }
+        }
+
+        if (uniqueImageNamesFront.size() >= uniqueImageNamesBack.size()) {
+            switchIncludeBackImages = true;
+        } else {
+            switchIncludeBackImages = false;
+        }
+    }
+
+    private ArrayList<GalleryItem> prepareData(ArrayList<Coaster> lstCoasters, long seriesID, boolean includeThisSideImages) {
+        ArrayList<GalleryItem> lstImages = new ArrayList<>();
+
+        Log.i(LOG_TAG,  ": prepareData: switchIncludeBackImages=" + switchIncludeBackImages + ", includeThisSideImages=" + includeThisSideImages);
+
+        for (Coaster c: lstCoasters) {
+            if ((switchIncludeBackImages
+                    || (!switchIncludeBackImages && includeThisSideImages))
+                    && ((c.getCoasterImageFrontName() != null)
+                    && (c.getCoasterImageFrontName().length() > 0))) {
                 GalleryItem galleryItem = new GalleryItem();
 
                 galleryItem.setImageName(c.getCoasterImageFrontName());
@@ -285,7 +326,8 @@ public class GalleryActivity extends AppCompatActivity {
                 lstImages.add(galleryItem);
             }
 
-            if ((includeBackImages)
+            if ((!switchIncludeBackImages
+                    || (switchIncludeBackImages && includeThisSideImages))
                     && ((c.getCoasterImageBackName() != null)
                     && (c.getCoasterImageBackName().length() > 0))) {
                 GalleryItem galleryItem = new GalleryItem();

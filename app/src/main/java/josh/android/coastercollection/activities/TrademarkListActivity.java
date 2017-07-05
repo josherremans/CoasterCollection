@@ -55,6 +55,10 @@ public class TrademarkListActivity extends FabBaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trademark_list);
 
+        NavigationView navView = (NavigationView) findViewById(R.id.nav_view);
+
+        navView.getMenu().findItem(R.id.nav_trademarks).setVisible(false);
+
         CoasterApplication.refreshTrademarks = true;
 
         // *** Read shared preferences:
@@ -380,34 +384,42 @@ public class TrademarkListActivity extends FabBaseActivity
         CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorlayout);
 
         Snackbar snackbar;
+        Intent intent;
 
         if (id == R.id.nav_camera) {
+//            performTakePicture(CAMERA_CAPTURE);
             // Handle the camera action
             snackbar = Snackbar.make(coordinatorLayout, "You clicked Camera", Snackbar.LENGTH_LONG);
 
             snackbar.show();
         } else if (id == R.id.nav_gallery) {
-            snackbar = Snackbar.make(coordinatorLayout, "You clicked Gallery", Snackbar.LENGTH_LONG);
+            intent = new Intent(TrademarkListActivity.this, GalleryActivity.class);
 
-            snackbar.show();
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+            this.startActivity(intent);
         } else if (id == R.id.nav_slideshow) {
             snackbar = Snackbar.make(coordinatorLayout, "You clicked Slideshow", Snackbar.LENGTH_LONG);
 
             snackbar.show();
         } else if (id == R.id.nav_statistics) {
-            snackbar = Snackbar.make(coordinatorLayout, "You clicked Statistics", Snackbar.LENGTH_LONG);
+            intent = new Intent(TrademarkListActivity.this, StatisticsActivity.class);
 
-            snackbar.show();
-        } else if (id == R.id.nav_trademarks) {
-            snackbar = Snackbar.make(coordinatorLayout, "You clicked Trademarks", Snackbar.LENGTH_LONG);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-            snackbar.show();
+            this.startActivity(intent);
         } else if (id == R.id.nav_series) {
-            snackbar = Snackbar.make(coordinatorLayout, "You clicked Series", Snackbar.LENGTH_LONG);
+            intent = new Intent(TrademarkListActivity.this, SeriesListActivity.class);
 
-            snackbar.show();
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+            this.startActivity(intent);
         } else if (id == R.id.nav_donors) {
-            startActivity(new Intent(TrademarkListActivity.this, CollectorListActivity.class));
+            intent = new Intent(TrademarkListActivity.this, CollectorListActivity.class);
+
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+            this.startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
