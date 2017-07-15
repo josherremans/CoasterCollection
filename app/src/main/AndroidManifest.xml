@@ -7,12 +7,12 @@
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
+        android:name=".application.CoasterApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="false"
-        android:theme="@style/AppTheme"
-        android:name=".application.CoasterApplication">
+        android:theme="@style/AppTheme">
         <activity
             android:name=".activities.CoasterListActivity"
             android:label="@string/app_name_short"
@@ -93,7 +93,12 @@
             android:name=".activities.AdvancedSearchActivity"
             android:label="@string/app_name_advanced_search"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activities.GraphsActivity"
+            android:label="@string/app_name_graphs"
+            android:screenOrientation="landscape"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

@@ -1,5 +1,6 @@
 package josh.android.coastercollection.activities;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -108,7 +109,7 @@ public class StatisticsActivity extends AppCompatActivity implements NavigationV
         addNewColomnTextView(yearRow, "" + stats.getCount(year, 10));
         addNewColomnTextView(yearRow, "" + stats.getCount(year, 11));
 
-        int yearTotal = 0;
+        long yearTotal = 0;
 
         for (int month=0; month < 12; month++) {
             yearTotal += stats.getCount(year, month);
@@ -164,6 +165,12 @@ public class StatisticsActivity extends AppCompatActivity implements NavigationV
             Snackbar snackbar = Snackbar.make(coordinatorLayout, "You clicked Settings", Snackbar.LENGTH_LONG);
 
             snackbar.show();
+
+            return true;
+        }
+
+        if (id == R.id.action_graphs) {
+            this.startActivity(new Intent(this, GraphsActivity.class));
 
             return true;
         }

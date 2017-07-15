@@ -58,6 +58,44 @@ public class CollectionHistoryMatrix {
             return count;
     }
 
+    public long getCount(int year) {
+        long yearTotal = 0;
+
+        for (int month=0; month<12; month++) {
+            yearTotal += getCount(year, month);
+        }
+
+        return yearTotal;
+    }
+
+    public long getMaxMonthCount() {
+        long max = 0;
+
+        for (long key: matrix.keySet()) {
+            long count = matrix.get(key);
+
+            if (count > max) {
+                max = count;
+            }
+        }
+
+        return max;
+    }
+
+    public long getMaxYearCount() {
+        long max = 0;
+
+        for (int year = getMinYear(); year<=getMaxYear(); year++) {
+            long count = getCount(year);
+
+            if (count > max) {
+                max = count;
+            }
+        }
+
+        return max;
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();

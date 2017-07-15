@@ -25,6 +25,8 @@
     <color name="colorStatisticsRowDark">@color/colorOrangeDark</color>
     <color name="colorStatisticsRowLight">@color/colorOrangeLight</color>
 
+    <color name="colorGraphBackground">@color/colorGreyLight</color>
+
     <color name="colorQualityVeryBad">#FF0000</color>
     <color name="colorQualityBad">#FF6600</color>
     <color name="colorQualityGood">@android:color/primary_text_light</color>
@@ -32,4 +34,5 @@
     <color name="colorOrangeTest1">#aaffbb33</color>
     <color name="colorOrangeTest2">#ffffee33</color>
     <color name="colorOrangeTest3">#FFFBC02D</color>
+    <color name="colorGreyLight">#FFBBBBBB</color>
 </resources>

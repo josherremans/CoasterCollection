@@ -6,4 +6,10 @@
         android:orderInCategory="100"
         android:title="@string/action_settings"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_graphs"
+        android:orderInCategory="200"
+        android:title="@string/action_graphs"
+        android:icon="@drawable/ic_menu_chart_areaspline"
+        app:showAsAction="always" />
 </menu>

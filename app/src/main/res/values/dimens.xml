@@ -18,6 +18,7 @@
     <dimen name="margin0">0dp</dimen>
     <dimen name="margin_top">3dp</dimen>
 
+    <dimen name="padding16">16dp</dimen>
     <dimen name="padding15">15dp</dimen>
     <dimen name="padding10">10dp</dimen>
     <dimen name="padding5">5dp</dimen>

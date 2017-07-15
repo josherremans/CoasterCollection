@@ -7,6 +7,7 @@
     <string name="app_name_statistics">Statistics</string>
     <string name="app_name_gallery">Gallery</string>
     <string name="app_name_advanced_search">Search</string>
+    <string name="app_name_graphs">Graphs</string>
 
     <string name="pref_sorting_settings">Coaster List: Sort</string>
     <string name="pref_show_info_settings">Coaster: Show Info</string>
@@ -81,6 +82,8 @@
     <string name="action_zoom_out">Zoom Out</string>
     <string name="action_exclude_back">Exclude back image</string>
     <string name="action_include_back">Include back image</string>
+    <string name="action_graphs">Graphs</string>
+
 
     <string name="contentDescImg">(image)</string>
 
