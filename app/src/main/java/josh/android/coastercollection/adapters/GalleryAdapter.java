@@ -55,7 +55,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
 
             viewHolder.img.setOnClickListener(new ImageOnClickListener(galleryList.get(i).getCoasterID(), strImg, true));
         } else {
-            viewHolder.img.setImageResource(R.drawable.beer_bg_115);
+            viewHolder.img.setImageResource(galleryList.get(i).getDummyPictureResID());
 
             if (galleryList.get(i).getCoasterID() != -1) {
                 viewHolder.txtCoasterID.setVisibility(View.VISIBLE);

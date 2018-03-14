@@ -126,10 +126,10 @@
                     android:layout_height="wrap_content">
                     <ImageView
                         android:id="@+id/imgCoasterFront"
+                        android:adjustViewBounds="true"
                         android:contentDescription="@string/contentDescImg"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:scaleType="fitCenter" />
+                        android:layout_height="wrap_content" />
                     <TextView
                         android:id="@+id/txtImgCoasterFront"
                         android:layout_width="wrap_content"
@@ -143,21 +143,13 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-                    <!--ImageView
-                        android:id="@+id/imgCoasterBack"
-                        android:contentDescription="@string/contentDescImg"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="@dimen/padding5"
-                        android:scaleType="fitCenter"
-                        android:src="@drawable/beer_bg_115" /-->
                     <ImageView
                         android:id="@+id/imgCoasterBack"
+                        android:adjustViewBounds="true"
                         android:contentDescription="@string/contentDescImg"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingTop="@dimen/padding5"
-                        android:scaleType="fitCenter" />
+                        android:paddingTop="@dimen/padding5" />
                     <TextView
                         android:id="@+id/txtImgCoasterBack"
                         android:layout_width="wrap_content"

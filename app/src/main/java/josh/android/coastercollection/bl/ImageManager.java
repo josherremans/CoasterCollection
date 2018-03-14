@@ -373,4 +373,42 @@ public class ImageManager {
             }
         }
     }
+
+    public static int getRedDummyPictureResourceID(long shapeID, long measure1, long measure2) {
+        return R.drawable.dummy_coaster_amber_square;
+    }
+
+    public static int getDummyPictureResourceID(long shapeID, long measure1, long measure2) {
+        switch((int) shapeID) {
+            case 1: // Arcade
+                return R.drawable.dummy_coaster_arcade;
+            case 2: // Eight-shaped
+                return R.drawable.dummy_coaster_eight;
+            case 3: // Hexagonal
+                return R.drawable.dummy_coaster_hexagonal;
+            case 4: // Miscellaneous
+                return R.drawable.dummy_coaster_misc;
+            case 5: // Octagonal
+                return R.drawable.dummy_coaster_octagonal;
+            case 6: // Oval
+                return R.drawable.dummy_coaster_oval;
+            case 7: // Rectangle
+                if (measure1 > measure2)
+                    return R.drawable.dummy_coaster_rect_landscape;
+                else
+                    return R.drawable.dummy_coaster_rect_portrait;
+            case 8: // Round
+                return R.drawable.dummy_coaster_round;
+            case 9: // Square
+                return R.drawable.dummy_coaster_square;
+            case 10: // Triangle
+                return R.drawable.dummy_coaster_triangle;
+            case 11: // Dodecaëder
+                return R.drawable.dummy_coaster_dodecahedron;
+            case 12: // Round window
+                return R.drawable.dummy_coaster_roundwindow;
+            default:
+                return R.drawable.dummy_coaster_square;
+        }
+    }
 }

@@ -17,6 +17,7 @@ import josh.android.coastercollection.R;
 import josh.android.coastercollection.adapters.GalleryAdapter;
 import josh.android.coastercollection.application.CoasterApplication;
 import josh.android.coastercollection.bl.CoasterComparatorBySeries;
+import josh.android.coastercollection.bl.ImageManager;
 import josh.android.coastercollection.bo.Coaster;
 import josh.android.coastercollection.bo.GalleryItem;
 import josh.android.coastercollection.bo.Series;
@@ -49,6 +50,8 @@ public class GalleryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_gallery);
 
         Log.i(LOG_TAG, "onCreate");
+
+        includeThisSideImages = true;
 
         Intent intentOrigine = this.getIntent();
 
@@ -323,6 +326,15 @@ public class GalleryActivity extends AppCompatActivity {
                     galleryItem.setSeriesNbr(c.getCoasterSeriesIndex());
                 }
 
+                int resID;
+
+                if (c.getCoasterID() == -1)
+                    resID = ImageManager.getRedDummyPictureResourceID(c.getCoasterMainShape(), c.getMeasurement1(), c.getMeasurement2());
+                else
+                    resID = ImageManager.getDummyPictureResourceID(c.getCoasterMainShape(), c.getMeasurement1(), c.getMeasurement2());
+
+                galleryItem.setDummyPictureResID(resID);
+
                 lstImages.add(galleryItem);
             }
 
@@ -338,6 +350,10 @@ public class GalleryActivity extends AppCompatActivity {
                 if (seriesID != -1) {
                     galleryItem.setSeriesNbr(c.getCoasterSeriesIndex());
                 }
+
+                int resID = ImageManager.getDummyPictureResourceID(c.getCoasterMainShape(), c.getMeasurement1(), c.getMeasurement2());
+
+                galleryItem.setDummyPictureResID(resID);
 
                 lstImages.add(galleryItem);
             }

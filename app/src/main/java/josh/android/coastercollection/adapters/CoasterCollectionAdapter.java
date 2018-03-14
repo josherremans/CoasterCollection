@@ -254,7 +254,9 @@ public class CoasterCollectionAdapter extends BaseAdapter {
 
             if ((strImgFront != null) && (strImgFront.length() > 0)) {
                 if (strImgFront.equals("-")) {
-                    holder.imgCoasterFront.setImageResource(R.drawable.beer_bg_115);
+                    int resID = ImageManager.getDummyPictureResourceID(coaster.getCoasterMainShape(), coaster.getMeasurement1(), coaster.getMeasurement2());
+
+                    holder.imgCoasterFront.setImageResource(resID);
                     holder.txtImgCoasterFront.setVisibility(View.VISIBLE);
                     holder.txtImgCoasterFront.setText(R.string.lblNameUndefined);
                 } else {
@@ -263,13 +265,17 @@ public class CoasterCollectionAdapter extends BaseAdapter {
                     if (imgFile.exists()) {
                         new ImageManager().load(strImgFront, DIR_DEF_IMAGES, holder.imgCoasterFront);
                     } else {
-                        holder.imgCoasterFront.setImageResource(R.drawable.beer_bg_115);
+                        int resID = ImageManager.getDummyPictureResourceID(coaster.getCoasterMainShape(), coaster.getMeasurement1(), coaster.getMeasurement2());
+
+                        holder.imgCoasterFront.setImageResource(resID);
                         holder.txtImgCoasterFront.setVisibility(View.VISIBLE);
                         holder.txtImgCoasterFront.setText(R.string.lblOops);
                     }
                 }
             } else {
-                holder.imgCoasterFront.setImageResource(R.drawable.beer_bg_115);
+                int resID = ImageManager.getDummyPictureResourceID(coaster.getCoasterMainShape(), coaster.getMeasurement1(), coaster.getMeasurement2());
+
+                holder.imgCoasterFront.setImageResource(resID);
                 holder.txtImgCoasterFront.setVisibility(View.VISIBLE);
                 holder.txtImgCoasterFront.setText(R.string.lblUnknown);
             }
@@ -281,7 +287,9 @@ public class CoasterCollectionAdapter extends BaseAdapter {
                     holder.imgCoasterBack.setVisibility(View.VISIBLE);
 
                     if (strImgBack.equals("-")) {
-                        holder.imgCoasterBack.setImageResource(R.drawable.beer_bg_115);
+                        int resID = ImageManager.getDummyPictureResourceID(coaster.getCoasterMainShape(), coaster.getMeasurement1(), coaster.getMeasurement2());
+
+                        holder.imgCoasterBack.setImageResource(resID);
                         holder.txtImgCoasterBack.setVisibility(View.VISIBLE);
                         holder.txtImgCoasterBack.setText(R.string.lblNameUndefined);
                     } else {
@@ -290,7 +298,9 @@ public class CoasterCollectionAdapter extends BaseAdapter {
                         if (imgFile.exists()) {
                             new ImageManager().load(strImgBack, DIR_DEF_IMAGES, holder.imgCoasterBack);
                         } else {
-                            holder.imgCoasterBack.setImageResource(R.drawable.beer_bg_115);
+                            int resID = ImageManager.getDummyPictureResourceID(coaster.getCoasterMainShape(), coaster.getMeasurement1(), coaster.getMeasurement2());
+
+                            holder.imgCoasterBack.setImageResource(resID);
                             holder.txtImgCoasterBack.setVisibility(View.VISIBLE);
                             holder.txtImgCoasterBack.setText(R.string.lblOops);
                         }
@@ -414,7 +424,9 @@ public class CoasterCollectionAdapter extends BaseAdapter {
 
             if ((strImgFront != null) && (strImgFront.length() > 0)) {
                 if (strImgFront.equals("-")) {
-                    holder.imgCoasterFrontBig.setImageResource(R.drawable.beer_bg_115);
+                    int resID = ImageManager.getDummyPictureResourceID(coaster.getCoasterMainShape(), coaster.getMeasurement1(), coaster.getMeasurement2());
+
+                    holder.imgCoasterFrontBig.setImageResource(resID);
                     holder.txtImgCoasterFrontBig.setVisibility(View.VISIBLE);
                     holder.txtImgCoasterFrontBig.setText(R.string.lblNameUndefined);
                 } else {
@@ -423,13 +435,17 @@ public class CoasterCollectionAdapter extends BaseAdapter {
                     if (imgFile.exists()) {
                         new ImageManager().load(strImgFront, DIR_DEF_IMAGES, holder.imgCoasterFrontBig);
                     } else {
-                        holder.imgCoasterFrontBig.setImageResource(R.drawable.beer_bg_115);
+                        int resID = ImageManager.getDummyPictureResourceID(coaster.getCoasterMainShape(), coaster.getMeasurement1(), coaster.getMeasurement2());
+
+                        holder.imgCoasterFrontBig.setImageResource(resID);
                         holder.txtImgCoasterFrontBig.setVisibility(View.VISIBLE);
                         holder.txtImgCoasterFrontBig.setText(R.string.lblOops);
                     }
                 }
             } else {
-                holder.imgCoasterFrontBig.setImageResource(R.drawable.beer_bg_115);
+                int resID = ImageManager.getDummyPictureResourceID(coaster.getCoasterMainShape(), coaster.getMeasurement1(), coaster.getMeasurement2());
+
+                holder.imgCoasterFrontBig.setImageResource(resID);
                 holder.txtImgCoasterFrontBig.setVisibility(View.VISIBLE);
                 holder.txtImgCoasterFrontBig.setText(R.string.lblUnknown);
             }
@@ -441,7 +457,9 @@ public class CoasterCollectionAdapter extends BaseAdapter {
                 holder.imgCoasterBackBig.setVisibility(View.VISIBLE);
 
                 if (strImgBack.equals("-")) {
-                    holder.imgCoasterBackBig.setImageResource(R.drawable.beer_bg_115);
+                    int resID = ImageManager.getDummyPictureResourceID(coaster.getCoasterMainShape(), coaster.getMeasurement1(), coaster.getMeasurement2());
+
+                    holder.imgCoasterBackBig.setImageResource(resID);
                     holder.txtImgCoasterBackBig.setVisibility(View.VISIBLE);
                     holder.txtImgCoasterBackBig.setText(R.string.lblNameUndefined);
                 } else {
@@ -450,7 +468,9 @@ public class CoasterCollectionAdapter extends BaseAdapter {
                     if (imgFile.exists()) {
                         new ImageManager().load(strImgBack, DIR_DEF_IMAGES, holder.imgCoasterBackBig);
                     } else {
-                        holder.imgCoasterBackBig.setImageResource(R.drawable.beer_bg_115);
+                        int resID = ImageManager.getDummyPictureResourceID(coaster.getCoasterMainShape(), coaster.getMeasurement1(), coaster.getMeasurement2());
+
+                        holder.imgCoasterBackBig.setImageResource(resID);
                         holder.txtImgCoasterBackBig.setVisibility(View.VISIBLE);
                         holder.txtImgCoasterBackBig.setText(R.string.lblOops);
                     }

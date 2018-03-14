@@ -9,6 +9,7 @@ public class GalleryItem {
     private long coasterID;
     private String imageName;
     private long seriesNbr = -1;
+    private int dummyPictureResID = -1;
 
     public String getImageName() {
         return imageName;
@@ -32,5 +33,13 @@ public class GalleryItem {
 
     public void setSeriesNbr(long seriesNbr) {
         this.seriesNbr = seriesNbr;
+    }
+
+    public int getDummyPictureResID() {
+        return this.dummyPictureResID;
+    }
+
+    public void setDummyPictureResID(int resID) {
+        this.dummyPictureResID = resID;
     }
 }
