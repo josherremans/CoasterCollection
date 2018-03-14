@@ -37,6 +37,11 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".activities.CoasterActivity"
+            android:label="@string/app_name_short"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".activities.AddCoasterActivity"
             android:label="@string/app_name_short"
             android:screenOrientation="portrait"

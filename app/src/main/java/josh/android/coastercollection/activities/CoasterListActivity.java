@@ -163,6 +163,7 @@ public class CoasterListActivity extends FabBaseActivity
 
         Log.i(LOG_TAG, "IN onStart");
 
+        lstvwCoasterCollection.setOnItemClickListener(new CoasterOnItemClickListener());
         lstvwCoasterCollection.setOnItemLongClickListener(new CoasterOnItemLongClickListener());
 
 //        lstvwCoasterCollection.setAdapter(coasterCollectionAdapter);
@@ -680,6 +681,24 @@ public class CoasterListActivity extends FabBaseActivity
             startActivity(alterCoasterIntent);
 
             return true;
+        }
+    }
+
+    /*
+    ** INNERCLASS: CoasterOnItemClickListener
+     */
+    private class CoasterOnItemClickListener implements AdapterView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
+            Coaster clickedCoaster = coasterCollectionAdapter.getRealItem(pos); //CoasterApplication.collectionData.lstCoasters.get(pos);
+
+            Intent alterCoasterIntent = new Intent(CoasterListActivity.this, CoasterActivity.class);
+
+            alterCoasterIntent.putExtra("extraCoasterID", clickedCoaster.getCoasterID());
+
+            startActivity(alterCoasterIntent);
+
+            return;
         }
     }
 }

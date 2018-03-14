@@ -73,6 +73,7 @@
     <string name="action_clear_filter">Clear Filter</string>
     <string name="action_export">Export</string>
     <string name="action_save">Save</string>
+    <string name="action_edit">Edit</string>
     <string name="action_delete">Delete</string>
     <string name="action_copy">Copy</string>
     <string name="action_adv_filter">Advanced Filter</string>
@@ -119,7 +120,8 @@
     <string name="dummy_collect_place">Halle - Café Dummy</string>
     <string name="dummy_shape">Square</string>
     <string name="dummy_measurements">(Side: 78mm)</string>
-    <string name="dummy_quality">8/10</string>
+    <string name="dummy_quality">9/10</string>
+    <string name="dummy_quality_text">@string/quality_9</string>
     <string name="dummy_coaster_desc">This is the description of the coaster. This also can be a very long text. Even more than 2 lines!</string>
     <string name="dummy_coaster_text">This is the text of the coaster. Again, this can be a very long text! Even more than 2 lines!</string>
     <string name="dummy_image_name">trademark_1234_fb.jpg</string>
@@ -128,6 +130,7 @@
     <string name="txtLoadingCoasterList">Loading coasters...</string>
     <string name="txtEmptyCoasterList">No coasters found!</string>
     <string name="lblCoaster">Coaster</string>
+    <string name="lblTextAndDescription">Description</string>
     <string name="lblShape">Shape</string>
     <string name="lblImages">Images</string>
     <string name="lblFound">Found</string>
@@ -140,6 +143,18 @@
     <string name="lbl_on_crash_title">Unexpected fault</string>
     <string name="lbl_on_crash_message">This application has stopped unexpectedly.</string>
     <string name="lbl_on_crash_details_title">Details</string>
+
+    <string name="quality_0">Unknown</string>
+    <string name="quality_1">Worthless</string>
+    <string name="quality_2">Almost worthless</string>
+    <string name="quality_3">Extremely poor</string>
+    <string name="quality_4">Very poor</string>
+    <string name="quality_5">Poor</string>
+    <string name="quality_6">Under average</string>
+    <string name="quality_7">Average</string>
+    <string name="quality_8">Good</string>
+    <string name="quality_9">Very good</string>
+    <string name="quality_10">Excellent</string>
 
     <string name="hint_search">Search</string>
     <string name="hint_trademark_search">Filter Trademark</string>
@@ -165,4 +180,5 @@
     <string name="btn_on_crash_details">Details</string>
     <string name="btn_on_crash_stop_app">Stop</string>
     <string name="btn_ok">Ok</string>
+    <string name="title_activity_coaster">CoasterActivity</string>
 </resources>

@@ -9,6 +9,7 @@ import android.widget.ProgressBar;
 import java.util.ArrayList;
 
 import josh.android.coastercollection.application.CoasterApplication;
+import josh.android.coastercollection.bl.CoasterNotificationManager;
 import josh.android.coastercollection.bo.CoasterCollectionData;
 import josh.android.coastercollection.databank.CoasterCollectionDBHelper;
 
@@ -135,5 +136,7 @@ public class LoadCoastersAsyncTask extends AsyncTask<Void, Integer, CoasterColle
         toolbar.setSubtitle("(#" + adapter.getCount() + ")");
 
         adapter.notifyDataSetChanged();
+
+        CoasterNotificationManager.checkForNotifications(CoasterApplication.getInstance().getApplicationContext());
     }
 }

@@ -1,11 +1,14 @@
 package josh.android.coastercollection.utils;
 
+import android.content.res.Resources;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import josh.android.coastercollection.R;
 import josh.android.coastercollection.application.CoasterApplication;
 import josh.android.coastercollection.bo.Coaster;
 import josh.android.coastercollection.bo.CollectionHistoryMatrix;
@@ -31,6 +34,33 @@ public class Util {
         }
 
         return str.toString();
+    }
+
+    public static String getDisplayQuality(int quality, Resources res) {
+        switch(quality) {
+            case 1:
+                return res.getString(R.string.quality_1);
+            case 2:
+                return res.getString(R.string.quality_2);
+            case 3:
+                return res.getString(R.string.quality_3);
+            case 4:
+                return res.getString(R.string.quality_4);
+            case 5:
+                return res.getString(R.string.quality_5);
+            case 6:
+                return res.getString(R.string.quality_6);
+            case 7:
+                return res.getString(R.string.quality_7);
+            case 8:
+                return res.getString(R.string.quality_8);
+            case 9:
+                return res.getString(R.string.quality_9);
+            case 10:
+                return res.getString(R.string.quality_10);
+            default:
+                return res.getString(R.string.quality_0);
+        }
     }
 
     public static String getDisplayDateNow() {
