@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
@@ -152,8 +151,8 @@ public class AddCoasterActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new FabOnClickListener());
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        fab.setOnClickListener(new FabOnClickListener());
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -1453,31 +1452,31 @@ public class AddCoasterActivity extends AppCompatActivity
         return true;
     }
 
-    /*
-    ** INNERCLASS: FabOnClickListener
-     */
-    private class FabOnClickListener implements View.OnClickListener {
-        @Override
-        public void onClick(View view) {
-            if (!validateCoaster()) {
-                CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorlayout);
-
-                Snackbar snackbar = Snackbar.make(coordinatorLayout, "Save first!", Snackbar.LENGTH_LONG);
-
-                snackbar.show();
-
-                return;
-            }
-
-            Intent addCoasterIntent = new Intent(AddCoasterActivity.this, AddCoasterActivity.class);
-
-            addCoasterIntent.putExtra("extraCoasterID", -1);
-
-            addCoasterIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-            startActivity(addCoasterIntent);
-        }
-    }
+//    /*
+//    ** INNERCLASS: FabOnClickListener
+//     */
+//    private class FabOnClickListener implements View.OnClickListener {
+//        @Override
+//        public void onClick(View view) {
+//            if (!validateCoaster()) {
+//                CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorlayout);
+//
+//                Snackbar snackbar = Snackbar.make(coordinatorLayout, "Save first!", Snackbar.LENGTH_LONG);
+//
+//                snackbar.show();
+//
+//                return;
+//            }
+//
+//            Intent addCoasterIntent = new Intent(AddCoasterActivity.this, AddCoasterActivity.class);
+//
+//            addCoasterIntent.putExtra("extraCoasterID", -1);
+//
+//            addCoasterIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//
+//            startActivity(addCoasterIntent);
+//        }
+//    }
 
     private class DeleteOnClickListener implements DialogInterface.OnClickListener {
         @Override
